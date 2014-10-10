@@ -33,5 +33,6 @@ setup(name='marionette-release-tests',
       zip_safe=False,
       install_requires=deps,
       entry_points="""
-        run-release-tests = harness.runtests:run
+        [console_scripts]
+        run-release-tests = marionette.runtests:cli
       """)
