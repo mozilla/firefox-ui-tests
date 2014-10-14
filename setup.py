@@ -34,5 +34,5 @@ setup(name='marionette-release-tests',
       install_requires=deps,
       entry_points="""
         [console_scripts]
-        run-release-tests = harness:run
+        run-release-tests = m20s.harness:run
       """)

@@ -4,7 +4,7 @@
 
 from marionette import BaseMarionetteOptions
 
-import tests
+from m20s import tests
 
 class ReleaseTestParser(BaseMarionetteOptions):
     
