@@ -11,10 +11,10 @@ deps = [
     'marionette-client',
 ]
 
-setup(name='marionette-release-tests',
+setup(name='firefox-greenlight-tests',
       version=PACKAGE_VERSION,
       description='A collection of release tests for Mozilla Firefox',
-      long_description='See https://github.com/ahal/marionette-release-tests',
+      long_description='See https://github.com/mozilla/firefox-greenlight-tests',
       classifiers=['Environment :: Console',
                    'Intended Audience :: Developers',
                    'License :: OSI Approved :: Mozilla Public License 2.0 (MPL 2.0)',
@@ -26,7 +26,7 @@ setup(name='marionette-release-tests',
       keywords='mozilla',
       author='Andrew Halberstadt',
       author_email='ahalberstadt@mozilla.com',
-      url='https://github.com/ahal/marionette-release-tests',
+      url='https://github.com/mozilla/firefox-greenlight-tests',
       license='MPL 2.0',
       packages=find_packages(),
       include_package_data=True,
@@ -34,5 +34,5 @@ setup(name='marionette-release-tests',
       install_requires=deps,
       entry_points="""
         [console_scripts]
-        run-release-tests = m20s.harness:run
+        run-greenlight-tests = greenlight.harness:run
       """)

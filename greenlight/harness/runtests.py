@@ -12,7 +12,7 @@ from marionette import (
 from marionette.runtests import cli
 
 from .arguments import ReleaseTestParser
-from m20s import tests
+from greenlight import tests
 
 
 class ReleaseTestRunner(BaseMarionetteTestRunner):
