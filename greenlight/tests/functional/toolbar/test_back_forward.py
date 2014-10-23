@@ -4,12 +4,15 @@
 
 import time
 
-from marionette import MarionetteTestCase
 from marionette.errors import TimeoutException
 
-class TestBackForward(MarionetteTestCase):
+from greenlight.harness.testcase import FirefoxTestCase
+
+class TestBackForward(FirefoxTestCase):
 
     def test_back_forward(self):
+        toolbar = self.puppeteer.toolbar
+
         test_urls = [
             'layout/mozilla.html',
             'layout/mozilla_mission.html',
@@ -23,8 +26,8 @@ class TestBackForward(MarionetteTestCase):
 
         self.marionette.set_context('chrome')
 
-        back = self.marionette.find_element('id', 'back-button');
-        forward = self.marionette.find_element('id', 'forward-button');
+        back = toolbar.back_button()
+        forward = toolbar.forward_button()
         self.assertFalse(forward.is_displayed())
 
         for i in range(1, len(test_urls)):
@@ -35,7 +38,7 @@ class TestBackForward(MarionetteTestCase):
             self.assertEquals(self.marionette.get_url(), test_urls[-(i+1)])
             self.marionette.set_context('chrome')
         self.assertFalse(back.is_enabled())
-        forward = self.marionette.find_element('id', 'forward-button');
+        forward = toolbar.forward_button()
         # TODO For some reason this returns False
         #self.assertTrue(forward.is_displayed())
         self.assertTrue(forward.is_enabled())

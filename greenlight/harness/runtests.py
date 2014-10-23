@@ -5,13 +5,11 @@
 import os
 import sys
 
-from marionette import (
-    BaseMarionetteTestRunner,
-    MarionetteTestCase,
-)
+from marionette import BaseMarionetteTestRunner
 from marionette.runtests import cli
 
 from .arguments import ReleaseTestParser
+from .testcase import FirefoxTestCase
 from greenlight import tests
 
 
@@ -21,7 +19,7 @@ class ReleaseTestRunner(BaseMarionetteTestRunner):
         if not kwargs.get('server_root'):
             kwargs['server_root'] = tests.resources
         BaseMarionetteTestRunner.__init__(self, *args, **kwargs)
-        self.test_handlers = [MarionetteTestCase]
+        self.test_handlers = [FirefoxTestCase]
 
 
 def run():
