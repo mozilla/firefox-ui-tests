@@ -3,7 +3,8 @@
 # file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
 from marionette import MarionetteTestCase
-from puppeteer import Puppeteer
+
+from greenlight.lib import Puppeteer
 
 class FirefoxTestCase(MarionetteTestCase):
     """
