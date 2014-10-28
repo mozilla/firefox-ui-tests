@@ -19,11 +19,11 @@ Usage
 
 To run all tests:
 
-    run-greenlight-tests -b <path to firefox binary>
+    run-greenlight-tests --binary <path to firefox binary>
 
 To run a specific test or directory of tests:
 
-    run-greenlight-tests -b <path to firefox binary> <path to test or directory>
+    run-greenlight-tests --binary <path to firefox binary> <path to test or directory>
 
 For more options run:
 
