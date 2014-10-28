@@ -39,6 +39,10 @@ class Puppeteer(object):
     def set_client(self, client):
         self.client = client
 
+    @use_lib_as_property('l10n')
+    def l10n(self):
+        pass
+
     @use_lib_as_property('tabs')
     def tabstrip(self):
         pass

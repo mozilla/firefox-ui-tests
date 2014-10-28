@@ -6,10 +6,12 @@ from marionette import BaseMarionetteOptions
 
 from greenlight import tests
 
+
 class ReleaseTestParser(BaseMarionetteOptions):
-    
+
     def parse_args(self, *args, **kwargs):
-        options, test_files = BaseMarionetteOptions.parse_args(self, *args, **kwargs)
+        options, test_files = BaseMarionetteOptions.parse_args(self,
+                                                               *args, **kwargs)
         if not test_files:
             test_files = [tests.manifest]
         return (options, test_files)

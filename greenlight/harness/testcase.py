@@ -6,6 +6,7 @@ from marionette import MarionetteTestCase
 
 from greenlight.lib import Puppeteer
 
+
 class FirefoxTestCase(MarionetteTestCase):
     """
     Test case that adds a Puppeteer object to test scope.
@@ -18,7 +19,8 @@ class FirefoxTestCase(MarionetteTestCase):
         MarionetteTestCase.setUp(self, *args, **kwargs)
         self.puppeteer.set_client(self.marionette)
 
+        self.l10n = self.puppeteer.l10n
+
     def tearDown(self, *args, **kwargs):
         self.puppeteer.client = None
         MarionetteTestCase.tearDown(self, *args, **kwargs)
-
