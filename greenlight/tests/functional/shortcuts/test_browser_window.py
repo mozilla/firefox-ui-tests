@@ -15,53 +15,49 @@ dtds = ['chrome://browser/locale/browser.dtd']
 
 class TestBrowserWindowShortcuts(FirefoxTestCase):
 
+    def setUp(self):
+        super(TestBrowserWindowShortcuts, self).setUp()
+        self.marionette.set_context("chrome")
+        self.main_window = self.marionette.find_element("id", "main-window")
+
     @uses_lib('l10n')
     def test_addons_manager(self):
-        self.marionette.set_context("chrome")
-
         key = self.l10n.get_localized_entity(dtds, 'addons.commandkey')
 
         # On Linux the shortcut will only work if no other text field has focus
         # TODO: Remove focus from the location bar
+        self.main_window.send_keys(Keys.SHIFT, Keys.CONTROL, key)
 
-        # TODO: Sending keys globally to the browser window
-        # Bug 1090925: Implement Action support for send_keys
-        window = self.marionette.find_element('id', 'main-window')
-
-        # CONTROL will only work on Linux and Windows. On OS X it is COMMAND.
-        # TODO: We might want to request to get an ACCEL key added?
-        window.send_keys(Keys.SHIFT + Keys.CONTROL + key)
-
-        # TODO: wait for page being loaded?
-        self.assertEqual(self.marionette.get_url(), 'about:addons')
+        self.marionette.set_context("content")
+        self.wait_for_condition(lambda mn: mn.get_url() == "about:addons")
 
     @uses_lib('l10n')
     def test_search_field(self):
-        self.marionette.set_context("chrome")
+        current_name = self.marionette.execute_script("return window.document.activeElement.localName;");
+        # This doesn't test anything if we're already at input.
+        self.assertNotEqual(current_name, "input")
+
+        keys = []
+        if self.marionette.session_capabilities['platformName'] == 'DARWIN':
+            keys.append(Keys.META)
+        else:
+            keys.append(Keys.CONTROL)
 
         if self.marionette.session_capabilities['platformName'] == 'LINUX':
-            key = self.l10n.get_localized_entity(dtds,
-                                                 'searchFocusUnix.commandkey')
+            keys.append(self.l10n.get_localized_entity(dtds,
+                                                       'searchFocusUnix.commandkey'))
         else:
-            key = self.l10n.get_localized_entity(dtds,
-                                                 'searchFocus.commandkey')
-
-        # TODO: Sending keys globally to the browser window
-        # Bug 1090925: Implement Action support for send_keys
-        window = self.marionette.find_element('id', 'main-window')
+            keys.append(self.l10n.get_localized_entity(dtds,
+                                                       'searchFocus.commandkey'))
 
         # CONTROL will only work on Linux and Windows. On OS X it is COMMAND.
-        # TODO: We might want to request to get an ACCEL key added?
-        window.send_keys(Keys.CONTROL + key)
-        time.sleep(3)
-
-        # TODO: Better way to retrieve this element?
-        type = self.marionette.execute_script("""
-            return window.document.activeElement.localName;
-        """)
+        self.main_window.send_keys(*keys)
 
         # TODO: Check that the right input box is focused
         # Located below searchbar as class="autocomplete-textbox textbox-input"
         # Anon locator has not been released yet (bug 1080764)
-        # searchbar = self.marionette.find_element('id', 'searchbar')
-        self.assertEqual(type, 'input')
+        def has_input_selected(mn):
+            selection_name = mn.execute_script("return window.document.activeElement.localName;");
+            return selection_name == "input"
+
+        self.wait_for_condition(has_input_selected)
