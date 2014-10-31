@@ -6,11 +6,17 @@ class Toolbar(object):
     def __init__(self, client):
         self.client = client
 
+    @property
     def back_button(self):
         return self.client.find_element('id', 'back-button')
 
+    @property
     def forward_button(self):
         return self.client.find_element('id', 'forward-button')
+
+    @property
+    def home_button(self):
+        return self.client.find_element('id', 'home-button')
 
     @property
     def location(self):

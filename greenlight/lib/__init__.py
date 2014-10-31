@@ -43,6 +43,10 @@ class Puppeteer(object):
     def l10n(self):
         pass
 
+    @use_lib_as_property('prefs.DefaultPrefBranch')
+    def prefs(self):
+        pass
+
     @use_lib_as_property('tabs.Tabs')
     def tabstrip(self):
         pass
