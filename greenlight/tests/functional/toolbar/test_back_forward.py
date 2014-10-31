@@ -7,13 +7,11 @@ import time
 from marionette.errors import TimeoutException
 
 from greenlight.harness.testcase import FirefoxTestCase
+from greenlight.harness.decorators import uses_lib
 
 class TestBackForward(FirefoxTestCase):
 
-    def setUp(self):
-        FirefoxTestCase.setUp(self)
-        self.toolbar = self.lib.toolbar
-
+    @uses_lib('toolbar')
     def test_back_forward(self):
         test_urls = [
             'layout/mozilla.html',

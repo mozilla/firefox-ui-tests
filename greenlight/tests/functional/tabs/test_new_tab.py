@@ -3,6 +3,7 @@
 # file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
 from greenlight.harness.testcase import FirefoxTestCase
+from greenlight.harness.decorators import uses_lib
 
 class TestNewTab(FirefoxTestCase):
     def setUp(self):
@@ -10,14 +11,12 @@ class TestNewTab(FirefoxTestCase):
         url = self.marionette.absolute_url('layout/mozilla.html')
         self.marionette.navigate(url)
 
-        self.tabstrip = self.lib.tabstrip
-        self.toolbar = self.lib.toolbar
-
     def tearDown(self):
         # TODO close active tab
         # bug 1088223: active_tab not working
         FirefoxTestCase.tearDown(self)
 
+    @uses_lib('tabstrip', 'toolbar')
     def test_open_tab_by_newtab_button(self):
         self.marionette.set_context('chrome')
 

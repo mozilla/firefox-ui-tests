@@ -7,6 +7,7 @@ import time
 from marionette.keys import Keys
 
 from greenlight.harness.testcase import FirefoxTestCase
+from greenlight.harness.decorators import uses_lib
 
 
 dtds = ['chrome://browser/locale/browser.dtd']
@@ -14,10 +15,7 @@ dtds = ['chrome://browser/locale/browser.dtd']
 
 class TestBrowserWindowShortcuts(FirefoxTestCase):
 
-    def setUp(self):
-        FirefoxTestCase.setUp(self)
-        self.l10n = self.lib.l10n
-
+    @uses_lib('l10n')
     def test_addons_manager(self):
         self.marionette.set_context("chrome")
 
@@ -37,6 +35,7 @@ class TestBrowserWindowShortcuts(FirefoxTestCase):
         # TODO: wait for page being loaded?
         self.assertEqual(self.marionette.get_url(), 'about:addons')
 
+    @uses_lib('l10n')
     def test_search_field(self):
         self.marionette.set_context("chrome")
 
