@@ -22,5 +22,3 @@ class Tabs(object):
     def newtab_button(self):
         return self.client.find_element('id', 'tabbrowser-tabs') \
                           .find_element('anon attribute', {'anonid': 'tabs-newtab-button'})
-
-property_class = Tabs

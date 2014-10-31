@@ -68,6 +68,3 @@ class L10n(object):
             raise MarionetteException('Property not found: %s' % property_id)
 
         return value
-
-
-property_class = L10n

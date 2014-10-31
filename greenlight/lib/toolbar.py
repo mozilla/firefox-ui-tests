@@ -18,5 +18,3 @@ class Toolbar(object):
         return self.client.execute_script("""
             return gBrowser.selectedBrowser.contentWindow.location.href;
         """)
-
-property_class = Toolbar

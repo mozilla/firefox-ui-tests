@@ -15,18 +15,18 @@ class use_lib_as_property(object):
     Note: return value of the wrapped function is ignored.
     """
     def __init__(self, lib):
-        self.lib = lib
+        self.mod_name, self.cls_name = lib.split('.')
 
     def __call__(self, func):
         @property
         @wraps(func)
         def _(cls, *args, **kwargs):
-            tag = '_{}'.format(self.lib)
+            tag = '_{}_{}'.format(self.mod_name, self.cls_name)
             prop = getattr(cls, tag, None)
 
             if not prop:
-                module = import_module('.{}'.format(self.lib), 'greenlight.lib')
-                prop = getattr(module, 'property_class')(cls.client)
+                module = import_module('.{}'.format(self.mod_name), 'greenlight.lib')
+                prop = getattr(module, self.cls_name)(cls.client)
                 setattr(cls, tag, prop)
             func(cls, *args, **kwargs)
             return prop
@@ -39,14 +39,14 @@ class Puppeteer(object):
     def set_client(self, client):
         self.client = client
 
-    @use_lib_as_property('l10n')
+    @use_lib_as_property('l10n.L10n')
     def l10n(self):
         pass
 
-    @use_lib_as_property('tabs')
+    @use_lib_as_property('tabs.Tabs')
     def tabstrip(self):
         pass
 
-    @use_lib_as_property('toolbar')
+    @use_lib_as_property('toolbar.Toolbar')
     def toolbar(self):
         pass
