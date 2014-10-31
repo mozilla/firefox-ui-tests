@@ -12,6 +12,7 @@ Then:
 Alternatively you may want to clone the repo for development:
 
     git clone https://github.com/mozilla/firefox-greenlight-tests.git
+    python setup.py develop
 
 
 Usage
