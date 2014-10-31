@@ -18,7 +18,7 @@ class TestBackForward(FirefoxTestCase):
             'layout/mozilla_mission.html',
             'layout/mozilla_grants.html',
         ]
-        test_urls = ['{}{}'.format(self.marionette.baseurl, t) for t in test_urls]
+        test_urls = [self.marionette.absolute_url(t) for t in test_urls]
 
         for url in test_urls:
             self.marionette.navigate(url)

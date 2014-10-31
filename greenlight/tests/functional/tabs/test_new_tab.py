@@ -7,7 +7,7 @@ from greenlight.harness.testcase import FirefoxTestCase
 class TestNewTab(FirefoxTestCase):
     def setUp(self):
         FirefoxTestCase.setUp(self)
-        url = '{}layout/mozilla.html'.format(self.marionette.baseurl)
+        url = self.marionette.absolute_url('layout/mozilla.html')
         self.marionette.navigate(url)
         self.tabstrip = self.puppeteer.tabstrip
         self.toolbar = self.puppeteer.toolbar
