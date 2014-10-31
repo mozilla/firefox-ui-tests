@@ -13,14 +13,12 @@ class FirefoxTestCase(MarionetteTestCase):
     """
     def __init__(self, *args, **kwargs):
         MarionetteTestCase.__init__(self, *args, **kwargs)
-        self.puppeteer = Puppeteer()
+        self.lib = Puppeteer()
 
     def setUp(self, *args, **kwargs):
         MarionetteTestCase.setUp(self, *args, **kwargs)
-        self.puppeteer.set_client(self.marionette)
-
-        self.l10n = self.puppeteer.l10n
+        self.lib.set_client(self.marionette)
 
     def tearDown(self, *args, **kwargs):
-        self.puppeteer.client = None
+        self.lib.client = None
         MarionetteTestCase.tearDown(self, *args, **kwargs)

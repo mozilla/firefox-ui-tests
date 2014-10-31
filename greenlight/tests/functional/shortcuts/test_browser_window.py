@@ -14,6 +14,10 @@ dtds = ['chrome://browser/locale/browser.dtd']
 
 class TestBrowserWindowShortcuts(FirefoxTestCase):
 
+    def setUp(self):
+        FirefoxTestCase.setUp(self)
+        self.l10n = self.lib.l10n
+
     def test_addons_manager(self):
         self.marionette.set_context("chrome")
 

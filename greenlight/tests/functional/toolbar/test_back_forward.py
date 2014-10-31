@@ -10,9 +10,11 @@ from greenlight.harness.testcase import FirefoxTestCase
 
 class TestBackForward(FirefoxTestCase):
 
-    def test_back_forward(self):
-        toolbar = self.puppeteer.toolbar
+    def setUp(self):
+        FirefoxTestCase.setUp(self)
+        self.toolbar = self.lib.toolbar
 
+    def test_back_forward(self):
         test_urls = [
             'layout/mozilla.html',
             'layout/mozilla_mission.html',
@@ -26,8 +28,8 @@ class TestBackForward(FirefoxTestCase):
 
         self.marionette.set_context('chrome')
 
-        back = toolbar.back_button()
-        forward = toolbar.forward_button()
+        back = self.toolbar.back_button
+        forward = self.toolbar.forward_button
         self.assertFalse(forward.is_displayed())
 
         for i in range(1, len(test_urls)):
@@ -38,7 +40,7 @@ class TestBackForward(FirefoxTestCase):
             self.assertEquals(self.marionette.get_url(), test_urls[-(i+1)])
             self.marionette.set_context('chrome')
         self.assertFalse(back.is_enabled())
-        forward = toolbar.forward_button()
+        forward = self.toolbar.forward_button
         # TODO For some reason this returns False
         #self.assertTrue(forward.is_displayed())
         self.assertTrue(forward.is_enabled())

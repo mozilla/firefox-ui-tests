@@ -9,8 +9,9 @@ class TestNewTab(FirefoxTestCase):
         FirefoxTestCase.setUp(self)
         url = self.marionette.absolute_url('layout/mozilla.html')
         self.marionette.navigate(url)
-        self.tabstrip = self.puppeteer.tabstrip
-        self.toolbar = self.puppeteer.toolbar
+
+        self.tabstrip = self.lib.tabstrip
+        self.toolbar = self.lib.toolbar
 
     def tearDown(self):
         # TODO close active tab

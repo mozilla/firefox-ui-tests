@@ -6,10 +6,13 @@ from greenlight.harness.testcase import FirefoxTestCase
 
 homepage_pref = 'browser.startup.homepage'
 
-class TestBackForward(FirefoxTestCase):
+class TestHomeButton(FirefoxTestCase):
 
     def setUp(self):
         FirefoxTestCase.setUp(self)
+        self.toolbar = self.lib.toolbar
+        self.prefs = self.lib.prefs
+        
         self.url = self.marionette.absolute_url('layout/mozilla.html')
         self.prefs.set_pref(homepage_pref, self.url)
 
