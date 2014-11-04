@@ -15,7 +15,7 @@ class use_lib_as_property(object):
     Note: return value of the wrapped function is ignored.
     """
     def __init__(self, lib):
-        self.mod_name, self.cls_name = lib.split('.')
+        self.mod_name, self.cls_name = lib.rsplit('.', 1)
 
     def __call__(self, func):
         @property
@@ -39,12 +39,10 @@ class Puppeteer(object):
     def set_client(self, client):
         self.client = client
 
+    # these libs are for UI manipulation
+
     @use_lib_as_property('l10n.L10n')
     def l10n(self):
-        pass
-
-    @use_lib_as_property('prefs.DefaultPrefBranch')
-    def prefs(self):
         pass
 
     @use_lib_as_property('tabs.Tabs')
@@ -53,4 +51,10 @@ class Puppeteer(object):
 
     @use_lib_as_property('toolbar.Toolbar')
     def toolbar(self):
+        pass
+
+    # these libs wrap gecko APIs
+
+    @use_lib_as_property('api.prefs.DefaultPrefBranch')
+    def prefs(self):
         pass
