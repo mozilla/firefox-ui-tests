@@ -11,7 +11,7 @@ from greenlight.harness.testcase import FirefoxTestCase
 class TestL10n(FirefoxTestCase):
 
     @uses_lib('l10n')
-    def test_dtd_entity(self):
+    def test_dtd_entity_chrome(self):
         dtds = ['chrome://global/locale/filepicker.dtd',
                 'chrome://browser/locale/baseMenuOverlay.dtd']
 
@@ -22,6 +22,19 @@ class TestL10n(FirefoxTestCase):
         self.assertRaises(MarionetteException,
                           self.l10n.get_localized_entity,
                           dtds, 'notExistent')
+
+    @uses_lib('l10n')
+    def test_dtd_entity_content(self):
+        dtds = ['chrome://global/locale/filepicker.dtd',
+                'chrome://global/locale/aboutSupport.dtd']
+
+        value = self.l10n.get_localized_entity(dtds, 'aboutSupport.pageTitle')
+
+        self.marionette.set_context(self.marionette.CONTEXT_CONTENT)
+        self.marionette.navigate('about:support')
+
+        elm = self.marionette.find_element('tag name', 'title')
+        self.assertEqual(value, elm.text)
 
     @uses_lib('l10n')
     def test_properties(self):
