@@ -16,7 +16,7 @@ class TestNewTab(FirefoxTestCase):
         # bug 1088223: active_tab not working
         FirefoxTestCase.tearDown(self)
 
-    @uses_lib('tabstrip', 'toolbar')
+    @uses_lib('tabstrip', 'toolbar', 'prefs')
     def test_open_tab_by_newtab_button(self):
         self.marionette.set_context('chrome')
 
@@ -24,6 +24,6 @@ class TestNewTab(FirefoxTestCase):
         self.tabstrip.newtab_button.click()
         self.assertEqual(len(self.tabstrip.tabs), num_tabs + 1)
 
-        # TODO get this value from 'browser.newtab.url'
-        self.assertEqual(self.toolbar.location, 'about:newtab')
+        newtab_url = self.prefs.get_pref('browser.newtab.url')
+        self.assertEqual(self.toolbar.location, newtab_url)
 
