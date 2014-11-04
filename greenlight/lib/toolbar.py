@@ -19,6 +19,10 @@ class Toolbar(object):
         return self.client.find_element('id', 'home-button')
 
     @property
+    def menu_button(self):
+        return self.client.find_element('id', 'PanelUI-menu-button')
+
+    @property
     def location(self):
         # TODO probably doesn't work with e10s enabled
         return self.client.execute_script("""

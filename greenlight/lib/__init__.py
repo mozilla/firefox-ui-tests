@@ -5,6 +5,8 @@
 from functools import wraps
 from importlib import import_module
 
+from marionette import HTMLElement
+
 
 class use_lib_as_property(object):
     """
@@ -45,6 +47,10 @@ class Puppeteer(object):
     def l10n(self):
         pass
 
+    @use_lib_as_property('menupanel.MenuPanel')
+    def menupanel(self):
+        pass
+
     @use_lib_as_property('tabs.Tabs')
     def tabstrip(self):
         pass
@@ -58,3 +64,12 @@ class Puppeteer(object):
     @use_lib_as_property('api.prefs.DefaultPrefBranch')
     def prefs(self):
         pass
+
+
+class DOMElement(HTMLElement):
+
+    @classmethod
+    def create(cls, element):
+        instance = object.__new__(cls)
+        instance.__dict__ = element.__dict__.copy()
+        return instance
