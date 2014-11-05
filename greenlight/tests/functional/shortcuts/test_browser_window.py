@@ -2,16 +2,10 @@
 # License, v. 2.0. If a copy of the MPL was not distributed with this
 # file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
-import time
-
-from marionette.keys import Keys
-
 from greenlight.harness.testcase import FirefoxTestCase
 from greenlight.harness.decorators import uses_lib
 
-
 dtds = ['chrome://browser/locale/browser.dtd']
-
 
 class TestBrowserWindowShortcuts(FirefoxTestCase):
 
@@ -20,29 +14,23 @@ class TestBrowserWindowShortcuts(FirefoxTestCase):
         self.marionette.set_context("chrome")
         self.main_window = self.marionette.find_element("id", "main-window")
 
-    @uses_lib('l10n')
+    @uses_lib('l10n', 'keys')
     def test_addons_manager(self):
         key = self.l10n.get_localized_entity(dtds, 'addons.commandkey')
 
         # On Linux the shortcut will only work if no other text field has focus
         # TODO: Remove focus from the location bar
-        self.main_window.send_keys(Keys.SHIFT, Keys.CONTROL, key)
-
+        self.main_window.send_keys(self.keys.SHIFT, self.keys.ACCEL, key)
         self.marionette.set_context("content")
         self.wait_for_condition(lambda mn: mn.get_url() == "about:addons")
 
-    @uses_lib('l10n')
+    @uses_lib('l10n', 'keys')
     def test_search_field(self):
         current_name = self.marionette.execute_script("return window.document.activeElement.localName;");
         # This doesn't test anything if we're already at input.
         self.assertNotEqual(current_name, "input")
 
-        keys = []
-        if self.marionette.session_capabilities['platformName'] == 'DARWIN':
-            keys.append(Keys.META)
-        else:
-            keys.append(Keys.CONTROL)
-
+        keys = [self.keys.ACCEL]
         if self.marionette.session_capabilities['platformName'] == 'LINUX':
             keys.append(self.l10n.get_localized_entity(dtds,
                                                        'searchFocusUnix.commandkey'))
