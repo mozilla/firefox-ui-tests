@@ -2,6 +2,8 @@
 # License, v. 2.0. If a copy of the MPL was not distributed with this
 # file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
+import time
+
 from greenlight.harness.testcase import FirefoxTestCase
 from greenlight.harness.decorators import uses_lib
 
@@ -22,5 +24,7 @@ class TestHomeButton(FirefoxTestCase):
     def test_home_button(self):
         self.toolbar.home_button.click()
 
-        self.marionette.set_context('content')
-        self.assertEquals(self.marionette.get_url(), self.url)
+        # TODO wait_for_page_load
+        time.sleep(1)
+        with self.marionette.using_context('content'):
+            self.assertEquals(self.marionette.get_url(), self.url)

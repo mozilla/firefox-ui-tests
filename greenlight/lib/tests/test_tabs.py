@@ -2,6 +2,8 @@
 # License, v. 2.0. If a copy of the MPL was not distributed with this
 # file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
+from marionette import Wait
+
 from greenlight.harness.decorators import uses_lib
 from greenlight.harness.testcase import FirefoxTestCase
 
@@ -33,15 +35,23 @@ class TestTabs(FirefoxTestCase):
         self.lib.prefs.set_pref('browser.tabs.warnOnClose', False)
         self.lib.prefs.set_pref('browser.tabs.warnOnCloseOtherTabs', False)
 
+        def tabs_loaded(m):
+            label = m.execute_script("""
+                return gBrowser.tabs[gBrowser.tabs.length-1].getAttribute('label');
+            """)
+            return 'Projects' in label
+
+        Wait(self.marionette).until(tabs_loaded)
+
     def tearDown(self):
         self.marionette.execute_script("""
             gBrowser.removeAllTabsBut(gBrowser.tabs[0]);
         """)
         self.lib.prefs.restore_pref('browser.tabs.warnOnClose')
         self.lib.prefs.restore_pref('browser.tabs.warnOnCloseOtherTabs')
-        
+
         FirefoxTestCase.tearDown(self)
-            
+
     @uses_lib('tabstrip')
     def test_switch_to_tab(self):
         tabs = self.tabstrip.tabs
