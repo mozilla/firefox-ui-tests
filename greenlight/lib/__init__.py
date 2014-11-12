@@ -34,6 +34,17 @@ class use_lib_as_property(object):
             return prop
         return _
 
+class using_context(object):
+    def __init__(self, context):
+        self.context = context
+
+    def __call__(self, func):
+        @wraps(func)
+        def _(cls, *args, **kwargs):
+            with cls.client.using_context(self.context):
+                return func(cls, *args, **kwargs)
+        return _
+
 
 class Puppeteer(object):
     client = None
@@ -47,8 +58,12 @@ class Puppeteer(object):
     def l10n(self):
         pass
 
-    @use_lib_as_property('menupanel.MenuPanel')
+    @use_lib_as_property('menu.MenuPanel')
     def menupanel(self):
+        pass
+
+    @use_lib_as_property('menu.MenuBar')
+    def menubar(self):
         pass
 
     @use_lib_as_property('tabs.Tabs')
