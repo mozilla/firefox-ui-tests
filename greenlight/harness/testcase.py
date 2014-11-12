@@ -17,6 +17,7 @@ class FirefoxTestCase(MarionetteTestCase):
 
     def setUp(self, *args, **kwargs):
         MarionetteTestCase.setUp(self, *args, **kwargs)
+        self.marionette.set_context('chrome')
         self.lib.set_client(self.marionette)
 
     def tearDown(self, *args, **kwargs):

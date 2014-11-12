@@ -25,7 +25,6 @@ class TestTabs(FirefoxTestCase):
         ]
         urls = [self.marionette.absolute_url(url) for url in urls]
 
-        self.marionette.set_context('chrome')
         self.marionette.execute_script("""
             for (let i = 0; i < arguments.length; ++i) {
                 gBrowser.addTab(arguments[i]);

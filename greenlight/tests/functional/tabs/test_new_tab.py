@@ -8,8 +8,10 @@ from greenlight.harness.decorators import uses_lib
 class TestNewTab(FirefoxTestCase):
     def setUp(self):
         FirefoxTestCase.setUp(self)
-        url = self.marionette.absolute_url('layout/mozilla.html')
-        self.marionette.navigate(url)
+
+        with self.marionette.using_context('content'):
+            url = self.marionette.absolute_url('layout/mozilla.html')
+            self.marionette.navigate(url)
 
     def tearDown(self):
         # TODO close active tab
