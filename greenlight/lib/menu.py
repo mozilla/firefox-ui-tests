@@ -4,10 +4,8 @@
 
 from marionette import NoSuchElementException
 
-from . import (
-    DOMElement,
-    using_context
-)
+from . import DOMElement
+from .decorators import using_context
 
 
 class MenuPanel(object):
@@ -17,7 +15,6 @@ class MenuPanel(object):
     @property
     def popup(self):
         return self.MenuPanelElement.create(self.client.find_element('id', 'PanelUI-popup'))
-
 
     class MenuPanelElement(DOMElement):
         _buttons = None
@@ -89,7 +86,6 @@ class MenuBar(object):
         :param item: The label of the item in the menu, e.g 'New Tab'
         """
         return self.get_menu(label).select(item)
-
 
     class MenuElement(DOMElement):
         """
