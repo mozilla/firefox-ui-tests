@@ -35,4 +35,5 @@ setup(name='firefox-greenlight-tests',
       entry_points="""
         [console_scripts]
         run-greenlight-tests = greenlight.harness:run
+        greenlight = greenlight.harness:run
       """)
