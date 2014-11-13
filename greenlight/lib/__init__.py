@@ -48,4 +48,5 @@ class DOMElement(HTMLElement):
     def create(cls, element):
         instance = object.__new__(cls)
         instance.__dict__ = element.__dict__.copy()
+        setattr(instance, 'inner', element)
         return instance

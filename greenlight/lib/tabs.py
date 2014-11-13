@@ -2,10 +2,17 @@
 # License, v. 2.0. If a copy of the MPL was not distributed with this file,
 # You can obtain one at http://mozilla.org/MPL/2.0/.
 
-from marionette import HTMLElement
-from marionette.errors import NoSuchElementException
+from marionette import (
+    HTMLElement,
+    Wait,
+)
+from marionette.errors import (
+    NoSuchElementException,
+    StaleElementException,
+)
 
 from .decorators import using_context
+from . import DOMElement
 
 
 class Tabs(object):
@@ -20,21 +27,14 @@ class Tabs(object):
     @property
     def active_tab(self):
         for tab in self.tabs:
-            # TODO this doesn't work; see bug 1088223
-            #if tab.get_attribute('selected'):
-
-            selected = self.client.execute_script("""
-                let tab = arguments[0];
-                return tab.getAttribute('selected');
-            """, script_args=[tab])
-
-            if selected:
+            if tab.is_active():
                 return tab
 
     @property
     def tabs(self):
-        return self.client.find_element('id', 'tabbrowser-tabs') \
+        tabs = self.client.find_element('id', 'tabbrowser-tabs') \
                           .find_elements('tag name', 'tab')
+        return [self.TabElement.create(tab) for tab in tabs]
 
     def get_tab(self, target):
         if isinstance(target, int):
@@ -51,5 +51,39 @@ class Tabs(object):
     def switch_to_tab(self, tab):
         if not isinstance(tab, HTMLElement):
             tab = self.get_tab(tab)
-
         return tab.click()
+
+
+
+    class TabElement(DOMElement):
+
+        def is_active(self):
+            """
+            Whether the tab is currently active or not.
+
+            :returns: True if the tab is currently selected, otherwise False.
+            """
+            # TODO this doesn't work; see bug 1088223
+            #if tab.get_attribute('selected'):
+
+            return self.marionette.execute_script("""
+                let tab = arguments[0];
+                return tab.getAttribute('selected');
+            """, script_args=[self.inner])
+
+        def close(self):
+            """
+            Closes the tab.
+            """
+            close_button = self.find_element('anon', None) \
+                               .find_element('class name', 'tab-close-button')
+            ret = close_button.click()
+
+            def im_gone(m):
+                try:
+                    self.tag_name
+                    return False
+                except StaleElementException:
+                    return True
+            Wait(self.marionette).until(im_gone)
+            return ret

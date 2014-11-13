@@ -3,6 +3,7 @@
 # file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
 from marionette import Wait
+from marionette.errors import NoSuchElementException
 
 from greenlight.harness.decorators import uses_lib
 from greenlight.harness.testcase import FirefoxTestCase
@@ -63,6 +64,16 @@ class TestTabs(FirefoxTestCase):
 
         self.tabstrip.switch_to_tab(tabs[4])
         self.assertEquals(self.tabstrip.active_tab, tabs[4])
+
+    @uses_lib('tabstrip')
+    def test_close_tab(self):
+        num_tabs = len(self.tabstrip.tabs)
+        tab = self.tabstrip.get_tab('Mission')
+        tab.close()
+
+        self.assertEquals(len(self.tabstrip.tabs), num_tabs - 1)
+        with self.assertRaises(NoSuchElementException):
+            self.tabstrip.switch_to_tab('Mission')
 
     @uses_lib('tabstrip')
     def test_newtab_button(self):
