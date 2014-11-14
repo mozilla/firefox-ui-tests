@@ -15,6 +15,10 @@ class Puppeteer(object):
 
     # these libs are for UI manipulation
 
+    @use_lib_as_property('browser.Browser')
+    def browser(self):
+        pass
+
     @use_lib_as_property('l10n.L10n')
     def l10n(self):
         pass
