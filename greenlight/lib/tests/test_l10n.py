@@ -10,6 +10,11 @@ from greenlight.harness.testcase import FirefoxTestCase
 
 class TestL10n(FirefoxTestCase):
 
+    def tearDown(self):
+        with self.marionette.using_context('content'):
+            self.marionette.navigate('about:blank')
+        FirefoxTestCase.tearDown(self)
+
     @uses_lib('l10n')
     def test_dtd_entity_chrome(self):
         dtds = ['chrome://global/locale/filepicker.dtd',
