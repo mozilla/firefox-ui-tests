@@ -45,6 +45,10 @@ class Puppeteer(object):
     def prefs(self):
         pass
 
+    @use_lib_as_property('keys.Keys')
+    def keys(self):
+        pass
+
 
 class DOMElement(HTMLElement):
 
