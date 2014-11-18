@@ -5,6 +5,7 @@
 from greenlight.harness.testcase import FirefoxTestCase
 from greenlight.harness.decorators import uses_lib
 
+
 class TestNewTab(FirefoxTestCase):
     def setUp(self):
         FirefoxTestCase.setUp(self)
@@ -18,7 +19,7 @@ class TestNewTab(FirefoxTestCase):
         # bug 1088223: active_tab not working
         FirefoxTestCase.tearDown(self)
 
-    @uses_lib('tabstrip', 'toolbar', 'prefs')
+    @uses_lib('tabstrip', 'navbar', 'prefs')
     def test_open_tab_by_newtab_button(self):
         self.marionette.set_context('chrome')
 
@@ -27,5 +28,4 @@ class TestNewTab(FirefoxTestCase):
         self.assertEqual(len(self.tabstrip.tabs), num_tabs + 1)
 
         newtab_url = self.prefs.get_pref('browser.newtab.url')
-        self.assertEqual(self.toolbar.location, newtab_url)
-
+        self.assertEqual(self.navbar.location, newtab_url)

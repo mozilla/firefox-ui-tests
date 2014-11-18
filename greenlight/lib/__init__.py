@@ -35,8 +35,8 @@ class Puppeteer(object):
     def tabstrip(self):
         pass
 
-    @use_lib_as_property('toolbar.Toolbar')
-    def toolbar(self):
+    @use_lib_as_property('navbar.NavBar')
+    def navbar(self):
         pass
 
     # these libs wrap gecko APIs

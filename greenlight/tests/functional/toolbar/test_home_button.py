@@ -9,6 +9,7 @@ from greenlight.harness.decorators import uses_lib
 
 homepage_pref = 'browser.startup.homepage'
 
+
 class TestHomeButton(FirefoxTestCase):
 
     def setUp(self):
@@ -20,9 +21,9 @@ class TestHomeButton(FirefoxTestCase):
         self.lib.prefs.restore_pref(homepage_pref)
         FirefoxTestCase.tearDown(self)
 
-    @uses_lib('toolbar')
+    @uses_lib('navbar')
     def test_home_button(self):
-        self.toolbar.home_button.click()
+        self.navbar.home_button.click()
 
         # TODO wait_for_page_load
         time.sleep(1)
