@@ -19,10 +19,6 @@ class Puppeteer(object):
     def browser(self):
         pass
 
-    @use_lib_as_property('l10n.L10n')
-    def l10n(self):
-        pass
-
     @use_lib_as_property('menu.MenuPanel')
     def menupanel(self):
         pass
@@ -40,6 +36,10 @@ class Puppeteer(object):
         pass
 
     # these libs wrap gecko APIs
+
+    @use_lib_as_property('api.l10n.L10n')
+    def l10n(self):
+        pass
 
     @use_lib_as_property('api.prefs.DefaultPrefBranch')
     def prefs(self):
