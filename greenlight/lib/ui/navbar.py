@@ -2,10 +2,9 @@
 # License, v. 2.0. If a copy of the MPL was not distributed with this file,
 # You can obtain one at http://mozilla.org/MPL/2.0/.
 
+from .base import BaseLib
 
-class NavBar(object):
-    def __init__(self, client):
-        self.client = client
+class NavBar(BaseLib):
 
     @property
     def back_button(self):

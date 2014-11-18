@@ -6,10 +6,9 @@ import copy
 
 from marionette.errors import MarionetteException
 
+from ..base import BaseLib
 
-class L10n(object):
-    def __init__(self, client):
-        self.client = client
+class L10n(BaseLib):
 
     def get_localized_entity(self, dtd_urls, entity_id):
         # Add xhtml11.dtd to prevent missing entity errors with XHTML files

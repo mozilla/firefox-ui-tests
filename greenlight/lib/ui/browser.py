@@ -5,12 +5,10 @@
 from marionette.errors import NoSuchElementException
 from marionette.keys import Keys
 
+from ..base import BaseLib
 from .. import DOMElement
 
-
-class Browser(object):
-    def __init__(self, client):
-        self.client = client
+class Browser(BaseLib):
 
     @property
     def windows(self):

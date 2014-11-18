@@ -2,11 +2,10 @@
 # License, v. 2.0. If a copy of the MPL was not distributed with this file,
 # You can obtain one at http://mozilla.org/MPL/2.0/.
 
-class DefaultPrefBranch(object):
-    archive = {}
+from ..base import BaseLib
 
-    def __init__(self, client):
-        self.client = client
+class DefaultPrefBranch(BaseLib):
+    archive = {}
 
     @classmethod
     def _cast(cls, value): 
