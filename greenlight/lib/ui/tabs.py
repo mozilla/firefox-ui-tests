@@ -11,8 +11,8 @@ from marionette.errors import (
     StaleElementException,
 )
 
-from .decorators import using_context
-from . import DOMElement
+from ..decorators import using_context
+from .. import DOMElement
 
 
 class Tabs(object):

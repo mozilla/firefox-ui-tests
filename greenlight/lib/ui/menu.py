@@ -4,8 +4,8 @@
 
 from marionette import NoSuchElementException
 
-from . import DOMElement
-from .decorators import using_context
+from .. import DOMElement
+from ..decorators import using_context
 
 
 class MenuPanel(object):

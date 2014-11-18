@@ -5,7 +5,7 @@
 from marionette.errors import NoSuchElementException
 from marionette.keys import Keys
 
-from . import DOMElement
+from .. import DOMElement
 
 
 class Browser(object):
@@ -59,7 +59,7 @@ class Browser(object):
             setattr(instance, 'inner', element)
             setattr(instance, 'handle', instance.marionette.current_window_handle)
             return instance
-        
+
         def send_shortcut(self, shortcut):
             platform = self.marionette.session_capabilities['platformName'].lower()
             modifiers, key = shortcut.rsplit('-', 1)
@@ -80,7 +80,7 @@ class Browser(object):
             return_to = None
             if old_handle != self.handle:
                 return_to = old_handle
-            
+
             ret = self.marionette.close()
 
             if num_windows > 1 and not return_to:

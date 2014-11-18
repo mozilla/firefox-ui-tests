@@ -15,27 +15,31 @@ class Puppeteer(object):
 
     # these libs are for UI manipulation
 
-    @use_lib_as_property('browser.Browser')
+    @use_lib_as_property('ui.browser.Browser')
     def browser(self):
         pass
 
-    @use_lib_as_property('menu.MenuPanel')
-    def menupanel(self):
-        pass
-
-    @use_lib_as_property('menu.MenuBar')
+    @use_lib_as_property('ui.menu.MenuBar')
     def menubar(self):
         pass
 
-    @use_lib_as_property('tabs.Tabs')
-    def tabstrip(self):
+    @use_lib_as_property('ui.menu.MenuPanel')
+    def menupanel(self):
         pass
 
-    @use_lib_as_property('navbar.NavBar')
+    @use_lib_as_property('ui.navbar.NavBar')
     def navbar(self):
         pass
 
+    @use_lib_as_property('ui.tabs.Tabs')
+    def tabstrip(self):
+        pass
+
     # these libs wrap gecko APIs
+
+    @use_lib_as_property('api.keys.Keys')
+    def keys(self):
+        pass
 
     @use_lib_as_property('api.l10n.L10n')
     def l10n(self):
@@ -43,10 +47,6 @@ class Puppeteer(object):
 
     @use_lib_as_property('api.prefs.DefaultPrefBranch')
     def prefs(self):
-        pass
-
-    @use_lib_as_property('keys.Keys')
-    def keys(self):
         pass
 
 
