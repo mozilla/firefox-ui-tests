@@ -10,6 +10,13 @@ from greenlight.harness.testcase import FirefoxTestCase
 
 class TestL10n(FirefoxTestCase):
 
+    @uses_lib('tabstrip')
+    def setUp(self):
+        FirefoxTestCase.setUp(self)
+        for tab in self.tabstrip.tabs:
+            if len(self.tabstrip.tabs) > 1:
+                self.tabstrip.tabs[-1].close()
+
     def tearDown(self):
         with self.marionette.using_context('content'):
             self.marionette.navigate('about:blank')

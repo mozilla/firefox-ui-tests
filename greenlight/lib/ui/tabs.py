@@ -11,13 +11,11 @@ from marionette.errors import (
     StaleElementException,
 )
 
-from ..decorators import using_context
 from .. import DOMElement
+from ..decorators import using_context
+from ..base import BaseLib
 
-
-class Tabs(object):
-    def __init__(self, client):
-        self.client = client
+class Tabs(BaseLib):
 
     @property
     def newtab_button(self):

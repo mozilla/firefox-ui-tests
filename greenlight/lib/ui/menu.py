@@ -4,13 +4,11 @@
 
 from marionette import NoSuchElementException
 
-from .. import DOMElement
+from ..base import BaseLib
 from ..decorators import using_context
+from .. import DOMElement
 
-
-class MenuPanel(object):
-    def __init__(self, client):
-        self.client = client
+class MenuPanel(BaseLib):
 
     @property
     def popup(self):
@@ -43,13 +41,10 @@ class MenuPanel(object):
             raise NoSuchElementException("Could not find '{}' in the menu panel UI".format(target))
 
 
-class MenuBar(object):
+class MenuBar(BaseLib):
     """
     Class for manipulating the Firefox menubar.
     """
-
-    def __init__(self, client):
-        self.client = client
 
     @property
     @using_context('chrome')

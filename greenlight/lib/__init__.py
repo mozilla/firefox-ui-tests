@@ -10,6 +10,9 @@ from .decorators import use_lib_as_property
 class Puppeteer(object):
     client = None
 
+    def get_client(self):
+        return self.client
+
     def set_client(self, client):
         self.client = client
 

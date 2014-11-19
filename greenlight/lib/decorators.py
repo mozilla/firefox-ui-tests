@@ -26,7 +26,7 @@ class use_lib_as_property(object):
 
             if not prop:
                 module = import_module('.{}'.format(self.mod_name), 'greenlight.lib')
-                prop = getattr(module, self.cls_name)(cls.client)
+                prop = getattr(module, self.cls_name)(cls.get_client)
                 setattr(cls, tag, prop)
             func(cls, *args, **kwargs)
             return prop
