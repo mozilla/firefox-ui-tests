@@ -8,6 +8,7 @@ from marionette.errors import MarionetteException
 
 from ..base import BaseLib
 
+
 class L10n(BaseLib):
 
     def get_localized_entity(self, dtd_urls, entity_id):

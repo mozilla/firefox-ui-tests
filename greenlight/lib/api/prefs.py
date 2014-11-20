@@ -4,11 +4,12 @@
 
 from ..base import BaseLib
 
+
 class DefaultPrefBranch(BaseLib):
     archive = {}
 
     @classmethod
-    def _cast(cls, value): 
+    def _cast(cls, value):
         """
         Interpolate a preference from a string.
 

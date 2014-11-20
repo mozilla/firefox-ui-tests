@@ -8,6 +8,7 @@ from marionette.keys import Keys
 from ..base import BaseLib
 from .. import DOMElement
 
+
 class Browser(BaseLib):
 
     @property

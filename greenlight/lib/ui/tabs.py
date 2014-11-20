@@ -12,8 +12,8 @@ from marionette.errors import (
 )
 
 from .. import DOMElement
-from ..decorators import using_context
 from ..base import BaseLib
+
 
 class Tabs(BaseLib):
 

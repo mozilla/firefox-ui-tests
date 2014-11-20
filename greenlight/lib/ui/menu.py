@@ -8,6 +8,7 @@ from ..base import BaseLib
 from ..decorators import using_context
 from .. import DOMElement
 
+
 class MenuPanel(BaseLib):
 
     @property
