@@ -5,7 +5,6 @@
 from marionette import NoSuchElementException
 
 from ..base import BaseLib
-from ..decorators import using_context
 from .. import DOMElement
 
 
@@ -13,13 +12,22 @@ class MenuPanel(BaseLib):
 
     @property
     def popup(self):
+        """
+        :returns: The :class:`MenuPanelElement`.
+        """
         return self.MenuPanelElement.create(self.client.find_element('id', 'PanelUI-popup'))
 
     class MenuPanelElement(DOMElement):
+        """
+        Wraps the menu panel.
+        """
         _buttons = None
 
         @property
         def buttons(self):
+            """
+            :returns: A list of all the clickable buttons in the menu panel.
+            """
             if not self._buttons:
                 self._buttons = self.find_element('id', 'PanelUI-multiView') \
                                     .find_element('anon attribute', {'anonid': 'viewContainer'}) \
@@ -31,7 +39,6 @@ class MenuPanel(BaseLib):
             Overrides HTMLElement.click to provide a target to click.
 
             :param target: The label associated with the button to click on, e.g 'New Private Window'.
-            :returns: The window id of the preferences window to be used with
             """
             if not target:
                 return DOMElement.click(self)
@@ -48,17 +55,15 @@ class MenuBar(BaseLib):
     """
 
     @property
-    @using_context('chrome')
     def menus(self):
         """
-        :returns: A list of MenuElements corresponding to the top level menus
-                  in the menubar.
+        :returns: A list of :class:`MenuElement`'s corresponding to the top
+                  level menus in the menubar.
         """
         menus = self.client.find_element('id', 'main-menubar') \
                            .find_elements('tag name', 'menu')
         return [self.MenuElement.create(menu) for menu in menus]
 
-    @using_context('chrome')
     def get_menu(self, label):
         """
         Get a MenuElement corresponding to the specified label.
@@ -73,10 +78,9 @@ class MenuBar(BaseLib):
 
         return menu[0]
 
-    @using_context('chrome')
     def select(self, label, item):
         """
-        Select click on an item in a menu.
+        Select an item in a menu.
 
         :param label: The label of the menu, e.g 'File' or 'View'
         :param item: The label of the item in the menu, e.g 'New Tab'
@@ -85,20 +89,20 @@ class MenuBar(BaseLib):
 
     class MenuElement(DOMElement):
         """
-        An class for manipulating a Menu element.
+        Wraps a menu element.
         """
 
         @property
         def items(self):
             """
-            Returns a list of menuitem elements within the menu.
+            :returns: A list of menuitem elements within this menu.
             """
             return self.find_element('tag name', 'menupopup') \
                        .find_elements('tag name', 'menuitem')
 
         def select(self, label):
             """
-            Click on a menuitem within the menu.
+            Click on a menuitem within this menu.
 
             :param label: The label of the menuitem, e.g 'New Tab'
             """

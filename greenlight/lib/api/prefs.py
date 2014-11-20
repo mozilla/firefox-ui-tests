@@ -34,6 +34,13 @@ class DefaultPrefBranch(BaseLib):
         return value
 
     def get_pref(self, pref):
+        """
+        Retrive a preference.
+
+        :param pref: The preference to inspect,e.g
+                     browser.tabs.remote.autostart
+        :returns: The value of the specified pref.
+        """
         # TODO use client.using_context once bug 1088905 lands
         self.client.set_context('chrome')
         value = self.client.execute_script("""
@@ -55,6 +62,13 @@ class DefaultPrefBranch(BaseLib):
         return self._cast(value)
 
     def set_pref(self, pref, value):
+        """
+        Sets the specified pref to value. Also archives the old value so that
+        the pref can be restored with `restore_pref`.
+
+        :param pref: The preference to set.
+        :param value: The value to set the preference to.
+        """
         # TODO use client.using_context once bug 1088905 lands
         self.client.set_context('chrome')
         self.archive[pref] = self.get_pref(pref)
@@ -83,4 +97,10 @@ class DefaultPrefBranch(BaseLib):
         assert ret == True
 
     def restore_pref(self, pref):
+        """
+        Restore a previously set pref back to its original value.
+
+        :param pref: The preference to restore. It must be a preference that
+                     was previously set using `set_pref`.
+        """
         return self.set_pref(pref, self.archive[pref])

@@ -17,24 +17,42 @@ from ..base import BaseLib
 
 class Tabs(BaseLib):
 
+    # TODO arrow scrollers, drop down list
+
     @property
     def newtab_button(self):
+        """
+        :returns: The new tab button element.
+        """
         return self.client.find_element('id', 'tabbrowser-tabs') \
                           .find_element('anon attribute', {'anonid': 'tabs-newtab-button'})
 
     @property
     def active_tab(self):
+        """
+        :returns: The :class:`TabElement` corresponding to the currently active
+                  tab.
+        """
         for tab in self.tabs:
             if tab.is_active():
                 return tab
 
     @property
     def tabs(self):
+        """
+        :returns: A list of all the :class:`TabElement`'s.
+        """
         tabs = self.client.find_element('id', 'tabbrowser-tabs') \
                           .find_elements('tag name', 'tab')
         return [self.TabElement.create(tab) for tab in tabs]
 
     def get_tab(self, target):
+        """
+        Get a reference to the specified tab.
+
+        :param target: Either an index of `tabs` or a substring of the label.
+        :returns: A :class:`TabElement` corresponding to the specified tab.
+        """
         if isinstance(target, int):
             return self.tabs[target]
 
@@ -47,18 +65,24 @@ class Tabs(BaseLib):
         raise TypeError("Invalid type for 'target': {}".format(type(target)))
 
     def switch_to_tab(self, tab):
+        """
+        Switch to (activate) the specified tab.
+
+        :param tab: Either a :class:`TabElement`, an index of `tabs` or a
+                    substring of the label.
+        """
         if not isinstance(tab, HTMLElement):
             tab = self.get_tab(tab)
         return tab.click()
 
 
-
     class TabElement(DOMElement):
+        """
+        Wraps a tab element.
+        """
 
         def is_active(self):
             """
-            Whether the tab is currently active or not.
-
             :returns: True if the tab is currently selected, otherwise False.
             """
             # TODO this doesn't work; see bug 1088223
@@ -71,7 +95,7 @@ class Tabs(BaseLib):
 
         def close(self):
             """
-            Closes the tab.
+            Closes this tab.
             """
             close_button = self.find_element('anon', None) \
                                .find_element('class name', 'tab-close-button')

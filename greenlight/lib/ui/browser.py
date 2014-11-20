@@ -13,6 +13,10 @@ class Browser(BaseLib):
 
     @property
     def windows(self):
+        """
+        :returns: a list of :class:`WindowElement`'s corresponding to the
+                  windows in `marionette.window_handles`.
+        """
         old_handle = self.client.current_window_handle
         windows = []
         for handle in self.client.window_handles:
@@ -23,9 +27,37 @@ class Browser(BaseLib):
 
     @property
     def current_window(self):
+        """
+        :returns: The :class:`WindowElement` for the currently active browser
+                  window.
+        """
         return self.WindowElement.create(self.client.find_element('id', 'main-window'))
 
     def switch_to_window(self, target):
+        """
+        Switches context to the specified window.
+
+        :param target: The window to switch to. `target` can be a
+                       :class:`WindowElement`, a `window_handle` or a callback
+                       that returns True in the context of the desired window.
+        :returns: The old `window_handle`. This makes it easy to switch back
+                  to the original window later.
+
+        The callback is useful for switching to a window for which the handle
+        isn't known. For example, say we want to switch to a window that has
+        three tabs::
+
+            @uses_lib('browser', 'tabstrip')
+            def test_switch_to_window_with_three_tabs(self):
+                def has_three_tabs():
+                    return len(self.tabstrip.tabs) == 3
+
+                old_handle = self.browser.switch_to_window(has_three_tabs)
+                self.assertTrue(has_three_tabs())
+
+                # return to the original window
+                self.browser.switch_to_window(old_handle)
+        """
         if isinstance(target, self.WindowElement):
             return target.switch_to()
         elif target in self.client.window_handles:
@@ -43,6 +75,9 @@ class Browser(BaseLib):
 
 
     class WindowElement(DOMElement):
+        """
+        Wraps the top-level browser window element.
+        """
         keymap = {
          'ctrl': Keys.CONTROL,
          'alt': Keys.ALT,
@@ -60,6 +95,12 @@ class Browser(BaseLib):
             return instance
 
         def send_shortcut(self, shortcut):
+            """
+            Sends a keyboard shortcut to the browser window.
+
+            :param shortcut: The shortcut to send. For example `ctrl-w` or
+                             `ctrl-shift-t`.
+            """
             platform = self.marionette.session_capabilities['platformName'].lower()
             modifiers, key = shortcut.rsplit('-', 1)
 
@@ -74,6 +115,10 @@ class Browser(BaseLib):
             self.send_keys(*keys)
 
         def close(self):
+            """
+            Closes this browser window. If this is the last remaining window,
+            the marionette session is ended.
+            """
             old_handle = self.switch_to()
             num_windows = len(self.marionette.window_handles)
             return_to = None
@@ -90,6 +135,9 @@ class Browser(BaseLib):
             return ret
 
         def switch_to(self):
+            """
+            Switches to this browser window.
+            """
             old_handle = self.marionette.current_window_handle
             if self.handle != old_handle:
                 self.marionette.switch_to_window(self.handle)

@@ -20,40 +20,67 @@ class Puppeteer(object):
 
     @use_lib_as_property('ui.browser.Browser')
     def browser(self):
-        pass
+        """
+        Provides shortcuts to the top-level browser windows.
+        """
 
     @use_lib_as_property('ui.menu.MenuBar')
     def menubar(self):
-        pass
+        """
+        Provides access to the menu bar area. For example the 'File', 'View'
+        and 'Tools' menus.
+        """
 
     @use_lib_as_property('ui.menu.MenuPanel')
     def menupanel(self):
-        pass
+        """
+        Provides access to the menu popup. This is the menu opened after
+        clicking the settings button on the right hand side of the browser.
+        """
 
     @use_lib_as_property('ui.navbar.NavBar')
     def navbar(self):
-        pass
+        """
+        Provides access to the navigation bar. This is the toolbar containing
+        the back, forward and home buttons. It also contains the location bar.
+        """
 
     @use_lib_as_property('ui.tabs.Tabs')
     def tabstrip(self):
-        pass
+        """
+        Provides access to the tab bar. This is the toolbar containing all the
+        tabs and the new tab button.
+        """
 
     # these libs wrap gecko APIs
 
     @use_lib_as_property('api.keys.Keys')
     def keys(self):
-        pass
+        """
+        Provides a definition of control keys to use with keyboard shortcuts.
+        For example, keys.CONTROL or keys.ALT.
+        """
 
     @use_lib_as_property('api.l10n.L10n')
     def l10n(self):
-        pass
+        """
+        Provides an api for retrieving localized strings for various UI
+        widgets.
+        """
 
     @use_lib_as_property('api.prefs.DefaultPrefBranch')
     def prefs(self):
-        pass
+        """
+        Provides an api for setting and inspecting preferences, as see in
+        about:config.
+        """
 
 
 class DOMElement(HTMLElement):
+    """
+    Class that inherits from HTMLElement and provides a way for subclasses to
+    expose new api's.
+    """
 
     @classmethod
     def create(cls, element):
