@@ -22,6 +22,8 @@ class Puppeteer(object):
     def browser(self):
         """
         Provides shortcuts to the top-level browser windows.
+
+        See the :class:`~ui.browser.Browser` reference.
         """
 
     @use_lib_as_property('ui.menu.MenuBar')
@@ -29,6 +31,8 @@ class Puppeteer(object):
         """
         Provides access to the menu bar area. For example the 'File', 'View'
         and 'Tools' menus.
+
+        See the :class:`~ui.menu.MenuBar` reference.
         """
 
     @use_lib_as_property('ui.menu.MenuPanel')
@@ -36,6 +40,8 @@ class Puppeteer(object):
         """
         Provides access to the menu popup. This is the menu opened after
         clicking the settings button on the right hand side of the browser.
+
+        See the :class:`~ui.menu.MenuPanel` reference.
         """
 
     @use_lib_as_property('ui.navbar.NavBar')
@@ -43,6 +49,8 @@ class Puppeteer(object):
         """
         Provides access to the navigation bar. This is the toolbar containing
         the back, forward and home buttons. It also contains the location bar.
+
+        See the :class:`~ui.navbar.NavBar` reference.
         """
 
     @use_lib_as_property('ui.tabs.Tabs')
@@ -50,6 +58,8 @@ class Puppeteer(object):
         """
         Provides access to the tab bar. This is the toolbar containing all the
         tabs and the new tab button.
+
+        See the :class:`~ui.tabs.Tabs` reference.
         """
 
     # these libs wrap gecko APIs
@@ -59,6 +69,8 @@ class Puppeteer(object):
         """
         Provides a definition of control keys to use with keyboard shortcuts.
         For example, keys.CONTROL or keys.ALT.
+
+        See the :class:`~api.keys.Keys` reference.
         """
 
     @use_lib_as_property('api.l10n.L10n')
@@ -66,6 +78,8 @@ class Puppeteer(object):
         """
         Provides an api for retrieving localized strings for various UI
         widgets.
+
+        See the :class:`~api.l10n.L10n` reference.
         """
 
     @use_lib_as_property('api.prefs.DefaultPrefBranch')
@@ -73,6 +87,8 @@ class Puppeteer(object):
         """
         Provides an api for setting and inspecting preferences, as see in
         about:config.
+
+        See the :class:`~api.prefs.DefaultPrefBranch` reference.
         """
 
 
