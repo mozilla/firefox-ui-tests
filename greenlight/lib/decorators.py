@@ -32,15 +32,3 @@ class use_lib_as_property(object):
             func(cls, *args, **kwargs)
             return prop
         return _
-
-
-class using_context(object):
-    def __init__(self, context):
-        self.context = context
-
-    def __call__(self, func):
-        @wraps(func)
-        def _(cls, *args, **kwargs):
-            with cls.client.using_context(self.context):
-                return func(cls, *args, **kwargs)
-        return _

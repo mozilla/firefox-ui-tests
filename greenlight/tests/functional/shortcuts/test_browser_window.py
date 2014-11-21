@@ -7,11 +7,11 @@ from greenlight.harness.decorators import uses_lib
 
 dtds = ['chrome://browser/locale/browser.dtd']
 
+
 class TestBrowserWindowShortcuts(FirefoxTestCase):
 
     def setUp(self):
         super(TestBrowserWindowShortcuts, self).setUp()
-        self.marionette.set_context("chrome")
         self.main_window = self.marionette.find_element("id", "main-window")
 
     @uses_lib('l10n', 'keys')

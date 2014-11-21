@@ -26,17 +26,15 @@ class L10n(BaseLib):
             <!DOCTYPE elem [%s]>
             <elem id="entity">&%s;</elem>""" % (dtd_refs, entity_id)
 
-        # TODO: Needs to use 'using_context' once bug 1088905 is fixed
-        self.client.set_context("chrome")
+        with self.client.using_context('chrome'):
+            value = self.client.execute_script("""
+                var parser = Cc["@mozilla.org/xmlextras/domparser;1"]
+                             .createInstance(Ci.nsIDOMParser);
+                var doc = parser.parseFromString(arguments[0], "text/xml");
+                var node = doc.querySelector("elem[id='entity']");
 
-        value = self.client.execute_script("""
-            var parser = Cc["@mozilla.org/xmlextras/domparser;1"]
-                         .createInstance(Ci.nsIDOMParser);
-            var doc = parser.parseFromString(arguments[0], "text/xml");
-            var node = doc.querySelector("elem[id='entity']");
-
-            return node ? node.textContent : null;
-        """, script_args=[contents])
+                return node ? node.textContent : null;
+            """, script_args=[contents])
 
         if not value:
             raise MarionetteException('DTD Entity not found: %s' % entity_id)
@@ -44,25 +42,23 @@ class L10n(BaseLib):
         return value
 
     def get_localized_property(self, property_urls, property_id):
-        # TODO: Needs to use 'using_context' once bug 1088905 is fixed
-        self.client.set_context("chrome")
+        with self.client.using_context('chrome'):
+            value = self.client.execute_script("""
+                let property = null;
+                let property_id = arguments[1];
 
-        value = self.client.execute_script("""
-            let property = null;
-            let property_id = arguments[1];
+                arguments[0].some(aUrl => {
+                  let bundle = Services.strings.createBundle(aUrl);
 
-            arguments[0].some(aUrl => {
-              let bundle = Services.strings.createBundle(aUrl);
+                  try {
+                    property = bundle.GetStringFromName(property_id);
+                    return true;
+                  }
+                  catch (ex) { }
+                });
 
-              try {
-                property = bundle.GetStringFromName(property_id);
-                return true;
-              }
-              catch (ex) { }
-            });
-
-            return property;
-        """, script_args=[property_urls, property_id])
+                return property;
+            """, script_args=[property_urls, property_id])
 
         if not value:
             raise MarionetteException('Property not found: %s' % property_id)

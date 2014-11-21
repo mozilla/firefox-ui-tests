@@ -15,14 +15,15 @@ class DefaultPrefBranch(BaseLib):
 
         - integers will get cast to integers
         - true/false will get cast to True/False
-        - anything enclosed in single quotes will be treated as a string with the ''s removed from both sides
+        - anything enclosed in single quotes will be treated as a string with
+          the ''s removed from both sides
         """
 
         if not isinstance(value, basestring):
-            return value # no op
+            return value  # no op
         quote = "'"
         if value == 'true':
-            return  True
+            return True
         if value == 'false':
             return False
         try:
@@ -41,24 +42,25 @@ class DefaultPrefBranch(BaseLib):
                      browser.tabs.remote.autostart
         :returns: The value of the specified pref.
         """
-        # TODO use client.using_context once bug 1088905 lands
-        self.client.set_context('chrome')
-        value = self.client.execute_script("""
-          let prefBranch = Components.classes["@mozilla.org/preferences-service;1"]
-                                     .getService(Components.interfaces.nsIPrefBranch);
-          let pref = arguments[0];
-          let type = prefBranch.getPrefType(pref);
-          switch(type) {
-            case prefBranch.PREF_STRING:
-              return prefBranch.getCharPref(pref);
-            case prefBranch.PREF_BOOL:
-              return prefBranch.getBoolPref(pref);
-            case prefBranch.PREF_INT:
-              return prefBranch.getIntPref(pref);
-            case prefBranch.PREF_INVALID:
-              return null;
-          }
-          """, script_args=[pref])
+        with self.client.using_context('chrome'):
+            value = self.client.execute_script("""
+              let pref = arguments[0];
+              let prefBranch = Cc["@mozilla.org/preferences-service;1"]
+                              .getService(Ci.nsIPrefBranch);
+              let type = prefBranch.getPrefType(pref);
+
+              switch (type) {
+                case prefBranch.PREF_STRING:
+                  return prefBranch.getCharPref(pref);
+                case prefBranch.PREF_BOOL:
+                  return prefBranch.getBoolPref(pref);
+                case prefBranch.PREF_INT:
+                  return prefBranch.getIntPref(pref);
+                case prefBranch.PREF_INVALID:
+                  return null;
+              }
+            """, script_args=[pref])
+
         return self._cast(value)
 
     def set_pref(self, pref, value):
@@ -69,32 +71,34 @@ class DefaultPrefBranch(BaseLib):
         :param pref: The preference to set.
         :param value: The value to set the preference to.
         """
-        # TODO use client.using_context once bug 1088905 lands
-        self.client.set_context('chrome')
-        self.archive[pref] = self.get_pref(pref)
+        with self.client.using_context('chrome'):
+            self.archive[pref] = self.get_pref(pref)
 
-        ret = self.client.execute_script("""
-          let prefBranch = Components.classes["@mozilla.org/preferences-service;1"]
-                                     .getService(Components.interfaces.nsIPrefBranch);
-          let pref = arguments[0];
-          let value = arguments[1];
+            ret = self.client.execute_script("""
+              let pref = arguments[0];
+              let value = arguments[1];
+              let prefBranch = Cc["@mozilla.org/preferences-service;1"]
+                               .getService(Ci.nsIPrefBranch);
+              let type = prefBranch.getPrefType(pref);
 
-          switch(typeof value) {
-            case 'boolean':
-              prefBranch.setBoolPref(pref, value);
-              break;
-            case 'string':
-              prefBranch.setCharPref(pref, value);
-              break;
-            case 'number':
-              prefBranch.setIntPref(pref, value);
-              break;
-            default:
-              return false;
-          }
-          return true;
-        """, script_args=[pref, value])
-        assert ret == True
+              switch (type) {
+                case prefBranch.PREF_BOOL:
+                  prefBranch.setBoolPref(pref, value);
+                  break;
+                case prefBranch.PREF_STRING:
+                  prefBranch.setCharPref(pref, value);
+                  break;
+                case prefBranch.PREF_INT:
+                  prefBranch.setIntPref(pref, value);
+                  break;
+                default:
+                  return false;
+              }
+
+              return true;
+            """, script_args=[pref, value])
+
+        assert ret
 
     def restore_pref(self, pref):
         """

@@ -21,7 +21,6 @@ class TestNewTab(FirefoxTestCase):
 
     @uses_lib('tabstrip', 'navbar', 'prefs')
     def test_open_tab_by_newtab_button(self):
-        self.marionette.set_context('chrome')
 
         num_tabs = len(self.tabstrip.tabs)
         self.tabstrip.newtab_button.click()
