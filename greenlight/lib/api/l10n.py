@@ -12,6 +12,16 @@ from ..base import BaseLib
 class L10n(BaseLib):
 
     def get_localized_entity(self, dtd_urls, entity_id):
+        """Returns the localized string from the given Document Data Type (dtd)
+        files corresponding to the given id.
+
+        :param dtd_urls: A list of dtd files to search.
+        :param entity_id: The id to retrieve.
+
+        :returns: The localized string value for the requested entity.
+
+        :raises MarionetteException: When entity_id is not found in dtd_urls.
+        """
         # Add xhtml11.dtd to prevent missing entity errors with XHTML files
         dtds = copy.copy(dtd_urls)
         dtds.append("resource:///res/dtd/xhtml11.dtd")
@@ -24,12 +34,13 @@ class L10n(BaseLib):
 
         contents = """<?xml version="1.0"?>
             <!DOCTYPE elem [%s]>
+
             <elem id="entity">&%s;</elem>""" % (dtd_refs, entity_id)
 
         with self.client.using_context('chrome'):
             value = self.client.execute_script("""
                 var parser = Cc["@mozilla.org/xmlextras/domparser;1"]
-                             .createInstance(Ci.nsIDOMParser);
+                              .createInstance(Ci.nsIDOMParser);
                 var doc = parser.parseFromString(arguments[0], "text/xml");
                 var node = doc.querySelector("elem[id='entity']");
 
@@ -42,6 +53,18 @@ class L10n(BaseLib):
         return value
 
     def get_localized_property(self, property_urls, property_id):
+        """Returns the localized string corresponding to the given id
+        in the given property files.
+
+        :param property_urls: A list of property files to search.
+        :param property_id: The id to retrieve.
+
+        :returns: The localized string value for the requested entity.
+
+        :raises MarionetteException: When property_id is not found in
+            property_urls.
+        """
+
         with self.client.using_context('chrome'):
             value = self.client.execute_script("""
                 let property = null;
