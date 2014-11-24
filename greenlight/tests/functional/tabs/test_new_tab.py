@@ -19,9 +19,7 @@ class TestNewTab(FirefoxTestCase):
         # bug 1088223: active_tab not working
         FirefoxTestCase.tearDown(self)
 
-    @uses_lib('tabstrip', 'navbar', 'prefs')
     def test_open_tab_by_newtab_button(self):
-
         num_tabs = len(self.tabstrip.tabs)
         self.tabstrip.newtab_button.click()
         self.assertEqual(len(self.tabstrip.tabs), num_tabs + 1)

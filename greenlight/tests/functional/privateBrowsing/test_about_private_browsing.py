@@ -20,7 +20,6 @@ class TestAboutPrivateBrowsing(FirefoxTestCase):
     def tearDown(self):
         self.marionette.close()
 
-    @uses_lib('l10n', 'prefs', 'tabstrip', 'keys')
     def testCheckAboutPrivateBrowsing(self):
         self.prefs.set_pref('app.support.baseURL', self.pb_url)
 

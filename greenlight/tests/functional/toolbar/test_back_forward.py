@@ -27,7 +27,6 @@ class TestBackForward(FirefoxTestCase):
                 self.marionette.navigate(url)
             self.assertEquals(self.marionette.get_url(), self.test_urls[-1])
 
-    @uses_lib('navbar')
     def test_back_forward(self):
         back = self.navbar.back_button
         forward = self.navbar.forward_button

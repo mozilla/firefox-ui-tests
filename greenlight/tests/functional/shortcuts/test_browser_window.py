@@ -14,7 +14,6 @@ class TestBrowserWindowShortcuts(FirefoxTestCase):
         super(TestBrowserWindowShortcuts, self).setUp()
         self.main_window = self.marionette.find_element("id", "main-window")
 
-    @uses_lib('l10n', 'keys')
     def test_addons_manager(self):
         key = self.l10n.get_localized_entity(dtds, 'addons.commandkey')
 
@@ -24,7 +23,6 @@ class TestBrowserWindowShortcuts(FirefoxTestCase):
         self.marionette.set_context("content")
         self.wait_for_condition(lambda mn: mn.get_url() == "about:addons")
 
-    @uses_lib('l10n', 'keys')
     def test_search_field(self):
         current_name = self.marionette.execute_script("return window.document.activeElement.localName;");
         # This doesn't test anything if we're already at input.

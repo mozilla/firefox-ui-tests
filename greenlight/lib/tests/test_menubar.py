@@ -10,14 +10,12 @@ from greenlight.harness.testcase import FirefoxTestCase
 
 class TestMenuBar(FirefoxTestCase):
 
-    @uses_lib('menubar', 'tabstrip')
     def test_click_item_in_menubar(self):
         num_tabs = len(self.tabstrip.tabs)
         self.menubar.select('File', 'New Tab')
         self.assertEquals(len(self.tabstrip.tabs), num_tabs + 1)
         self.tabstrip.tabs[-1].close()
 
-    @uses_lib('menubar')
     def test_click_non_existent_menu_and_item(self):
         with self.assertRaises(NoSuchElementException):
             self.menubar.select('Foobar', 'New Tab')

@@ -10,10 +10,6 @@ from greenlight.harness.testcase import FirefoxTestCase
 
 class TestBrowser(FirefoxTestCase):
 
-    def setUp(self):
-        FirefoxTestCase.setUp(self)
-
-    @uses_lib('browser')
     def test_window_element(self):
         first_window = self.browser.current_window
         self.assertEquals(first_window.tag_name, 'window')
@@ -39,7 +35,6 @@ class TestBrowser(FirefoxTestCase):
         self.assertEquals(first_window.handle, self.marionette.current_window_handle)
         self.assertEquals(len(self.marionette.window_handles), 1)
 
-    @uses_lib('browser')
     def test_switch_to_window(self):
         url = self.marionette.absolute_url('layout/mozilla')
 
