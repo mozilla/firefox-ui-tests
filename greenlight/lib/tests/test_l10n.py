@@ -10,7 +10,6 @@ from greenlight.harness.testcase import FirefoxTestCase
 
 class TestL10n(FirefoxTestCase):
 
-    @uses_lib('tabstrip')
     def setUp(self):
         FirefoxTestCase.setUp(self)
         for tab in self.tabstrip.tabs:
@@ -22,7 +21,6 @@ class TestL10n(FirefoxTestCase):
             self.marionette.navigate('about:blank')
         FirefoxTestCase.tearDown(self)
 
-    @uses_lib('l10n')
     def test_dtd_entity_chrome(self):
         dtds = ['chrome://global/locale/filepicker.dtd',
                 'chrome://browser/locale/baseMenuOverlay.dtd']
@@ -35,7 +33,6 @@ class TestL10n(FirefoxTestCase):
                           self.l10n.get_localized_entity,
                           dtds, 'notExistent')
 
-    @uses_lib('l10n')
     def test_dtd_entity_content(self):
         dtds = ['chrome://global/locale/filepicker.dtd',
                 'chrome://global/locale/aboutSupport.dtd']
@@ -48,7 +45,6 @@ class TestL10n(FirefoxTestCase):
         elm = self.marionette.find_element('tag name', 'title')
         self.assertEqual(value, elm.text)
 
-    @uses_lib('l10n')
     def test_properties(self):
         properties = ['chrome://global/locale/filepicker.properties',
                       'chrome://global/locale/findbar.properties']

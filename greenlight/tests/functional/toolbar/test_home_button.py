@@ -15,13 +15,12 @@ class TestHomeButton(FirefoxTestCase):
     def setUp(self):
         FirefoxTestCase.setUp(self)
         self.url = self.marionette.absolute_url('layout/mozilla.html')
-        self.lib.prefs.set_pref(homepage_pref, self.url)
+        self.prefs.set_pref(homepage_pref, self.url)
 
     def tearDown(self):
-        self.lib.prefs.restore_pref(homepage_pref)
+        self.prefs.restore_pref(homepage_pref)
         FirefoxTestCase.tearDown(self)
 
-    @uses_lib('navbar')
     def test_home_button(self):
         self.navbar.home_button.click()
 

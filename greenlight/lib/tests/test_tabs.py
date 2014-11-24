@@ -32,8 +32,8 @@ class TestTabs(FirefoxTestCase):
             }
         """, script_args=urls)
 
-        self.lib.prefs.set_pref('browser.tabs.warnOnClose', False)
-        self.lib.prefs.set_pref('browser.tabs.warnOnCloseOtherTabs', False)
+        self.prefs.set_pref('browser.tabs.warnOnClose', False)
+        self.prefs.set_pref('browser.tabs.warnOnCloseOtherTabs', False)
 
         def tabs_loaded(m):
             label = m.execute_script("""
@@ -47,12 +47,11 @@ class TestTabs(FirefoxTestCase):
         self.marionette.execute_script("""
             gBrowser.removeAllTabsBut(gBrowser.tabs[0]);
         """)
-        self.lib.prefs.restore_pref('browser.tabs.warnOnClose')
-        self.lib.prefs.restore_pref('browser.tabs.warnOnCloseOtherTabs')
+        self.prefs.restore_pref('browser.tabs.warnOnClose')
+        self.prefs.restore_pref('browser.tabs.warnOnCloseOtherTabs')
 
         FirefoxTestCase.tearDown(self)
 
-    @uses_lib('tabstrip')
     def test_switch_to_tab(self):
         tabs = self.tabstrip.tabs
 
@@ -65,7 +64,6 @@ class TestTabs(FirefoxTestCase):
         self.tabstrip.switch_to_tab(tabs[4])
         self.assertEquals(self.tabstrip.active_tab, tabs[4])
 
-    @uses_lib('tabstrip')
     def test_close_tab(self):
         num_tabs = len(self.tabstrip.tabs)
         tab = self.tabstrip.get_tab('Mission')
@@ -75,7 +73,6 @@ class TestTabs(FirefoxTestCase):
         with self.assertRaises(NoSuchElementException):
             self.tabstrip.switch_to_tab('Mission')
 
-    @uses_lib('tabstrip')
     def test_newtab_button(self):
         num_tabs = len(self.tabstrip.tabs)
         self.tabstrip.newtab_button.click()

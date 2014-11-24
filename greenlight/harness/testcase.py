@@ -7,19 +7,19 @@ from marionette import MarionetteTestCase
 from greenlight.lib import Puppeteer
 
 
-class FirefoxTestCase(MarionetteTestCase):
+class FirefoxTestCase(MarionetteTestCase, Puppeteer):
     """
-    Test case that adds a Puppeteer object to test scope.
+    Test case that inherits from a Puppeteer object so Firefox specific
+    libraries are exposed to test scope.
     """
     def __init__(self, *args, **kwargs):
         MarionetteTestCase.__init__(self, *args, **kwargs)
-        self.lib = Puppeteer()
 
     def setUp(self, *args, **kwargs):
         MarionetteTestCase.setUp(self, *args, **kwargs)
         self.marionette.set_context('chrome')
-        self.lib.set_client(self.marionette)
+        self.set_client(self.marionette)
 
     def tearDown(self, *args, **kwargs):
-        self.lib.client = None
+        self.client = None
         MarionetteTestCase.tearDown(self, *args, **kwargs)
