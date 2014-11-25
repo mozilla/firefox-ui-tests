@@ -8,6 +8,13 @@ from .decorators import use_lib_as_property
 
 
 class Puppeteer(object):
+    """The puppeteer class is used to expose libraries to test cases.
+
+    Each library can be referenced by its puppeteer name as a member of a
+    FirefoxTestCase instance. For example, from within a test method, the
+    "current_window" member of the "Browser" class can be accessed via
+    "self.browser.current_window".
+    """
     client = None
 
     def get_client(self):
