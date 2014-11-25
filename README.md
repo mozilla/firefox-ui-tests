@@ -32,3 +32,8 @@ To run a specific test or directory of tests:
 For more options run:
 
     run-greenlight-tests --help
+
+Documentation
+-------------
+
+Documentation for the puppeteer libraries are hosted on [readthedocs](http://firefox-puppeteer.readthedocs.org/en/latest/).
