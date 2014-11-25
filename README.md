@@ -5,6 +5,9 @@ Installation
 ------------
 
 First make sure you have [pip](http://pip.readthedocs.org/en/latest/installing.html) installed.
+
+It is recommended that [virtualenv](http://virtualenv.readthedocs.org/en/latest/virtualenv.html#installation) and [virtualenvwrapper](http://virtualenvwrapper.readthedocs.org/en/latest/) be used in conjunction with firefox-greenlight-tests. Start by installing these.
+
 Then:
 
     pip install firefox-greenlight-tests
