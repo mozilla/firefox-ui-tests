@@ -12,15 +12,16 @@ from ..base import BaseLib
 class L10n(BaseLib):
 
     def get_localized_entity(self, dtd_urls, entity_id):
-        """Returns the localized string from the given Document Data Type (dtd)
-        files corresponding to the given id.
+        """Returns the localized string for the specified DTD entity id.
+
+        To find the entity all given DTD files will be searched for the id.
 
         :param dtd_urls: A list of dtd files to search.
-        :param entity_id: The id to retrieve.
+        :param entity_id: The id to retrieve the value from.
 
-        :returns: The localized string value for the requested entity.
+        :returns: The localized string for the requested entity.
 
-        :raises MarionetteException: When entity_id is not found in dtd_urls.
+        :raises MarionetteException: When entity id is not found in dtd_urls.
         """
         # Add xhtml11.dtd to prevent missing entity errors with XHTML files
         dtds = copy.copy(dtd_urls)
@@ -53,15 +54,17 @@ class L10n(BaseLib):
         return value
 
     def get_localized_property(self, property_urls, property_id):
-        """Returns the localized string corresponding to the given id
-        in the given property files.
+        """Returns the localized string for the specified property id.
+
+        To find the property all given property files will be searched for
+        the id.
 
         :param property_urls: A list of property files to search.
-        :param property_id: The id to retrieve.
+        :param property_id: The id to retrieve the value from.
 
-        :returns: The localized string value for the requested entity.
+        :returns: The localized string for the requested entity.
 
-        :raises MarionetteException: When property_id is not found in
+        :raises MarionetteException: When property id is not found in
             property_urls.
         """
 

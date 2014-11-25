@@ -4,10 +4,7 @@
 
 import time
 
-from marionette.errors import TimeoutException
-
 from greenlight.harness.testcase import FirefoxTestCase
-from greenlight.harness.decorators import uses_lib
 
 
 class TestBackForward(FirefoxTestCase):
@@ -28,8 +25,8 @@ class TestBackForward(FirefoxTestCase):
             self.assertEquals(self.marionette.get_url(), self.test_urls[-1])
 
     def test_back_forward(self):
-        back = self.navbar.back_button
-        forward = self.navbar.forward_button
+        back = self.browser.navbar.back_button
+        forward = self.browser.navbar.forward_button
         self.assertFalse(forward.is_displayed())
 
         for i in range(1, len(self.test_urls)):
@@ -43,7 +40,7 @@ class TestBackForward(FirefoxTestCase):
                                   self.test_urls[-(i + 1)])
 
         self.assertFalse(back.is_enabled())
-        forward = self.navbar.forward_button
+        forward = self.browser.navbar.forward_button
         # TODO For some reason this returns False
         #self.assertTrue(forward.is_displayed())
         self.assertTrue(forward.is_enabled())

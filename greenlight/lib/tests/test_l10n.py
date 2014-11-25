@@ -4,21 +4,17 @@
 
 from marionette.errors import MarionetteException
 
-from greenlight.harness.decorators import uses_lib
 from greenlight.harness.testcase import FirefoxTestCase
+from greenlight.lib.api.l10n import L10n
 
 
 class TestL10n(FirefoxTestCase):
 
     def setUp(self):
         FirefoxTestCase.setUp(self)
-        for tab in self.tabstrip.tabs:
-            if len(self.tabstrip.tabs) > 1:
-                self.tabstrip.tabs[-1].close()
+        self.l10n = L10n(lambda: self.marionette)
 
     def tearDown(self):
-        with self.marionette.using_context('content'):
-            self.marionette.navigate('about:blank')
         FirefoxTestCase.tearDown(self)
 
     def test_dtd_entity_chrome(self):

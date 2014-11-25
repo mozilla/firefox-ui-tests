@@ -20,6 +20,8 @@ class FirefoxTestCase(MarionetteTestCase, Puppeteer):
         self.marionette.set_context('chrome')
         self.set_client(self.marionette)
 
+        self.browser = self.windows.current
+
     def tearDown(self, *args, **kwargs):
         self.client = None
         MarionetteTestCase.tearDown(self, *args, **kwargs)

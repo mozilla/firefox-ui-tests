@@ -5,7 +5,6 @@
 from marionette import Wait
 from marionette.errors import NoSuchElementException
 
-from greenlight.harness.decorators import uses_lib
 from greenlight.harness.testcase import FirefoxTestCase
 
 
@@ -53,27 +52,27 @@ class TestTabs(FirefoxTestCase):
         FirefoxTestCase.tearDown(self)
 
     def test_switch_to_tab(self):
-        tabs = self.tabstrip.tabs
+        tabs = self.browser.tabbar.tabs
 
-        self.tabstrip.switch_to_tab(3)
-        self.assertEquals(self.tabstrip.active_tab, tabs[3])
+        self.browser.tabbar.switch_to_tab(3)
+        self.assertEquals(self.browser.tabbar.active_tab, tabs[3])
 
-        self.tabstrip.switch_to_tab('Mission')
-        self.assertEquals(self.tabstrip.active_tab, tabs[6])
+        self.browser.tabbar.switch_to_tab('Mission')
+        self.assertEquals(self.browser.tabbar.active_tab, tabs[6])
 
-        self.tabstrip.switch_to_tab(tabs[4])
-        self.assertEquals(self.tabstrip.active_tab, tabs[4])
+        self.browser.tabbar.switch_to_tab(tabs[4])
+        self.assertEquals(self.browser.tabbar.active_tab, tabs[4])
 
     def test_close_tab(self):
-        num_tabs = len(self.tabstrip.tabs)
-        tab = self.tabstrip.get_tab('Mission')
+        num_tabs = len(self.browser.tabbar.tabs)
+        tab = self.browser.tabbar.get_tab('Mission')
         tab.close()
 
-        self.assertEquals(len(self.tabstrip.tabs), num_tabs - 1)
+        self.assertEquals(len(self.browser.tabbar.tabs), num_tabs - 1)
         with self.assertRaises(NoSuchElementException):
-            self.tabstrip.switch_to_tab('Mission')
+            self.browser.tabbar.switch_to_tab('Mission')
 
     def test_newtab_button(self):
-        num_tabs = len(self.tabstrip.tabs)
-        self.tabstrip.newtab_button.click()
-        self.assertEquals(len(self.tabstrip.tabs), num_tabs + 1)
+        num_tabs = len(self.browser.tabbar.tabs)
+        self.browser.tabbar.newtab_button.click()
+        self.assertEquals(len(self.browser.tabbar.tabs), num_tabs + 1)

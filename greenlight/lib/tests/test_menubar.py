@@ -4,21 +4,26 @@
 
 from marionette.errors import NoSuchElementException
 
-from greenlight.harness.decorators import uses_lib
 from greenlight.harness.testcase import FirefoxTestCase
 
 
 class TestMenuBar(FirefoxTestCase):
 
+    def setUp(self):
+        FirefoxTestCase.setUp(self)
+
     def test_click_item_in_menubar(self):
-        num_tabs = len(self.tabstrip.tabs)
-        self.menubar.select('File', 'New Tab')
-        self.assertEquals(len(self.tabstrip.tabs), num_tabs + 1)
-        self.tabstrip.tabs[-1].close()
+        num_tabs = len(self.browser.tabbar.tabs)
+        # Hard-coded labels will not work in localized builds
+        self.browser.menubar.select('File', 'New Tab')
+        self.assertEquals(len(self.browser.tabbar.tabs), num_tabs + 1)
+        self.browser.tabbar.tabs[-1].close()
 
     def test_click_non_existent_menu_and_item(self):
         with self.assertRaises(NoSuchElementException):
-            self.menubar.select('Foobar', 'New Tab')
-        
+            # Hard-coded labels will not work in localized builds
+            self.browser.menubar.select('Foobar', 'New Tab')
+
         with self.assertRaises(NoSuchElementException):
-            self.menubar.select('File', 'Foobar')
+            # Hard-coded labels will not work in localized builds
+            self.browser.menubar.select('File', 'Foobar')

@@ -11,8 +11,8 @@ make sense to use Firefox Puppeteer if:
 * You are only manipulating elements in content scope (like a webpage)
 
 Roughly speaking, Firefox Puppeteer provides a library to manipulate each
-visual section of Firefox's browser UI. For example, there is one library for
-the tab strip, another for the menu panel, a third for the navigation bar, etc.
+visual section of Firefox's browser UI. For example, there are different
+libraries for the tab bar, the navigation bar, etc.
 
 
 Installation
@@ -39,9 +39,11 @@ future. Each library is available from an instance of the FirefoxTestCase class.
    :hidden:
 
    windows
+   ui/base_window
+   ui/browser_window
    ui/menu
    ui/navbar
-   ui/tabs
+   ui/tabbar
    api/keys
    api/l10n
    api/prefs

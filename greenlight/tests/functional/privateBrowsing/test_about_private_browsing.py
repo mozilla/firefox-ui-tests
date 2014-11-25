@@ -2,56 +2,52 @@
 # License, v. 2.0. If a copy of the MPL was not distributed with this
 # file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
-from marionette.keys import Keys
-
 from greenlight.harness.testcase import FirefoxTestCase
-from greenlight.harness.decorators import uses_lib
-from marionette import errors
+from marionette import By, errors
+
 
 class TestAboutPrivateBrowsing(FirefoxTestCase):
 
     def setUp(self):
         FirefoxTestCase.setUp(self)
         self.pb_url = self.marionette.absolute_url('private_browsing/about.html?')
-        self.dtds = ["chrome://branding/locale/brand.dtd",
-                     "chrome://browser/locale/browser.dtd",
-                     "chrome://browser/locale/aboutPrivateBrowsing.dtd"]
 
     def tearDown(self):
+        self.prefs.restore_pref('app.support.baseURL')
+
         self.marionette.close()
 
     def testCheckAboutPrivateBrowsing(self):
+        self.assertFalse(self.browser.is_private)
+
         self.prefs.set_pref('app.support.baseURL', self.pb_url)
 
         self.marionette.set_context('content')
         self.marionette.navigate('about:privatebrowsing')
 
-        description = self.l10n.get_localized_entity(self.dtds,
-                                                     'aboutPrivateBrowsing.subtitle.normal')
+        description = self.browser.get_localized_entity(
+            'aboutPrivateBrowsing.subtitle.normal')
 
-        self.marionette.set_context('content')
-        status_node = self.marionette.find_element('css selector', 'p.showNormal')
-        self.assertEqual(description, status_node.text,
-                         "Status text indicates we are in private browsing mode")
+        status_node = self.marionette.find_element(By.CSS_SELECTOR,
+                                                   'p.showNormal')
+        self.assertEqual(status_node.text, description)
 
-        access_key = self.l10n.get_localized_entity(self.dtds,
-                                                    'privatebrowsingpage.openPrivateWindow.accesskey')
-        base_window = self.marionette.current_window_handle
-        self.marionette.set_context('content')
+        access_key = self.browser.get_localized_entity(
+            'privatebrowsingpage.openPrivateWindow.accesskey')
+
         # Send keys to the top html element.
-        top_html = self.marionette.find_element('tag name', 'html')
+        top_html = self.marionette.find_element(By.TAG_NAME, 'html')
         top_html.send_keys(self.keys.SHIFT, self.keys.ACCEL, access_key)
 
+        self.wait_for_condition(lambda mn: len(self.windows.all) == 2)
+        self.windows.switch_to(lambda win: win.is_private)
+        self.browser_pb = self.windows.current
 
-        self.wait_for_condition(lambda mn: len(mn.window_handles) == 2)
-        windows = self.marionette.window_handles
-        windows.remove(base_window)
-        pvt_win = windows[0]
-        self.marionette.switch_to_window(pvt_win)
+        self.assertTrue(self.browser_pb.is_private)
 
         def find_element(mn):
             try:
-                link = self.marionette.find_element('id', 'learnMore')
+                link = self.marionette.find_element(By.ID, 'learnMore')
                 link.click()
                 return True
             except errors.NoSuchElementException:
@@ -59,13 +55,13 @@ class TestAboutPrivateBrowsing(FirefoxTestCase):
         self.wait_for_condition(find_element)
 
         self.marionette.set_context('chrome')
-        self.assertEqual(2, len(self.tabstrip.tabs),
+        self.assertEqual(len(self.browser.tabbar.tabs), 2,
                          "A new tab has been opened")
 
         target_url = self.pb_url + 'private-browsing'
-        url_bar = self.marionette.find_element('id', 'urlbar')
+        url_bar = self.marionette.find_element(By.ID, 'urlbar')
 
         # TODO: get_url does not correspond to what we want here.
         self.assertIn(url_bar.get_attribute('value'), target_url)
 
-        self.prefs.restore_pref('app.support.baseURL')
+        self.browser_pb.close()

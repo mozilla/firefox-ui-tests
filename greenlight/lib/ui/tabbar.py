@@ -25,7 +25,8 @@ class Tabs(BaseLib):
         :returns: The new tab button element.
         """
         return self.client.find_element('id', 'tabbrowser-tabs') \
-                          .find_element('anon attribute', {'anonid': 'tabs-newtab-button'})
+                          .find_element('anon attribute',
+                                        {'anonid': 'tabs-newtab-button'})
 
     @property
     def active_tab(self):
@@ -38,13 +39,23 @@ class Tabs(BaseLib):
                 return tab
 
     @property
+    def menupanel(self):
+        """
+        Provides access to the menu popup. This is the menu opened after
+        clicking the settings button on the right hand side of the browser.
+
+        See the :class:`~ui.menu.MenuPanel` reference.
+        """
+        return MenuPanel(lambda: self.marionette)
+
+    @property
     def tabs(self):
         """
         :returns: A list of all the :class:`TabElement`'s.
         """
         tabs = self.client.find_element('id', 'tabbrowser-tabs') \
                           .find_elements('tag name', 'tab')
-        return [self.TabElement.create(tab) for tab in tabs]
+        return [self.TabElement(tab) for tab in tabs]
 
     def get_tab(self, target):
         """
@@ -60,7 +71,9 @@ class Tabs(BaseLib):
             for tab in self.tabs:
                 if target in tab.get_attribute('label'):
                     return tab
-            raise NoSuchElementException("Could not find tab with a label containing '{}'".format(target))
+
+            raise NoSuchElementException("Could not find tab with a label \
+                                         containing '{}'".format(target))
 
         raise TypeError("Invalid type for 'target': {}".format(type(target)))
 
@@ -74,7 +87,6 @@ class Tabs(BaseLib):
         if not isinstance(tab, HTMLElement):
             tab = self.get_tab(tab)
         return tab.click()
-
 
     class TabElement(DOMElement):
         """
@@ -109,3 +121,45 @@ class Tabs(BaseLib):
                     return True
             Wait(self.marionette).until(im_gone)
             return ret
+
+
+class MenuPanel(BaseLib):
+
+    @property
+    def popup(self):
+        """
+        :returns: The :class:`MenuPanelElement`.
+        """
+        return self.MenuPanelElement(self.client.find_element('id',
+                                                              'PanelUI-popup'))
+
+    class MenuPanelElement(DOMElement):
+        """
+        Wraps the menu panel.
+        """
+        _buttons = None
+
+        @property
+        def buttons(self):
+            """
+            :returns: A list of all the clickable buttons in the menu panel.
+            """
+            if not self._buttons:
+                self._buttons = self.find_element('id', 'PanelUI-multiView') \
+                                    .find_element('anon attribute', {'anonid': 'viewContainer'}) \
+                                    .find_elements('tag name', 'toolbarbutton')
+            return self._buttons
+
+        def click(self, target=None):
+            """
+            Overrides HTMLElement.click to provide a target to click.
+
+            :param target: The label associated with the button to click on, e.g 'New Private Window'.
+            """
+            if not target:
+                return DOMElement.click(self)
+
+            for button in self.buttons:
+                if button.get_attribute('label') == target:
+                    return button.click()
+            raise NoSuchElementException("Could not find '{}' in the menu panel UI".format(target))

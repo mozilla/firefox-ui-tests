@@ -23,8 +23,6 @@ class Puppeteer(object):
     def set_client(self, client):
         self.client = client
 
-    # these libs are for UI manipulation
-
     @use_lib_as_property('windows.Windows')
     def windows(self):
         """
@@ -33,44 +31,6 @@ class Puppeteer(object):
         See the :class:`~window.Windows` reference.
         """
 
-    @use_lib_as_property('ui.menu.MenuBar')
-    def menubar(self):
-        """
-        Provides access to the menu bar area. For example the 'File', 'View'
-        and 'Tools' menus.
-
-        See the :class:`~ui.menu.MenuBar` reference.
-        """
-
-    @use_lib_as_property('ui.menu.MenuPanel')
-    def menupanel(self):
-        """
-        Provides access to the menu popup. This is the menu opened after
-        clicking the settings button on the right hand side of the browser.
-
-        See the :class:`~ui.menu.MenuPanel` reference.
-        """
-
-    @use_lib_as_property('ui.navbar.NavBar')
-    def navbar(self):
-        """
-        Provides access to the navigation bar. This is the toolbar containing
-        the back, forward and home buttons. It also contains the location bar.
-
-        See the :class:`~ui.navbar.NavBar` reference.
-        """
-
-    @use_lib_as_property('ui.tabs.Tabs')
-    def tabstrip(self):
-        """
-        Provides access to the tab bar. This is the toolbar containing all the
-        tabs and the new tab button.
-
-        See the :class:`~ui.tabs.Tabs` reference.
-        """
-
-    # these libs wrap gecko APIs
-
     @use_lib_as_property('api.keys.Keys')
     def keys(self):
         """
@@ -78,15 +38,6 @@ class Puppeteer(object):
         For example, keys.CONTROL or keys.ALT.
 
         See the :class:`~api.keys.Keys` reference.
-        """
-
-    @use_lib_as_property('api.l10n.L10n')
-    def l10n(self):
-        """
-        Provides an api for retrieving localized strings for various UI
-        widgets.
-
-        See the :class:`~api.l10n.L10n` reference.
         """
 
     @use_lib_as_property('api.prefs.DefaultPrefBranch')
@@ -105,11 +56,12 @@ class DOMElement(HTMLElement):
     expose new api's.
     """
 
-    @classmethod
-    def create(cls, element):
+    def __new__(cls, element):
         instance = object.__new__(cls)
         instance.__dict__ = element.__dict__.copy()
         setattr(instance, 'inner', element)
+
         return instance
 
-from .windows import Windows
+    def __init__(self, element):
+        pass

@@ -5,7 +5,6 @@
 import time
 
 from greenlight.harness.testcase import FirefoxTestCase
-from greenlight.harness.decorators import uses_lib
 
 homepage_pref = 'browser.startup.homepage'
 
@@ -22,7 +21,7 @@ class TestHomeButton(FirefoxTestCase):
         FirefoxTestCase.tearDown(self)
 
     def test_home_button(self):
-        self.navbar.home_button.click()
+        self.browser.navbar.home_button.click()
 
         # TODO wait_for_page_load
         time.sleep(1)
