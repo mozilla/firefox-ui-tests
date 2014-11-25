@@ -18,12 +18,12 @@ class Puppeteer(object):
 
     # these libs are for UI manipulation
 
-    @use_lib_as_property('ui.browser.Browser')
-    def browser(self):
+    @use_lib_as_property('windows.Windows')
+    def windows(self):
         """
-        Provides shortcuts to the top-level browser windows.
+        Provides shortcuts to the top-level windows.
 
-        See the :class:`~ui.browser.Browser` reference.
+        See the :class:`~window.Windows` reference.
         """
 
     @use_lib_as_property('ui.menu.MenuBar')

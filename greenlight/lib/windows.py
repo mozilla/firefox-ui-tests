@@ -5,14 +5,14 @@
 from marionette.errors import NoSuchElementException
 from marionette.keys import Keys
 
-from ..base import BaseLib
-from .. import DOMElement
+from base import BaseLib
+from . import DOMElement
 
 
-class Browser(BaseLib):
+class Windows(BaseLib):
 
     @property
-    def windows(self):
+    def all(self):
         """
         :returns: a list of :class:`WindowElement`'s corresponding to the
                   windows in `marionette.window_handles`.
@@ -21,19 +21,19 @@ class Browser(BaseLib):
         windows = []
         for handle in self.client.window_handles:
             self.client.switch_to_window(handle)
-            windows.append(self.current_window)
+            windows.append(self.current)
         self.client.switch_to_window(old_handle)
         return windows
 
     @property
-    def current_window(self):
+    def current(self):
         """
         :returns: The :class:`WindowElement` for the currently active browser
                   window.
         """
         return self.WindowElement.create(self.client.find_element('id', 'main-window'))
 
-    def switch_to_window(self, target):
+    def switch_to(self, target):
         """
         Switches context to the specified window.
 
@@ -47,16 +47,15 @@ class Browser(BaseLib):
         isn't known. For example, say we want to switch to a window that has
         three tabs::
 
-            @uses_lib('browser', 'tabstrip')
             def test_switch_to_window_with_three_tabs(self):
                 def has_three_tabs():
                     return len(self.tabstrip.tabs) == 3
 
-                old_handle = self.browser.switch_to_window(has_three_tabs)
+                old_handle = self.windows.switch_to(has_three_tabs)
                 self.assertTrue(has_three_tabs())
 
                 # return to the original window
-                self.browser.switch_to_window(old_handle)
+                self.windows.switch_to(old_handle)
         """
         if isinstance(target, self.WindowElement):
             return target.switch_to()
@@ -66,7 +65,7 @@ class Browser(BaseLib):
             # switch if callback returns true. This is useful for when you want to, e.g,
             # switch to the window that contains a certain element.
             old_handle = self.client.current_window_handle
-            for window in self.windows:
+            for window in self.all:
                 window.switch_to()
                 if target():
                     return old_handle
