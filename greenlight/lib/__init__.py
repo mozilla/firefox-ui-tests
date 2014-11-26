@@ -104,3 +104,5 @@ class DOMElement(HTMLElement):
         instance.__dict__ = element.__dict__.copy()
         setattr(instance, 'inner', element)
         return instance
+
+from .windows import Windows

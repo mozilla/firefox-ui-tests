@@ -36,7 +36,7 @@ future.
 .. toctree::
    :hidden:
 
-   ui/browser
+   windows
    ui/menu
    ui/navbar
    ui/tabs
