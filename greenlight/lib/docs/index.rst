@@ -18,8 +18,9 @@ the tab strip, another for the menu panel, a third for the navigation bar, etc.
 Installation
 ------------
 
-Currently Firefox Puppeteer lives in the `firefox-greenlight-tests`_ repository
-but there are plans to move it alongside the `Marionette python client`_.
+Currently Firefox Puppeteer lives in the `firefox-greenlight-tests`_ repository,
+along with instructions for installation and usage.
+There are plans to move it alongside the `Marionette python client`_.
 
 .. _Marionette python client: http://marionette-client.readthedocs.org/en/latest/
 .. _firefox-greenlight-tests: https://github.com/mozilla/firefox-greenlight-tests/tree/master/greenlight/lib
@@ -27,8 +28,9 @@ but there are plans to move it alongside the `Marionette python client`_.
 Libraries
 ---------
 
+
 The following libraries are currently implemented. More will be added in the
-future.
+future. Each library is available from an instance of the FirefoxTestCase class.
 
 .. autoclass:: Puppeteer
    :members:
