@@ -22,22 +22,22 @@ class TestAboutPrivateBrowsing(FirefoxTestCase):
 
         self.prefs.set_pref('app.support.baseURL', self.pb_url)
 
-        self.marionette.set_context('content')
-        self.marionette.navigate('about:privatebrowsing')
+        with self.marionette.using_context('content'):
+            self.marionette.navigate('about:privatebrowsing')
 
-        description = self.browser.get_localized_entity(
-            'aboutPrivateBrowsing.subtitle.normal')
+            description = self.browser.get_localized_entity(
+                'aboutPrivateBrowsing.subtitle.normal')
 
-        status_node = self.marionette.find_element(By.CSS_SELECTOR,
-                                                   'p.showNormal')
-        self.assertEqual(status_node.text, description)
+            status_node = self.marionette.find_element(By.CSS_SELECTOR,
+                                                       'p.showNormal')
+            self.assertEqual(status_node.text, description)
 
-        access_key = self.browser.get_localized_entity(
-            'privatebrowsingpage.openPrivateWindow.accesskey')
+            access_key = self.browser.get_localized_entity(
+                'privatebrowsingpage.openPrivateWindow.accesskey')
 
-        # Send keys to the top html element.
-        top_html = self.marionette.find_element(By.TAG_NAME, 'html')
-        top_html.send_keys(self.keys.SHIFT, self.keys.ACCEL, access_key)
+            # Send keys to the top html element.
+            top_html = self.marionette.find_element(By.TAG_NAME, 'html')
+            top_html.send_keys(self.keys.SHIFT, self.keys.ACCEL, access_key)
 
         self.wait_for_condition(lambda mn: len(self.windows.all) == 2)
         self.windows.switch_to(lambda win: win.is_private)
@@ -45,16 +45,17 @@ class TestAboutPrivateBrowsing(FirefoxTestCase):
 
         self.assertTrue(self.browser_pb.is_private)
 
-        def find_element(mn):
-            try:
-                link = self.marionette.find_element(By.ID, 'learnMore')
-                link.click()
-                return True
-            except errors.NoSuchElementException:
-                return False
-        self.wait_for_condition(find_element)
+        with self.marionette.using_context('content'):
+            def find_element(mn):
+                try:
+                    link = self.marionette.find_element(By.ID, 'learnMore')
+                    link.click()
+                    return True
+                except errors.NoSuchElementException:
+                    return False
 
-        self.marionette.set_context('chrome')
+            self.wait_for_condition(find_element)
+
         self.assertEqual(len(self.browser.tabbar.tabs), 2,
                          "A new tab has been opened")
 
@@ -65,3 +66,9 @@ class TestAboutPrivateBrowsing(FirefoxTestCase):
         self.assertIn(url_bar.get_attribute('value'), target_url)
 
         self.browser_pb.close()
+
+        # TODO: Can be removed once Marionette can directly close a window.
+        # For now the opened tab gets closed first. See bug 1114623
+        self.browser_pb.close()
+
+        self.assertTrue(self.browser_pb.closed)

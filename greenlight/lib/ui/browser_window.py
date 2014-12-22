@@ -61,11 +61,3 @@ class BrowserWindow(BaseWindow):
     def open(self):
         # TODO: To be implemented
         pass
-
-    def switch_to(self):
-        """Switches to this browser window."""
-        old_handle = self.marionette.current_window_handle
-        if self.handle != old_handle:
-            self.marionette.switch_to_window(self.handle)
-
-        return old_handle

@@ -10,13 +10,15 @@ class TestBrowserWindowShortcuts(FirefoxTestCase):
     def setUp(self):
         FirefoxTestCase.setUp(self)
 
+        # If an about:xyz page is visible, no new tab will be opened
+        with self.marionette.using_context('content'):
+            self.marionette.navigate('about:')
+
     def test_addons_manager(self):
         key = self.browser.get_localized_entity('addons.commandkey')
 
         num_tabs = len(self.browser.tabbar.tabs)
 
-        # On Linux the shortcut will only work if no other text field has focus
-        # TODO: Remove focus from the location bar
         self.browser.send_keys(self.keys.SHIFT, self.keys.ACCEL, key)
         self.assertEqual(len(self.browser.tabbar.tabs), num_tabs + 1)
 

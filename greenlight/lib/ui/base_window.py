@@ -29,13 +29,13 @@ class BaseWindow(DOMElement):
     def __init__(self, element):
         # Due to __new__ we don't have to call __init__ of the super class
 
-        self.handle = self.marionette.current_window_handle
+        self.handle = self.marionette.chrome_window_handle
         self.l10n = L10n(lambda: self.marionette)
 
     @property
     def closed(self):
         """Returns true if the window has been closed."""
-        return self.handle not in self.marionette.window_handles
+        return self.handle not in self.marionette.chrome_window_handles
 
     @property
     def menubar(self):
@@ -98,7 +98,7 @@ class BaseWindow(DOMElement):
         If this is the last remaining window, the marionette session is ended.
         """
         old_handle = self.switch_to()
-        num_windows = len(self.marionette.window_handles)
+        num_windows = len(self.marionette.chrome_window_handles)
         return_to = None
         if old_handle != self.handle:
             return_to = old_handle
@@ -106,7 +106,7 @@ class BaseWindow(DOMElement):
         ret = self.marionette.close()
 
         if num_windows > 1 and not return_to:
-            return_to = self.marionette.window_handles[0]
+            return_to = self.marionette.chrome_window_handles[0]
 
         if return_to:
             self.marionette.switch_to_window(return_to)
@@ -120,7 +120,7 @@ class BaseWindow(DOMElement):
 
     def switch_to(self):
         """Switches to this browser window."""
-        old_handle = self.marionette.current_window_handle
+        old_handle = self.marionette.chrome_window_handle
         if self.handle != old_handle:
             self.marionette.switch_to_window(self.handle)
 
