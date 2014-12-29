@@ -5,8 +5,8 @@
 from marionette import By
 from marionette.errors import NoSuchElementException
 
-from base import BaseLib
-from ui.base_window import BaseWindow
+from ..base import BaseLib
+from ..ui.base_window import BaseWindow
 
 
 class Windows(BaseLib):
@@ -34,7 +34,7 @@ class Windows(BaseLib):
         window_type = self.client.get_window_type()
 
         if window_type == 'navigator:browser':
-            from ui.browser_window import BrowserWindow
+            from ..ui.browser_window import BrowserWindow
             return BrowserWindow(window_element)
         else:
             return BaseWindow(window_element)

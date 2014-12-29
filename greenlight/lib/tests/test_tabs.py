@@ -46,6 +46,8 @@ class TestTabs(FirefoxTestCase):
         self.marionette.execute_script("""
             gBrowser.removeAllTabsBut(gBrowser.tabs[0]);
         """)
+
+        # Needs to be set by the harness itself
         self.prefs.restore_pref('browser.tabs.warnOnClose')
         self.prefs.restore_pref('browser.tabs.warnOnCloseOtherTabs')
 

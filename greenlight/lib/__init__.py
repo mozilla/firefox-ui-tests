@@ -23,7 +23,7 @@ class Puppeteer(object):
     def set_client(self, client):
         self.client = client
 
-    @use_lib_as_property('windows.Windows')
+    @use_lib_as_property('api.windows.Windows')
     def windows(self):
         """
         Provides shortcuts to the top-level windows.
