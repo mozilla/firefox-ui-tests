@@ -6,6 +6,7 @@ from marionette.keys import Keys
 
 from .. import DOMElement
 from ..api.l10n import L10n
+from ..decorators import use_class_as_property
 
 
 class BaseWindow(DOMElement):
@@ -27,24 +28,22 @@ class BaseWindow(DOMElement):
         return DOMElement.__new__(cls, element)
 
     def __init__(self, element):
-        # Due to __new__ we don't have to call __init__ of the super class
+        DOMElement.__init__(self, element)
 
         self.handle = self.marionette.chrome_window_handle
-        self.l10n = L10n(lambda: self.marionette)
+        self.l10n = L10n(self.get_marionette)
 
     @property
     def closed(self):
         """Returns true if the window has been closed."""
         return self.handle not in self.marionette.chrome_window_handles
 
-    @property
+    @use_class_as_property('ui.menu.MenuBar')
     def menubar(self):
         """Provides access to the menu bar. For example the 'File' menu.
 
         See the :class:`~ui.menu.MenuBar` reference.
         """
-        from menu import MenuBar
-        return MenuBar(lambda: self.marionette)
 
     @property
     def window(self):

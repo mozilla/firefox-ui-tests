@@ -19,8 +19,8 @@ class MenuBar(BaseLib):
         :returns: A list of :class:`MenuElement`'s corresponding to the top
                   level menus in the menubar.
         """
-        menus = self.client.find_element('id', 'main-menubar') \
-                           .find_elements('tag name', 'menu')
+        menus = self.marionette.find_element('id', 'main-menubar') \
+                               .find_elements('tag name', 'menu')
         return [self.MenuElement(menu) for menu in menus]
 
     def get_menu(self, label):

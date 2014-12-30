@@ -7,13 +7,15 @@ class BaseLib(object):
     """A trivial base class that handles lazily setting the "client" class
     attribute."""
 
-    def __init__(self, client_getter):
-        self._client = None
-        self._client_getter = client_getter
+    def __init__(self, marionette_getter):
+        self._marionette = None
+        self._marionette_getter = marionette_getter
 
     @property
-    def client(self):
-        if self._client is None:
-            self._client = self._client_getter()
-        return self._client
+    def marionette(self):
+        if self._marionette is None:
+            self._marionette = self._marionette_getter()
+        return self._marionette
 
+    def get_marionette(self):
+        return self._marionette

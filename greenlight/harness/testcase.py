@@ -17,11 +17,10 @@ class FirefoxTestCase(MarionetteTestCase, Puppeteer):
 
     def setUp(self, *args, **kwargs):
         MarionetteTestCase.setUp(self, *args, **kwargs)
-        self.marionette.set_context('chrome')
-        self.set_client(self.marionette)
+        Puppeteer.set_marionette(self, self.marionette)
 
+        self.marionette.set_context('chrome')
         self.browser = self.windows.current
 
     def tearDown(self, *args, **kwargs):
-        self.client = None
         MarionetteTestCase.tearDown(self, *args, **kwargs)

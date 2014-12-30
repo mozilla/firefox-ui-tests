@@ -42,8 +42,8 @@ class DefaultPrefBranch(BaseLib):
                      browser.tabs.remote.autostart
         :returns: The value of the specified pref.
         """
-        with self.client.using_context('chrome'):
-            value = self.client.execute_script("""
+        with self.marionette.using_context('chrome'):
+            value = self.marionette.execute_script("""
               let pref = arguments[0];
               let prefBranch = Cc["@mozilla.org/preferences-service;1"]
                               .getService(Ci.nsIPrefBranch);
@@ -71,10 +71,10 @@ class DefaultPrefBranch(BaseLib):
         :param pref: The preference to set.
         :param value: The value to set the preference to.
         """
-        with self.client.using_context('chrome'):
+        with self.marionette.using_context('chrome'):
             self.archive[pref] = self.get_pref(pref)
 
-            ret = self.client.execute_script("""
+            ret = self.marionette.execute_script("""
               let pref = arguments[0];
               let value = arguments[1];
               let prefBranch = Cc["@mozilla.org/preferences-service;1"]

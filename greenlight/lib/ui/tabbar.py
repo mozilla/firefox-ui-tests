@@ -24,9 +24,9 @@ class Tabs(BaseLib):
         """
         :returns: The new tab button element.
         """
-        return self.client.find_element('id', 'tabbrowser-tabs') \
-                          .find_element('anon attribute',
-                                        {'anonid': 'tabs-newtab-button'})
+        return self.marionette.find_element('id', 'tabbrowser-tabs') \
+                              .find_element('anon attribute',
+                                            {'anonid': 'tabs-newtab-button'})
 
     @property
     def active_tab(self):
@@ -53,8 +53,8 @@ class Tabs(BaseLib):
         """
         :returns: A list of all the :class:`TabElement`'s.
         """
-        tabs = self.client.find_element('id', 'tabbrowser-tabs') \
-                          .find_elements('tag name', 'tab')
+        tabs = self.marionette.find_element('id', 'tabbrowser-tabs') \
+                              .find_elements('tag name', 'tab')
         return [self.TabElement(tab) for tab in tabs]
 
     def get_tab(self, target):
@@ -130,8 +130,8 @@ class MenuPanel(BaseLib):
         """
         :returns: The :class:`MenuPanelElement`.
         """
-        return self.MenuPanelElement(self.client.find_element('id',
-                                                              'PanelUI-popup'))
+        return self.MenuPanelElement(self.marionette.find_element('id',
+                                                                  'PanelUI-popup'))
 
     class MenuPanelElement(DOMElement):
         """

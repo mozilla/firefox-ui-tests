@@ -26,8 +26,9 @@ class use_class_as_property(object):
             prop = getattr(cls, tag, None)
 
             if not prop:
-                module = import_module('.{}'.format(self.mod_name), 'greenlight.lib')
-                prop = getattr(module, self.cls_name)(cls.get_client)
+                module = import_module('.{}'.format(self.mod_name),
+                                       'greenlight.lib')
+                prop = getattr(module, self.cls_name)(cls.get_marionette)
                 setattr(cls, tag, prop)
             func(cls, *args, **kwargs)
             return prop

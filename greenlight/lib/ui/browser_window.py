@@ -4,6 +4,8 @@
 
 from base_window import BaseWindow
 
+from ..decorators import use_class_as_property
+
 
 class BrowserWindow(BaseWindow):
     """Representation for browser window."""
@@ -36,7 +38,7 @@ class BrowserWindow(BaseWindow):
             return PrivateBrowsingUtils.isWindowPrivate(chromeWindow);
         """, script_args=[self.window])
 
-    @property
+    @use_class_as_property('ui.navbar.NavBar')
     def navbar(self):
         """
         Provides access to the navigation bar. This is the toolbar containing
@@ -44,10 +46,8 @@ class BrowserWindow(BaseWindow):
 
         See the :class:`~ui.navbar.NavBar` reference.
         """
-        from navbar import NavBar
-        return NavBar(lambda: self.marionette)
 
-    @property
+    @use_class_as_property('ui.tabbar.Tabs')
     def tabbar(self):
         """
         Provides access to the tab bar. This is the toolbar containing all the
@@ -55,8 +55,6 @@ class BrowserWindow(BaseWindow):
 
         See the :class:`~ui.tabbar.Tabs` reference.
         """
-        from tabbar import Tabs
-        return Tabs(lambda: self.marionette)
 
     def open(self):
         # TODO: To be implemented

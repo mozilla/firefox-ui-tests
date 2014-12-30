@@ -38,8 +38,8 @@ class L10n(BaseLib):
 
             <elem id="entity">&%s;</elem>""" % (dtd_refs, entity_id)
 
-        with self.client.using_context('chrome'):
-            value = self.client.execute_script("""
+        with self.marionette.using_context('chrome'):
+            value = self.marionette.execute_script("""
                 var parser = Cc["@mozilla.org/xmlextras/domparser;1"]
                               .createInstance(Ci.nsIDOMParser);
                 var doc = parser.parseFromString(arguments[0], "text/xml");
@@ -68,8 +68,8 @@ class L10n(BaseLib):
             property_urls.
         """
 
-        with self.client.using_context('chrome'):
-            value = self.client.execute_script("""
+        with self.marionette.using_context('chrome'):
+            value = self.marionette.execute_script("""
                 let property = null;
                 let property_id = arguments[1];
 

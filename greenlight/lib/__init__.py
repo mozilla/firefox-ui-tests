@@ -15,13 +15,15 @@ class Puppeteer(object):
     "current_window" member of the "Browser" class can be accessed via
     "self.browser.current_window".
     """
-    client = None
 
-    def get_client(self):
-        return self.client
+    def __init__(self):
+        self.marionette = None
 
-    def set_client(self, client):
-        self.client = client
+    def get_marionette(self):
+        return self.marionette
+
+    def set_marionette(self, marionette):
+        self.marionette = marionette
 
     @use_class_as_property('api.windows.Windows')
     def windows(self):
@@ -65,3 +67,6 @@ class DOMElement(HTMLElement):
 
     def __init__(self, element):
         pass
+
+    def get_marionette(self):
+        return self.marionette

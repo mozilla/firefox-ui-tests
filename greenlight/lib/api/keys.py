@@ -4,15 +4,16 @@
 
 import marionette
 
+
 class Keys(marionette.keys.Keys):
     """Proxy to marionette's keys with an "accel" provided for convenience
     testing across platforms."""
 
-    def __init__(self, client_getter):
-        self.client_getter = client_getter
+    def __init__(self, marionette_getter):
+        self.marionette_getter = marionette_getter
 
     @property
     def ACCEL(self):
-        if self.client_getter().session_capabilities['platformName'] == 'DARWIN':
+        if self.marionette_getter().session_capabilities['platformName'] == 'DARWIN':
             return self.META
         return self.CONTROL
