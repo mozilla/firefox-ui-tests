@@ -6,7 +6,7 @@ from functools import wraps
 from importlib import import_module
 
 
-class use_lib_as_property(object):
+class use_class_as_property(object):
     """
     This decorator imports a library module and sets an instance
     of the associated class as an attribute on the Puppeteer

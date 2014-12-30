@@ -4,7 +4,7 @@
 
 from marionette import HTMLElement
 
-from .decorators import use_lib_as_property
+from .decorators import use_class_as_property
 
 
 class Puppeteer(object):
@@ -23,7 +23,7 @@ class Puppeteer(object):
     def set_client(self, client):
         self.client = client
 
-    @use_lib_as_property('api.windows.Windows')
+    @use_class_as_property('api.windows.Windows')
     def windows(self):
         """
         Provides shortcuts to the top-level windows.
@@ -31,7 +31,7 @@ class Puppeteer(object):
         See the :class:`~window.Windows` reference.
         """
 
-    @use_lib_as_property('api.keys.Keys')
+    @use_class_as_property('api.keys.Keys')
     def keys(self):
         """
         Provides a definition of control keys to use with keyboard shortcuts.
@@ -40,7 +40,7 @@ class Puppeteer(object):
         See the :class:`~api.keys.Keys` reference.
         """
 
-    @use_lib_as_property('api.prefs.DefaultPrefBranch')
+    @use_class_as_property('api.prefs.DefaultPrefBranch')
     def prefs(self):
         """
         Provides an api for setting and inspecting preferences, as see in
