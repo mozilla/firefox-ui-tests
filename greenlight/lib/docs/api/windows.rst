@@ -1,4 +1,4 @@
-.. py:currentmodule:: greenlight.lib.windows
+.. py:currentmodule:: greenlight.lib.api.windows
 
 Windows
 =======

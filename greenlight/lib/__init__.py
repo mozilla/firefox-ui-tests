@@ -42,13 +42,13 @@ class Puppeteer(object):
         See the :class:`~api.keys.Keys` reference.
         """
 
-    @use_class_as_property('api.prefs.DefaultPrefBranch')
+    @use_class_as_property('api.prefs.Preferences')
     def prefs(self):
         """
         Provides an api for setting and inspecting preferences, as see in
         about:config.
 
-        See the :class:`~api.prefs.DefaultPrefBranch` reference.
+        See the :class:`~api.prefs.Preferences` reference.
         """
 
 

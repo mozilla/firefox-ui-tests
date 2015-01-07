@@ -38,7 +38,6 @@ future. Each library is available from an instance of the FirefoxTestCase class.
 .. toctree::
    :hidden:
 
-   windows
    ui/base_window
    ui/browser_window
    ui/menu
@@ -47,6 +46,7 @@ future. Each library is available from an instance of the FirefoxTestCase class.
    api/keys
    api/l10n
    api/prefs
+   api/windows
 
 
 Indices and tables

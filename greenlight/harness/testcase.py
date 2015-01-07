@@ -24,3 +24,5 @@ class FirefoxTestCase(MarionetteTestCase, Puppeteer):
 
     def tearDown(self, *args, **kwargs):
         MarionetteTestCase.tearDown(self, *args, **kwargs)
+
+        self.prefs.restore_all_prefs()
