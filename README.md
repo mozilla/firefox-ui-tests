@@ -1,6 +1,8 @@
 firefox-greenlight-tests
 ========================
 
+[![Build Status](https://travis-ci.org/mozilla/firefox-greenlight-tests.svg?branch=master)](https://travis-ci.org/mozilla/firefox-greenlight-tests)
+
 Installation
 ------------
 

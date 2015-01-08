@@ -10,7 +10,8 @@ class TestAboutPrivateBrowsing(FirefoxTestCase):
 
     def setUp(self):
         FirefoxTestCase.setUp(self)
-        self.pb_url = self.marionette.absolute_url('private_browsing/about.html?')
+        self.pb_url = self.marionette.absolute_url('private_browsing/'
+                                                   'about.html?')
 
     def tearDown(self):
         self.prefs.restore_pref('app.support.baseURL')

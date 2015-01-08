@@ -19,8 +19,8 @@ class MenuBar(BaseLib):
         :returns: A list of :class:`MenuElement`'s corresponding to the top
                   level menus in the menubar.
         """
-        menus = self.marionette.find_element('id', 'main-menubar') \
-                               .find_elements('tag name', 'menu')
+        menus = (self.marionette.find_element('id', 'main-menubar')
+                                .find_elements('tag name', 'menu'))
         return [self.MenuElement(menu) for menu in menus]
 
     def get_menu(self, label):
@@ -33,7 +33,8 @@ class MenuBar(BaseLib):
         menu = [m for m in self.menus if m.get_attribute('label') == label]
 
         if not menu:
-            raise NoSuchElementException("Could not find a menu with label '{}'".format(label))
+            raise NoSuchElementException("Could not find a menu with "
+                                         "label '{}'".format(label))
 
         return menu[0]
 
@@ -56,8 +57,8 @@ class MenuBar(BaseLib):
             """
             :returns: A list of menuitem elements within this menu.
             """
-            return self.find_element('tag name', 'menupopup') \
-                       .find_elements('tag name', 'menuitem')
+            return (self.find_element('tag name', 'menupopup')
+                        .find_elements('tag name', 'menuitem'))
 
         def select(self, label):
             """
@@ -68,6 +69,8 @@ class MenuBar(BaseLib):
             item = [l for l in self.items if l.get_attribute('label') == label]
 
             if not item:
-                raise NoSuchElementException("Could not find an item labeled '{}' in the '{}' menu".format(label, self.get_attribute('label')))
+                message = ("Item labeled '{}' not found in the '{}' menu"
+                           .format(label, self.get_attribute('label')))
+                raise NoSuchElementException(message)
 
             return item[0].click()

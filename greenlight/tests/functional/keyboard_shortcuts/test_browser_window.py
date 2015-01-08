@@ -27,7 +27,7 @@ class TestBrowserWindowShortcuts(FirefoxTestCase):
         self.marionette.set_context("content")
 
         # Marionette currently fails to detect the correct tab
-        #self.wait_for_condition(lambda mn: mn.get_url() == "about:addons")
+        # self.wait_for_condition(lambda mn: mn.get_url() == "about:addons")
 
     def test_search_field(self):
         current_name = self.marionette.execute_script("""
@@ -39,9 +39,11 @@ class TestBrowserWindowShortcuts(FirefoxTestCase):
 
         keys = [self.keys.ACCEL]
         if self.marionette.session_capabilities['platformName'] == 'LINUX':
-            keys.append(self.browser.get_localized_entity('searchFocusUnix.commandkey'))
+            keys.append(self.browser.get_localized_entity(
+                        'searchFocusUnix.commandkey'))
         else:
-            keys.append(self.browser.get_localized_entity('searchFocus.commandkey'))
+            keys.append(self.browser.get_localized_entity(
+                        'searchFocus.commandkey'))
 
         # CONTROL will only work on Linux and Windows. On OS X it is COMMAND.
         self.browser.send_keys(*keys)

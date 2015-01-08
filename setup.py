@@ -7,8 +7,7 @@ from setuptools import setup, find_packages
 PACKAGE_VERSION = '0.1'
 
 deps = [
-    'manifestparser',
-    'marionette-client',
+    'marionette-client == 0.8.6',
 ]
 
 setup(name='firefox-greenlight-tests',

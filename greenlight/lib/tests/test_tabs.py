@@ -36,7 +36,8 @@ class TestTabs(FirefoxTestCase):
 
         def tabs_loaded(m):
             label = m.execute_script("""
-                return gBrowser.tabs[gBrowser.tabs.length-1].getAttribute('label');
+              return gBrowser.tabs[gBrowser.tabs.length-1]
+                             .getAttribute('label');
             """)
             return 'Projects' in label
 

@@ -24,9 +24,9 @@ class Tabs(BaseLib):
         """
         :returns: The new tab button element.
         """
-        return self.marionette.find_element('id', 'tabbrowser-tabs') \
-                              .find_element('anon attribute',
-                                            {'anonid': 'tabs-newtab-button'})
+        return (self.marionette.find_element('id', 'tabbrowser-tabs')
+                               .find_element('anon attribute',
+                                             {'anonid': 'tabs-newtab-button'}))
 
     @property
     def active_tab(self):
@@ -53,8 +53,8 @@ class Tabs(BaseLib):
         """
         :returns: A list of all the :class:`TabElement`'s.
         """
-        tabs = self.marionette.find_element('id', 'tabbrowser-tabs') \
-                              .find_elements('tag name', 'tab')
+        tabs = (self.marionette.find_element('id', 'tabbrowser-tabs')
+                               .find_elements('tag name', 'tab'))
         return [self.TabElement(tab) for tab in tabs]
 
     def get_tab(self, target):
@@ -72,8 +72,8 @@ class Tabs(BaseLib):
                 if target in tab.get_attribute('label'):
                     return tab
 
-            raise NoSuchElementException("Could not find tab with a label \
-                                         containing '{}'".format(target))
+            raise NoSuchElementException("Tab with a label containing '{}' not"
+                                         " found".format(target))
 
         raise TypeError("Invalid type for 'target': {}".format(type(target)))
 
@@ -98,7 +98,7 @@ class Tabs(BaseLib):
             :returns: True if the tab is currently selected, otherwise False.
             """
             # TODO this doesn't work; see bug 1088223
-            #if tab.get_attribute('selected'):
+            # if tab.get_attribute('selected'):
 
             return self.marionette.execute_script("""
                 let tab = arguments[0];
@@ -109,8 +109,9 @@ class Tabs(BaseLib):
             """
             Closes this tab.
             """
-            close_button = self.find_element('anon', None) \
-                               .find_element('class name', 'tab-close-button')
+            close_button = (self.find_element('anon', None)
+                                .find_element('class name',
+                                              'tab-close-button'))
             ret = close_button.click()
 
             def im_gone(m):
@@ -130,8 +131,8 @@ class MenuPanel(BaseLib):
         """
         :returns: The :class:`MenuPanelElement`.
         """
-        return self.MenuPanelElement(self.marionette.find_element('id',
-                                                                  'PanelUI-popup'))
+        popup = self.marionette.find_element('id', 'PanelUI-popup')
+        return self.MenuPanelElement(popup)
 
     class MenuPanelElement(DOMElement):
         """
@@ -145,16 +146,19 @@ class MenuPanel(BaseLib):
             :returns: A list of all the clickable buttons in the menu panel.
             """
             if not self._buttons:
-                self._buttons = self.find_element('id', 'PanelUI-multiView') \
-                                    .find_element('anon attribute', {'anonid': 'viewContainer'}) \
-                                    .find_elements('tag name', 'toolbarbutton')
+                self._buttons = (self.find_element('id', 'PanelUI-multiView')
+                                     .find_element('anon attribute',
+                                                   {'anonid': 'viewContainer'})
+                                     .find_elements('tag name',
+                                                    'toolbarbutton'))
             return self._buttons
 
         def click(self, target=None):
             """
             Overrides HTMLElement.click to provide a target to click.
 
-            :param target: The label associated with the button to click on, e.g 'New Private Window'.
+            :param target: The label associated with the button to click on,
+             e.g 'New Private Window'.
             """
             if not target:
                 return DOMElement.click(self)
@@ -162,4 +166,5 @@ class MenuPanel(BaseLib):
             for button in self.buttons:
                 if button.get_attribute('label') == target:
                     return button.click()
-            raise NoSuchElementException("Could not find '{}' in the menu panel UI".format(target))
+            raise NoSuchElementException("Could not find '{}' in the "
+                                         "menu panel UI".format(target))

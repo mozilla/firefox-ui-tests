@@ -17,7 +17,8 @@ class TestBackForward(FirefoxTestCase):
             'layout/mozilla_mission.html',
             'layout/mozilla_grants.html',
         ]
-        self.test_urls = [self.marionette.absolute_url(t) for t in self.test_urls]
+        self.test_urls = [self.marionette.absolute_url(t)
+                          for t in self.test_urls]
 
         with self.marionette.using_context('content'):
             for url in self.test_urls:
@@ -42,7 +43,7 @@ class TestBackForward(FirefoxTestCase):
         self.assertFalse(back.is_enabled())
         forward = self.browser.navbar.forward_button
         # TODO For some reason this returns False
-        #self.assertTrue(forward.is_displayed())
+        # self.assertTrue(forward.is_displayed())
         self.assertTrue(forward.is_enabled())
 
         for i in range(1, len(self.test_urls)):

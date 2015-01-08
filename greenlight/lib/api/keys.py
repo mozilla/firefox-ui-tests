@@ -12,8 +12,9 @@ class Keys(marionette.keys.Keys):
     def __init__(self, marionette_getter):
         self.marionette_getter = marionette_getter
 
+        caps = self.marionette_getter().session_capabilities
+        self.isDarwin = caps['platformName'] == 'DARWIN'
+
     @property
     def ACCEL(self):
-        if self.marionette_getter().session_capabilities['platformName'] == 'DARWIN':
-            return self.META
-        return self.CONTROL
+        return self.META if self.isDarwin else self.CONTROL
