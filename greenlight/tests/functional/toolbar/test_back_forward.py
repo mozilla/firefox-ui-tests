@@ -12,6 +12,14 @@ class TestBackForward(FirefoxTestCase):
     def setUp(self):
         FirefoxTestCase.setUp(self)
 
+        with self.marionette.using_context("content"):
+            self.marionette.navigate("about:blank")
+
+        self.marionette.execute_script("""
+            let count = gBrowser.sessionHistory.count;
+            gBrowser.sessionHistory.PurgeHistory(count);
+        """)
+
         self.test_urls = [
             'layout/mozilla.html',
             'layout/mozilla_mission.html',

@@ -48,9 +48,7 @@ class TestTabs(FirefoxTestCase):
             gBrowser.removeAllTabsBut(gBrowser.tabs[0]);
         """)
 
-        # Needs to be set by the harness itself
-        self.prefs.restore_pref('browser.tabs.warnOnClose')
-        self.prefs.restore_pref('browser.tabs.warnOnCloseOtherTabs')
+        self.wait_for_condition(lambda _: len(self.browser.tabbar.tabs) == 1)
 
         FirefoxTestCase.tearDown(self)
 

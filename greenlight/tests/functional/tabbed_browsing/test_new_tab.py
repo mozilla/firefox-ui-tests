@@ -14,8 +14,7 @@ class TestNewTab(FirefoxTestCase):
             self.marionette.navigate(url)
 
     def tearDown(self):
-        # TODO close active tab
-        # bug 1088223: active_tab not working
+        self.marionette.close()
         FirefoxTestCase.tearDown(self)
 
     def test_open_tab_by_newtab_button(self):
