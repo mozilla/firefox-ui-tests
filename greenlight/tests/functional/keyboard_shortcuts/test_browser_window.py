@@ -29,6 +29,8 @@ class TestBrowserWindowShortcuts(FirefoxTestCase):
         # Marionette currently fails to detect the correct tab
         # self.wait_for_condition(lambda mn: mn.get_url() == "about:addons")
 
+        self.marionette.close()
+
     def test_search_field(self):
         current_name = self.marionette.execute_script("""
             return window.document.activeElement.localName;
