@@ -10,7 +10,7 @@ before_install:
     - "/sbin/start-stop-daemon --start --quiet --make-pidfile --pidfile /tmp/custom_xvfb_99.pid --background --exec /usr/bin/Xvfb -- :99 -ac -screen 0 1024x768x24"
 
 install:
-    - sudo apt-get install flashplugin-nonfree svn
+    - sudo apt-get install flashplugin-nonfree subversion
 
     # As long as we have invasive changes lets get the trunk version of marionette-client
     - svn checkout https://github.com/mozilla/gecko-dev/trunk/testing/marionette/client
