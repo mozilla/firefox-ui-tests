@@ -4,7 +4,7 @@
 
 from marionette import MarionetteTestCase
 
-from greenlight.lib import Puppeteer
+from firefoxtests.lib import Puppeteer
 
 
 class FirefoxTestCase(MarionetteTestCase, Puppeteer):

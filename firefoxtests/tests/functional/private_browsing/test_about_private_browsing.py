@@ -2,8 +2,9 @@
 # License, v. 2.0. If a copy of the MPL was not distributed with this
 # file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
-from greenlight.harness.testcase import FirefoxTestCase
 from marionette import By, errors
+
+from firefoxtests.harness.testcase import FirefoxTestCase
 
 
 class TestAboutPrivateBrowsing(FirefoxTestCase):

@@ -10,10 +10,10 @@ deps = [
     'marionette-client == 0.8.6',
 ]
 
-setup(name='firefox-greenlight-tests',
+setup(name='firefox-ui-tests',
       version=PACKAGE_VERSION,
-      description='A collection of release tests for Mozilla Firefox',
-      long_description='See https://github.com/mozilla/firefox-greenlight-tests',
+      description='A collection of Mozilla Firefox UI tests run with Marionette',
+      long_description='See https://github.com/mozilla/firefox-ui-tests',
       classifiers=['Environment :: Console',
                    'Intended Audience :: Developers',
                    'License :: OSI Approved :: Mozilla Public License 2.0 (MPL 2.0)',
@@ -23,9 +23,9 @@ setup(name='firefox-greenlight-tests',
                    'Topic :: Software Development :: Libraries :: Python Modules',
                    ],
       keywords='mozilla',
-      author='Andrew Halberstadt',
-      author_email='ahalberstadt@mozilla.com',
-      url='https://github.com/mozilla/firefox-greenlight-tests',
+      author='Mozilla Automation and Tools Team',
+      author_email='tools@lists.mozilla.org',
+      url='https://github.com/mozilla/firefox-ui-tests',
       license='MPL 2.0',
       packages=find_packages(),
       include_package_data=True,
@@ -33,6 +33,5 @@ setup(name='firefox-greenlight-tests',
       install_requires=deps,
       entry_points="""
         [console_scripts]
-        run-greenlight-tests = greenlight.harness:run
-        greenlight = greenlight.harness:run
+        firefox-ui-tests = firefoxtests.harness:run
       """)

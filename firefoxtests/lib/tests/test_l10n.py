@@ -4,8 +4,8 @@
 
 from marionette.errors import MarionetteException
 
-from greenlight.harness.testcase import FirefoxTestCase
-from greenlight.lib.api.l10n import L10n
+from firefoxtests.harness.testcase import FirefoxTestCase
+from firefoxtests.lib.api.l10n import L10n
 
 
 class TestL10n(FirefoxTestCase):

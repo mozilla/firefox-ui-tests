@@ -2,15 +2,15 @@
 # License, v. 2.0. If a copy of the MPL was not distributed with this
 # file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
-import os
 import sys
 
 from marionette import BaseMarionetteTestRunner
 from marionette.runtests import cli
 
+from firefoxtests import tests
+
 from .arguments import ReleaseTestParser
 from .testcase import FirefoxTestCase
-from greenlight import tests
 
 
 class ReleaseTestRunner(BaseMarionetteTestRunner):

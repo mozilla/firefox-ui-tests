@@ -20,7 +20,7 @@ install:
     - pip install mozdownload pep8
 
 before_script:
-    - pep8 greenlight
+    - pep8 --max-line-length=99 firefoxtests
 
     # Download Firefox Nightly which is compatible with the used version of
     # marionette client
@@ -28,7 +28,7 @@ before_script:
     - tar -xvf *firefox*.tar.bz2
 
 script:
-    - run-greenlight-tests --binary firefox/firefox
+    - firefox-ui-tests --binary firefox/firefox
 
 notifications:
 #      email:

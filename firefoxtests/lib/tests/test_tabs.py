@@ -5,7 +5,7 @@
 from marionette import Wait
 from marionette.errors import NoSuchElementException
 
-from greenlight.harness.testcase import FirefoxTestCase
+from firefoxtests.harness.testcase import FirefoxTestCase
 
 
 class TestTabs(FirefoxTestCase):

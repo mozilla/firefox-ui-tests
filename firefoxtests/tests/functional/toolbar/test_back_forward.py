@@ -4,7 +4,7 @@
 
 import time
 
-from greenlight.harness.testcase import FirefoxTestCase
+from firefoxtests.harness.testcase import FirefoxTestCase
 
 
 class TestBackForward(FirefoxTestCase):

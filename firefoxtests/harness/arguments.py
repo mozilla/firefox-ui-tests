@@ -4,7 +4,7 @@
 
 from marionette import BaseMarionetteOptions
 
-from greenlight import tests
+from firefoxtests import tests
 
 
 class ReleaseTestParser(BaseMarionetteOptions):

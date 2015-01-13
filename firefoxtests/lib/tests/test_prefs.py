@@ -4,7 +4,7 @@
 
 from marionette.errors import MarionetteException
 
-from greenlight.harness.testcase import FirefoxTestCase
+from firefoxtests.harness.testcase import FirefoxTestCase
 
 
 class testPreferences(FirefoxTestCase):
