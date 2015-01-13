@@ -10,7 +10,12 @@ before_install:
     - "/sbin/start-stop-daemon --start --quiet --make-pidfile --pidfile /tmp/custom_xvfb_99.pid --background --exec /usr/bin/Xvfb -- :99 -ac -screen 0 1024x768x24"
 
 install:
-    - sudo apt-get install flashplugin-nonfree
+    - sudo apt-get install flashplugin-nonfree svn
+
+    # As long as we have invasive changes lets get the trunk version of marionette-client
+    - svn checkout https://github.com/mozilla/gecko-dev/trunk/testing/marionette/client
+    - "cd client && python setup develop && cd .."
+
     - python setup.py develop
     - pip install mozdownload pep8
 
