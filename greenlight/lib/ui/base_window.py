@@ -30,7 +30,7 @@ class BaseWindow(DOMElement):
     def __init__(self, element):
         DOMElement.__init__(self, element)
 
-        self.handle = self.marionette.chrome_window_handle
+        self.handle = self.marionette.current_chrome_window_handle
         self.l10n = L10n(self.get_marionette)
 
     @property
@@ -119,7 +119,7 @@ class BaseWindow(DOMElement):
 
     def switch_to(self):
         """Switches to this browser window."""
-        old_handle = self.marionette.chrome_window_handle
+        old_handle = self.marionette.current_chrome_window_handle
         if self.handle != old_handle:
             self.marionette.switch_to_window(self.handle)
 

@@ -17,7 +17,7 @@ class Windows(BaseLib):
         :returns: a list of :class:`BaseWindow`'s corresponding to the
                   windows in `marionette.window_handles`.
         """
-        old_handle = self.marionette.chrome_window_handle
+        old_handle = self.marionette.current_chrome_window_handle
         windows = []
         for handle in self.marionette.chrome_window_handles:
             self.marionette.switch_to_window(handle)
@@ -71,7 +71,7 @@ class Windows(BaseLib):
         elif callable(target):
             # switch if callback returns true. This is useful for when you want
             # to, e.g. switch to the window that contains a certain element.
-            old_handle = self.marionette.chrome_window_handle
+            old_handle = self.marionette.current_chrome_window_handle
             for window in self.all:
                 window.switch_to()
                 if target(window):

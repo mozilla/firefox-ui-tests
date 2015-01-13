@@ -27,11 +27,11 @@ class TestWindows(FirefoxTestCase):
 
         self.windows.switch_to(windows[1])
         self.assertEquals(windows[1].handle,
-                          self.marionette.chrome_window_handle)
+                          self.marionette.current_chrome_window_handle)
 
         self.windows.switch_to(windows[2].handle)
         self.assertEquals(windows[2].handle,
-                          self.marionette.chrome_window_handle)
+                          self.marionette.current_chrome_window_handle)
 
         def is_my_window(win):
             with self.marionette.using_context('content'):
@@ -39,7 +39,7 @@ class TestWindows(FirefoxTestCase):
 
         self.windows.switch_to(is_my_window)
         self.assertEquals(windows[0].handle,
-                          self.marionette.chrome_window_handle)
+                          self.marionette.current_chrome_window_handle)
 
         with self.assertRaises(NoSuchElementException):
             self.windows.switch_to("humbug")
@@ -56,7 +56,7 @@ class TestWindows(FirefoxTestCase):
 
         first_window = self.windows.current
         self.assertEquals(first_window.handle,
-                          self.marionette.chrome_window_handle)
+                          self.marionette.current_chrome_window_handle)
         self.assertEquals(first_window.get_attribute('windowtype'),
                           self.marionette.get_window_type())
         self.assertEquals(first_window.window,
@@ -78,7 +78,7 @@ class TestWindows(FirefoxTestCase):
 
         first_window.switch_to()
         self.assertEquals(first_window.handle,
-                          self.marionette.chrome_window_handle)
+                          self.marionette.current_chrome_window_handle)
 
         self.assertFalse(second_window.closed)
         second_window.close()
@@ -87,7 +87,7 @@ class TestWindows(FirefoxTestCase):
         self.assertEquals(len(self.windows.all), 1)
         self.assertEquals(len(self.marionette.chrome_window_handles), 1)
         self.assertEquals(first_window.handle,
-                          self.marionette.chrome_window_handle)
+                          self.marionette.current_chrome_window_handle)
 
     def test_browser_window(self):
         self.assertNotEqual(self.browser.dtds, [])
