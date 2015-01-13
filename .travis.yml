@@ -19,7 +19,7 @@ before_script:
 
     # Download Firefox Nightly which is compatible with the used version of
     # marionette client
-    - mozdownload -t daily --date 2014-12-18
+    - mozdownload -t daily
     - tar -xvf *firefox*.tar.bz2
 
 script:
