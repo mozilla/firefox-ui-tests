@@ -1,5 +1,5 @@
-firefox-greenlight-tests
-========================
+firefox-ui-tests
+================
 
 [![Build Status](https://travis-ci.org/mozilla/firefox-ui-tests.svg?branch=master)](https://travis-ci.org/mozilla/firefox-ui-tests)
 
