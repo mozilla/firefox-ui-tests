@@ -1,4 +1,4 @@
-.. py:currentmodule:: greenlight.lib.api.keys
+.. py:currentmodule:: firefoxtests.lib.api.keys
 
 Keys
 ====

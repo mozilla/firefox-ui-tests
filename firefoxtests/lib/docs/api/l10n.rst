@@ -1,4 +1,4 @@
-.. py:currentmodule:: greenlight.lib.api.l10n
+.. py:currentmodule:: firefoxtests.lib.api.l10n
 
 Localization
 ============

@@ -1,4 +1,4 @@
-.. py:currentmodule:: greenlight.lib.ui.menu
+.. py:currentmodule:: firefoxtests.lib.ui.menu
 
 Menu
 ====

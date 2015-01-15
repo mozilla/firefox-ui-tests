@@ -1,4 +1,4 @@
-.. py:currentmodule:: greenlight.lib
+.. py:currentmodule:: firefoxtests.lib
 
 Firefox Puppeteer
 =================
@@ -18,12 +18,12 @@ libraries for the tab bar, the navigation bar, etc.
 Installation
 ------------
 
-Currently Firefox Puppeteer lives in the `firefox-greenlight-tests`_ repository,
+Currently Firefox Puppeteer lives in the `firefox-ui-tests`_ repository,
 along with instructions for installation and usage.
 There are plans to move it alongside the `Marionette python client`_.
 
 .. _Marionette python client: http://marionette-client.readthedocs.org/en/latest/
-.. _firefox-greenlight-tests: https://github.com/mozilla/firefox-greenlight-tests/tree/master/greenlight/lib
+.. _firefox-ui-tests: https://github.com/mozilla/firefox-ui-tests/tree/master/firefoxtests/lib
 
 Libraries
 ---------

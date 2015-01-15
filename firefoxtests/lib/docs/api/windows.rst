@@ -1,4 +1,4 @@
-.. py:currentmodule:: greenlight.lib.api.windows
+.. py:currentmodule:: firefoxtests.lib.api.windows
 
 Windows
 =======

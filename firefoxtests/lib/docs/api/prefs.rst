@@ -1,4 +1,4 @@
-.. py:currentmodule:: greenlight.lib.api.prefs
+.. py:currentmodule:: firefoxtests.lib.api.prefs
 
 Preferences
 ===========

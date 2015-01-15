@@ -1,4 +1,4 @@
-.. py:currentmodule:: greenlight.lib.ui.browser_window
+.. py:currentmodule:: firefoxtests.lib.ui.browser_window
 
 Browser Window
 ==============

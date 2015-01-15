@@ -1,4 +1,4 @@
-  .. py:currentmodule:: greenlight.lib.ui.tabbar
+  .. py:currentmodule:: firefoxtests.lib.ui.tabbar
 
 Tabbar
 ======

@@ -1,4 +1,4 @@
-.. py:currentmodule:: greenlight.lib.ui.navbar
+.. py:currentmodule:: firefoxtests.lib.ui.navbar
 
 Navigation Bar
 ==============
