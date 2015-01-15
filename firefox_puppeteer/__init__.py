@@ -57,6 +57,14 @@ class Puppeteer(object):
         See the :class:`~api.prefs.Preferences` reference.
         """
 
+    @use_class_as_property('api.appinfo.AppInfo')
+    def appinfo(self):
+        """
+        Provides access to members of the appinfo  api.
+
+        See the :class:`~api.appinfo.AppInfo` reference.
+        """
+
 
 class DOMElement(HTMLElement):
     """

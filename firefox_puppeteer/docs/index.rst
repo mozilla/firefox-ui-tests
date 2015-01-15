@@ -43,6 +43,7 @@ future. Each library is available from an instance of the FirefoxTestCase class.
    ui/menu
    ui/navbar
    ui/tabbar
+   api/appinfo
    api/keys
    api/l10n
    api/prefs

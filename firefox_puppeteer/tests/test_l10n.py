@@ -5,6 +5,7 @@
 from marionette.errors import MarionetteException
 
 from firefox_puppeteer.api.l10n import L10n
+from firefox_ui_harness.decorators import skip_if_e10s
 from firefox_ui_harness.testcase import FirefoxTestCase
 
 
@@ -29,6 +30,8 @@ class TestL10n(FirefoxTestCase):
                           self.l10n.get_localized_entity,
                           dtds, 'notExistent')
 
+    # Test navigates between remote and non remote pages (bug 1096488)
+    @skip_if_e10s
     def test_dtd_entity_content(self):
         dtds = ['chrome://global/locale/filepicker.dtd',
                 'chrome://global/locale/aboutSupport.dtd']
