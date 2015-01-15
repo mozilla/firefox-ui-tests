@@ -20,7 +20,8 @@ install:
     - pip install mozdownload pep8
 
 before_script:
-    - pep8 --max-line-length=99 firefoxtests
+    # Run pep8 on all except the checked out marionette-client folder
+    - pep8 --max-line-length=99 --exclude=client .
 
     # Download Firefox Nightly which is compatible with the used version of
     # marionette client

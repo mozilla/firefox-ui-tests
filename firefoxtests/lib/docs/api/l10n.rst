@@ -1,8 +1,0 @@
-.. py:currentmodule:: firefoxtests.lib.api.l10n
-
-Localization
-============
-
-.. autoclass:: L10n
-   :members:
-   :undoc-members:
