@@ -33,9 +33,6 @@ class Preferences(BaseLib):
         """
         assert pref_name is not None
 
-        # Bug 1118825 - None is causing an exception to be raised
-        interface = interface or ''
-
         with self.marionette.using_context('chrome'):
             return self.marionette.execute_script("""
               Cu.import("resource://gre/modules/Services.jsm");
@@ -53,7 +50,7 @@ class Preferences(BaseLib):
               }
 
               // If an interface has been set, handle it differently
-              if (interface != '') {
+              if (interface !== null) {
                 return prefBranch.getComplexValue(pref_name,
                                                   Ci[interface]).data;
               }
