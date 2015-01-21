@@ -23,4 +23,5 @@ class TestNewTab(FirefoxTestCase):
         self.assertEqual(len(self.browser.tabbar.tabs), num_tabs + 1)
 
         newtab_url = self.prefs.get_pref('browser.newtab.url')
-        self.assertEqual(self.browser.navbar.location, newtab_url)
+        with self.marionette.using_context("content"):
+            self.assertEqual(self.marionette.get_url(), newtab_url)

@@ -3,7 +3,7 @@ language: python
 python:
     - 2.7
 
-env: DISPLAY=:99
+env: DISPLAY=:99 MOZ_XVFB=1
 
 before_install:
     - sudo apt-get update

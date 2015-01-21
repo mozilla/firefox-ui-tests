@@ -32,15 +32,10 @@ Libraries
 The following libraries are currently implemented. More will be added in the
 future. Each library is available from an instance of the FirefoxTestCase class.
 
-.. autoclass:: Puppeteer
-   :members:
-
 .. toctree::
-   :hidden:
-
    ui/menu
-   ui/navbar
    ui/tabbar
+   ui/toolbars
    ui/windows
    api/appinfo
    api/keys

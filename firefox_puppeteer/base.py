@@ -21,4 +21,4 @@ class BaseLib(object):
         return self._marionette
 
     def get_marionette(self):
-        return self._marionette
+        return self.marionette

@@ -415,7 +415,7 @@ class BrowserWindow(BaseWindow):
                 return PrivateBrowsingUtils.isWindowPrivate(chromeWindow);
             """, script_args=[self.window])
 
-    @use_class_as_property('ui.navbar.NavBar')
+    @use_class_as_property('ui.toolbars.NavBar')
     def navbar(self):
         """
         Provides access to the navigation bar. This is the toolbar containing
