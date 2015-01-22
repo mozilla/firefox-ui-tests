@@ -16,7 +16,7 @@ from .testcase import FirefoxTestCase
 
 class ReleaseTestRunner(BaseMarionetteTestRunner):
     extra_prefs = {
-        "browser.tabs.remote.autostart": True,
+        "browser.tabs.remote.autostart": False,
     }
 
     def __init__(self, *args, **kwargs):

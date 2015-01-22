@@ -2,7 +2,8 @@
 # License, v. 2.0. If a copy of the MPL was not distributed with this file,
 # You can obtain one at http://mozilla.org/MPL/2.0/.
 
-from marionette import NoSuchElementException
+
+from marionette.errors import NoSuchElementException
 
 from ..base import BaseLib
 from .. import DOMElement
@@ -33,8 +34,8 @@ class MenuBar(BaseLib):
         menu = [m for m in self.menus if m.get_attribute('label') == label]
 
         if not menu:
-            raise NoSuchElementException("Could not find a menu with "
-                                         "label '{}'".format(label))
+            raise NoSuchElementException('Could not find a menu with '
+                                         'label "{}"'.format(label))
 
         return menu[0]
 

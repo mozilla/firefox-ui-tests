@@ -31,12 +31,12 @@ class Puppeteer(object):
     def set_marionette(self, marionette):
         self.marionette = marionette
 
-    @use_class_as_property('api.windows.Windows')
-    def windows(self):
+    @use_class_as_property('api.appinfo.AppInfo')
+    def appinfo(self):
         """
-        Provides shortcuts to the top-level windows.
+        Provides access to members of the appinfo  api.
 
-        See the :class:`~window.Windows` reference.
+        See the :class:`~api.appinfo.AppInfo` reference.
         """
 
     @use_class_as_property('api.keys.Keys')
@@ -44,9 +44,16 @@ class Puppeteer(object):
         """
         Provides a definition of control keys to use with keyboard shortcuts.
         For example, keys.CONTROL or keys.ALT.
-
         See the :class:`~api.keys.Keys` reference.
         """
+
+    @property
+    def platform(self):
+        """Returns the lowercased platform name.
+
+        :returns: Platform name
+        """
+        return self.marionette.session_capabilities['platformName'].lower()
 
     @use_class_as_property('api.prefs.Preferences')
     def prefs(self):
@@ -57,12 +64,12 @@ class Puppeteer(object):
         See the :class:`~api.prefs.Preferences` reference.
         """
 
-    @use_class_as_property('api.appinfo.AppInfo')
-    def appinfo(self):
+    @use_class_as_property('ui.windows.Windows')
+    def windows(self):
         """
-        Provides access to members of the appinfo  api.
+        Provides shortcuts to the top-level windows.
 
-        See the :class:`~api.appinfo.AppInfo` reference.
+        See the :class:`~ui.window.Windows` reference.
         """
 
 

@@ -2,7 +2,8 @@
 # License, v. 2.0. If a copy of the MPL was not distributed with this
 # file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
-from marionette import By, errors
+from marionette import By
+from marionette.errors import NoSuchElementException
 
 from firefox_ui_harness.decorators import skip_if_e10s
 from firefox_ui_harness.testcase import FirefoxTestCase
@@ -12,8 +13,7 @@ class TestAboutPrivateBrowsing(FirefoxTestCase):
 
     def setUp(self):
         FirefoxTestCase.setUp(self)
-        self.pb_url = self.marionette.absolute_url('private_browsing/'
-                                                   'about.html?')
+        self.pb_url = self.marionette.absolute_url('private_browsing/about.html?')
 
     def tearDown(self):
         self.marionette.close()
@@ -42,9 +42,7 @@ class TestAboutPrivateBrowsing(FirefoxTestCase):
             top_html.send_keys(self.keys.SHIFT, self.keys.ACCEL, access_key)
 
         self.wait_for_condition(lambda mn: len(self.windows.all) == 2)
-        self.windows.switch_to(lambda win: win.is_private)
-        self.browser_pb = self.windows.current
-
+        self.browser_pb = self.windows.switch_to(lambda win: win.is_private)
         self.assertTrue(self.browser_pb.is_private)
 
         with self.marionette.using_context('content'):
@@ -53,7 +51,7 @@ class TestAboutPrivateBrowsing(FirefoxTestCase):
                     link = self.marionette.find_element(By.ID, 'learnMore')
                     link.click()
                     return True
-                except errors.NoSuchElementException:
+                except NoSuchElementException:
                     return False
 
             self.wait_for_condition(find_element)
@@ -66,8 +64,6 @@ class TestAboutPrivateBrowsing(FirefoxTestCase):
 
         # TODO: get_url does not correspond to what we want here.
         self.assertIn(url_bar.get_attribute('value'), target_url)
-
-        self.browser_pb.close()
 
         # TODO: Can be removed once Marionette can directly close a window.
         # For now the opened tab gets closed first. See bug 1114623

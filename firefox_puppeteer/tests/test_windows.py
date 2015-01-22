@@ -3,98 +3,198 @@
 # file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
 from marionette import By
-from marionette.errors import NoSuchElementException
+from marionette.errors import NoSuchWindowException
+
+import firefox_puppeteer.errors as errors
 
 from firefox_ui_harness.testcase import FirefoxTestCase
+from firefox_puppeteer.ui.windows import BaseWindow
 
 
 class TestWindows(FirefoxTestCase):
 
-    def test_switch_to_window(self):
+    def test_windows(self):
         url = self.marionette.absolute_url('layout/mozilla')
 
-        first_window = self.windows.current
-
-        # Those actions will fail if the current window is not a browser window
-        first_window.send_shortcut('ctrl-n')
-        first_window.send_shortcut('ctrl-n')
+        # Open two more windows
+        for index in range(0, 2):
+            self.marionette.execute_script(""" window.open(); """)
 
         windows = self.windows.all
         self.assertEquals(len(windows), 3)
 
+        # Switch to the 2nd window
+        self.windows.switch_to(windows[1].handle)
+        self.assertEquals(windows[1].handle, self.marionette.current_chrome_window_handle)
+
+        # TODO: Needs updated tabs module for improved navigation
         with self.marionette.using_context('content'):
             self.marionette.navigate(url)
 
-        self.windows.switch_to(windows[1])
-        self.assertEquals(windows[1].handle,
-                          self.marionette.current_chrome_window_handle)
-
+        # Switch to the last window and find 2nd window by URL
         self.windows.switch_to(windows[2].handle)
-        self.assertEquals(windows[2].handle,
-                          self.marionette.current_chrome_window_handle)
 
-        def is_my_window(win):
-            with self.marionette.using_context('content'):
-                return self.marionette.get_url() == url
+        # TODO: A window can have multiple tabs, so this may need an update
+        # when the tabs module gets implemented
+        def find_by_url(win):
+            with win.marionette.using_context('content'):
+                return win.marionette.get_url() == url
 
-        self.windows.switch_to(is_my_window)
-        self.assertEquals(windows[0].handle,
-                          self.marionette.current_chrome_window_handle)
+        self.windows.switch_to(find_by_url)
+        self.assertEquals(windows[1].handle, self.marionette.current_chrome_window_handle)
 
-        with self.assertRaises(NoSuchElementException):
-            self.windows.switch_to("humbug")
+        self.windows.switch_to(find_by_url)
 
-        with self.assertRaises(NoSuchElementException):
-            self.windows.switch_to(lambda win: False)
+        # Switching to an unknown handles has to fail
+        self.assertRaises(NoSuchWindowException,
+                          self.windows.switch_to, "humbug")
+        self.assertRaises(NoSuchWindowException,
+                          self.windows.switch_to, lambda win: False)
 
-        windows[1].close()
-        windows[2].close()
+        self.windows.close_all(self.browser)
+        self.browser.switch_to()
 
-    def test_base_window(self):
-        self.assertEquals(len(self.windows.all), 1)
-        self.assertEquals(len(self.marionette.chrome_window_handles), 1)
+        self.assertEqual(len(self.windows.all), 1)
 
-        first_window = self.windows.current
-        self.assertEquals(first_window.handle,
-                          self.marionette.current_chrome_window_handle)
-        self.assertEquals(first_window.get_attribute('windowtype'),
+    def test_base_window_basics(self):
+        # force BaseWindow instance
+        win1 = BaseWindow(lambda: self.marionette, self.browser.handle)
+
+        self.assertEquals(win1.handle, self.marionette.current_chrome_window_handle)
+        self.assertEquals(win1.window, self.marionette.find_element(By.CSS_SELECTOR, ':root'))
+        self.assertEquals(win1.window.get_attribute('windowtype'),
                           self.marionette.get_window_type())
-        self.assertEquals(first_window.window,
-                          self.marionette.find_element(By.CSS_SELECTOR,
-                                                       ':root'))
+        self.assertFalse(win1.closed)
 
-        # This action will fail if the current window is not a browser window
-        first_window.send_shortcut('ctrl-n')
+        # Test invalid parameters for BaseWindow constructor
+        self.assertRaises(TypeError,
+                          BaseWindow, self.marionette, self.browser.handle)
+        self.assertRaises(errors.UnknownWindowError,
+                          BaseWindow, lambda: self.marionette, 10)
 
-        self.assertEquals(len(self.windows.all), 2)
+        # Test invalid shortcuts
+        self.assertRaises(KeyError,
+                          win1.send_shortcut, 'l', acel=True)
+
+    def test_base_window_open_close(self):
+        # force BaseWindow instance
+        win1 = BaseWindow(lambda: self.marionette, self.browser.handle)
+
+        # Open a new window (will be focused), and check states
+        win2 = win1.open_window()
+
+        # force BaseWindow instance
+        win2 = BaseWindow(lambda: self.marionette, win2.handle)
+
         self.assertEquals(len(self.marionette.chrome_window_handles), 2)
-        for handle in self.marionette.chrome_window_handles:
-            if handle != first_window.handle:
-                self.marionette.switch_to_window(handle)
-                break
+        self.assertNotEquals(win1.handle, win2.handle)
+        self.assertEquals(win2.handle, self.marionette.current_chrome_window_handle)
 
-        second_window = self.windows.current
-        self.assertNotEquals(first_window.handle, second_window.handle)
+        win2.close()
 
-        first_window.switch_to()
-        self.assertEquals(first_window.handle,
-                          self.marionette.current_chrome_window_handle)
-
-        self.assertFalse(second_window.closed)
-        second_window.close()
-        self.assertTrue(second_window.closed)
-
-        self.assertEquals(len(self.windows.all), 1)
+        self.assertTrue(win2.closed)
         self.assertEquals(len(self.marionette.chrome_window_handles), 1)
-        self.assertEquals(first_window.handle,
-                          self.marionette.current_chrome_window_handle)
+        self.assertEquals(win2.handle, self.marionette.current_chrome_window_handle)
+        self.assertTrue(win1.focused)
 
-    def test_browser_window(self):
+        win1.switch_to()
+
+        # Open and close a new window by a custom callback
+        def opener(window):
+            window.marionette.execute_script(""" window.open(); """)
+
+        def closer(window):
+            window.marionette.execute_script(""" window.close(); """)
+
+        win2 = win1.open_window(callback=opener)
+
+        # force BaseWindow instance
+        win2 = BaseWindow(lambda: self.marionette, win2.handle)
+
+        self.assertEquals(len(self.marionette.chrome_window_handles), 2)
+
+        win2.close(callback=closer)
+        win1.switch_to()
+
+        # Check for an unexpected window class
+        self.assertRaises(errors.UnexpectedWindowTypeError,
+                          win1.open_window, expected_window_class=BaseWindow)
+        self.windows.close_all([win1.handle])
+
+    def test_base_window_switch_to_and_focus(self):
+        # force BaseWindow instance
+        win1 = BaseWindow(lambda: self.marionette, self.browser.handle)
+
+        # Open a new window (will be focused), and check states
+        win2 = win1.open_window()
+
+        # force BaseWindow instance
+        win2 = BaseWindow(lambda: self.marionette, win2.handle)
+
+        self.assertEquals(win2.handle, self.windows.focused_chrome_window_handle)
+        self.assertFalse(win1.focused)
+        self.assertTrue(win2.focused)
+
+        win2.switch_to()
+        self.assertEquals(win2.handle, self.marionette.current_chrome_window_handle)
+        self.assertTrue(win2.focused)
+
+        # Switch back to win1 without moving the focus, but focus separately
+        win1.switch_to()
+        self.assertEquals(win1.handle, self.marionette.current_chrome_window_handle)
+        self.assertTrue(win2.focused)
+
+        win1.focus()
+        self.assertTrue(win1.focused)
+
+        # Switch back to win2 by focusing it directly
+        win2.focus()
+        self.assertEquals(win2.handle, self.marionette.current_chrome_window_handle)
+        self.assertEquals(win2.handle, self.windows.focused_chrome_window_handle)
+        self.assertTrue(win2.focused)
+
+        # Close win2, and check that it keeps active but looses focus
+        win2.switch_to()
+        win2.close()
+
+        win1.switch_to()
+
+    def test_browser_window_basic(self):
         self.assertNotEqual(self.browser.dtds, [])
         self.assertNotEqual(self.browser.properties, [])
 
-        self.assertIsNotNone(self.browser.is_private)
+        self.assertFalse(self.browser.is_private)
 
         self.assertIsNotNone(self.browser.menubar)
         self.assertIsNotNone(self.browser.navbar)
         self.assertIsNotNone(self.browser.tabbar)
+
+    def test_browser_window_open_close(self):
+        # open and close a new browser windows by menu
+        win2 = self.browser.open_browser()
+        self.assertEquals(win2, self.windows.current)
+        self.assertFalse(self.browser.is_private)
+        win2.close()
+
+        # open and close a new browser window by shortcut
+        win2 = self.browser.open_browser(trigger='shortcut')
+        self.assertEquals(win2, self.windows.current)
+        self.assertFalse(self.browser.is_private)
+        win2.close(trigger='shortcut')
+
+        # open and close a new private browsing window
+        win2 = self.browser.open_browser(is_private=True)
+        self.assertEquals(win2, self.windows.current)
+        self.assertTrue(win2.is_private)
+        win2.close()
+
+        # open and close a new private browsing window
+        win2 = self.browser.open_browser(trigger='shortcut', is_private=True)
+        self.assertEquals(win2, self.windows.current)
+        self.assertTrue(win2.is_private)
+        win2.close()
+
+        # force closing a window
+        win2 = self.browser.open_browser()
+        self.assertEquals(win2, self.windows.current)
+        win2.close(force=True)

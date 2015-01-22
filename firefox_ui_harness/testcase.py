@@ -24,15 +24,23 @@ class FirefoxTestCase(MarionetteTestCase, Puppeteer):
         self.browser = self.windows.current
 
     def tearDown(self, *args, **kwargs):
-        self.prefs.restore_all_prefs()
-        MarionetteTestCase.tearDown(self, *args, **kwargs)
+        try:
+            # Marionette needs an existent window to be selected. Take the first
+            # browser window which usually should not have been closed
+            # TODO: We might have to make this more error prone in case the
+            # original window has been closed.
+            self.browser.switch_to()
 
-        # This assertion should be run after all other tearDown code
-        # so that in case of a failure, further tests will not run
-        # in a state that is more inconsistent than necessary.
-        win_count = len(self.marionette.window_handles)
-        self.assertEqual(win_count, self._start_handle_count,
-                         "A test must not leak window handles. "
-                         "This test started the browser with %s open "
-                         "top level browsing contexts, but ended with %s." %
-                         (self._start_handle_count, win_count))
+            self.prefs.restore_all_prefs()
+
+            # This assertion should be run after all other tearDown code
+            # so that in case of a failure, further tests will not run
+            # in a state that is more inconsistent than necessary.
+            win_count = len(self.marionette.window_handles)
+            self.assertEqual(win_count, self._start_handle_count,
+                             "A test must not leak window handles. "
+                             "This test started the browser with %s open "
+                             "top level browsing contexts, but ended with %s." %
+                             (self._start_handle_count, win_count))
+        finally:
+            MarionetteTestCase.tearDown(self, *args, **kwargs)

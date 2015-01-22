@@ -38,16 +38,14 @@ future. Each library is available from an instance of the FirefoxTestCase class.
 .. toctree::
    :hidden:
 
-   ui/base_window
-   ui/browser_window
    ui/menu
    ui/navbar
    ui/tabbar
+   ui/windows
    api/appinfo
    api/keys
    api/l10n
    api/prefs
-   api/windows
 
 
 Indices and tables

@@ -8,6 +8,9 @@ class BaseLib(object):
     attribute."""
 
     def __init__(self, marionette_getter):
+        if not callable(marionette_getter):
+            raise TypeError('Invalid callback for "marionette_getter": %s' % marionette_getter)
+
         self._marionette = None
         self._marionette_getter = marionette_getter
 

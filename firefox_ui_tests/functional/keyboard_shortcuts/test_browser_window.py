@@ -15,19 +15,16 @@ class TestBrowserWindowShortcuts(FirefoxTestCase):
         with self.marionette.using_context('content'):
             self.marionette.navigate('about:')
 
-        key = self.browser.get_localized_entity('addons.commandkey')
-
         num_tabs = len(self.browser.tabbar.tabs)
 
-        self.browser.send_keys(self.keys.SHIFT, self.keys.ACCEL, key)
+        # TODO: To be moved to the upcoming add-ons library
+        self.browser.send_shortcut(self.browser.get_localized_entity('addons.commandkey'),
+                                   accel=True, shift=True)
         self.assertEqual(len(self.browser.tabbar.tabs), num_tabs + 1)
 
-        # TODO: For now we have to hard-code the tab, but we should really work
-        # with events here to get the new tab automatically.
-        self.marionette.set_context("content")
-
-        # Marionette currently fails to detect the correct tab
-        # self.wait_for_condition(lambda mn: mn.get_url() == "about:addons")
+        # TODO: Marionette currently fails to detect the correct tab
+        # with self.marionette.using_content('content'):
+        #     self.wait_for_condition(lambda mn: mn.get_url() == "about:addons")
 
         self.marionette.close()
 
@@ -39,16 +36,13 @@ class TestBrowserWindowShortcuts(FirefoxTestCase):
         # This doesn't test anything if we're already at input.
         self.assertNotEqual(current_name, "input")
 
-        keys = [self.keys.ACCEL]
-        if self.marionette.session_capabilities['platformName'] == 'LINUX':
-            keys.append(self.browser.get_localized_entity(
-                        'searchFocusUnix.commandkey'))
+        # TODO: To be moved to the upcoming search library
+        if self.platform == 'linux':
+            key = 'searchFocusUnix.commandkey'
         else:
-            keys.append(self.browser.get_localized_entity(
-                        'searchFocus.commandkey'))
-
-        # CONTROL will only work on Linux and Windows. On OS X it is COMMAND.
-        self.browser.send_keys(*keys)
+            key = 'searchFocus.commandkey'
+        self.browser.send_shortcut(self.browser.get_localized_entity(key),
+                                   accel=True)
 
         # TODO: Check that the right input box is focused
         # Located below searchbar as class="autocomplete-textbox textbox-input"

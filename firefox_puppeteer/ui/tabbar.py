@@ -6,10 +6,8 @@ from marionette import (
     HTMLElement,
     Wait,
 )
-from marionette.errors import (
-    NoSuchElementException,
-    StaleElementException,
-)
+
+from marionette.errors import NoSuchElementException, StaleElementException
 
 from .. import DOMElement
 from ..base import BaseLib
@@ -72,8 +70,8 @@ class Tabs(BaseLib):
                 if target in tab.get_attribute('label'):
                     return tab
 
-            raise NoSuchElementException("Tab with a label containing '{}' not"
-                                         " found".format(target))
+            raise NoSuchElementException('Tab with a label containing "{}"" not'
+                                         ' found'.format(target))
 
         raise TypeError("Invalid type for 'target': {}".format(type(target)))
 
@@ -166,5 +164,5 @@ class MenuPanel(BaseLib):
             for button in self.buttons:
                 if button.get_attribute('label') == target:
                     return button.click()
-            raise NoSuchElementException("Could not find '{}' in the "
-                                         "menu panel UI".format(target))
+            raise NoSuchElementException('Could not find "{}"" in the '
+                                         'menu panel UI'.format(target))
