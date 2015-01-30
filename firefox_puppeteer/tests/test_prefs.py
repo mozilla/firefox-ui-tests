@@ -28,7 +28,7 @@ class testPreferences(FirefoxTestCase):
         self.assertEqual(self.prefs.get_pref(self.new_pref), None)
 
         # There is no such preference anymore
-        self.assertFalse(self.prefs.reset_pref(self.string_pref))
+        self.assertFalse(self.prefs.reset_pref(self.new_pref))
 
     def test_get_pref(self):
         # check correct types
