@@ -3,126 +3,322 @@
 # You can obtain one at http://mozilla.org/MPL/2.0/.
 
 from marionette import (
-    HTMLElement,
     Wait,
 )
 
-from marionette.errors import NoSuchElementException, StaleElementException
+from marionette.errors import NoSuchElementException
+
+import firefox_puppeteer.errors as errors
 
 from .. import DOMElement
-from ..base import BaseLib
+from ..base import UIBaseLib
 
 
-class Tabs(BaseLib):
+class TabBar(UIBaseLib):
+    """Wraps the tabs toolbar DOM element inside a browser window."""
 
-    # TODO arrow scrollers, drop down list
-
-    @property
-    def newtab_button(self):
-        """
-        :returns: The new tab button element.
-        """
-        return (self.marionette.find_element('id', 'tabbrowser-tabs')
-                               .find_element('anon attribute',
-                                             {'anonid': 'tabs-newtab-button'}))
-
-    @property
-    def active_tab(self):
-        """
-        :returns: The :class:`TabElement` corresponding to the currently active
-                  tab.
-        """
-        for tab in self.tabs:
-            if tab.is_active():
-                return tab
+    # Properties for visual elements of the tabs toolbar #
 
     @property
     def menupanel(self):
-        """
-        Provides access to the menu popup. This is the menu opened after
-        clicking the settings button on the right hand side of the browser.
+        """A :class:`~ui.menu.MenuPanel` instance which represents the menu panel
+        at the far right side of the tabs toolbar.
 
-        See the :class:`~ui.menu.MenuPanel` reference.
+        :returns: :class:`~ui.menu.MenuPanel` instance
         """
-        return MenuPanel(lambda: self.marionette)
+        return MenuPanel(lambda: self.marionette, self.window)
+
+    @property
+    def newtab_button(self):
+        """The DOM element which represents the new tab button.
+
+        :returns: Reference to the new tab button
+        """
+        return self.toolbar.find_element('anon attribute', {'anonid': 'tabs-newtab-button'})
 
     @property
     def tabs(self):
-        """
-        :returns: A list of all the :class:`TabElement`'s.
-        """
-        tabs = (self.marionette.find_element('id', 'tabbrowser-tabs')
-                               .find_elements('tag name', 'tab'))
-        return [self.TabElement(tab) for tab in tabs]
+        """List of all the :class:`Tab` instances of the current browser window.
 
-    def get_tab(self, target):
+        :returns: List of :class:`Tab`'s
         """
-        Get a reference to the specified tab.
+        tabs = self.toolbar.find_elements('tag name', 'tab')
 
-        :param target: Either an index of `tabs` or a substring of the label.
-        :returns: A :class:`TabElement` corresponding to the specified tab.
+        return [Tab(lambda: self.marionette, self.window, tab) for tab in tabs]
+
+    @property
+    def toolbar(self):
+        """The DOM element which represents the tab toolbar.
+
+        :returns: Reference to the tabs toolbar
         """
+        return self.marionette.find_element('id', 'tabbrowser-tabs')
+
+    # Properties for helpers when working with the tabs toolbar #
+
+    @property
+    def selected_index(self):
+        """The index of the currently selected tab.
+
+        :return: Index of the selected tab
+        """
+        return int(self.toolbar.get_attribute('selectedIndex'))
+
+    @property
+    def selected_tab(self):
+        """A :class:`Tab` instance of the currently selected tab.
+
+        :returns: :class:`Tab` instance
+        """
+        return self.tabs[self.selected_index]
+
+    # Methods for helpers when working with the tabs toolbar #
+
+    def close_all_tabs(self, exceptions=None):
+        """Forces closing of all open tabs.
+
+        There is an optional `exceptions` list, which can be used to exclude
+        specific tabs from being closed.
+
+        :param exceptions: Optional, list of :class:`Tab` instances not to close
+        """
+        # Get handles from tab exceptions, and find those which can be closed
+        for tab in self.tabs:
+            if tab not in exceptions:
+                tab.close(force=True)
+
+    def close_tab(self, tab=None, trigger='menu', force=False):
+        """Closes the tab by using the specified trigger.
+
+        By default the currently selected tab will be closed. If another :class:`Tab`
+        is specified, that one will be closed instead. Also when the tab is closed a
+        :func:`switch_to` call is automatically performed, so that the new selected
+        tab becomes active.
+
+        :param tab: Optional, the :class:`Tab` instance to close. Defaults to
+         the currently selected tab.
+
+        :param trigger: Optional, method in how to close the current tab. This can
+         be a string with one of `menu` or `shortcut`, or a callback which gets triggered
+         with the :class:`Tab` as parameter. Defaults to `menu`.
+
+        :param force: Optional, forces the closing of the window by using the Gecko API.
+         Defaults to `False`.
+        """
+        tab = tab or self.selected_tab
+        tab.close(trigger, force)
+
+    def open_tab(self, trigger='menu'):
+        """Opens a new tab in the current browser window.
+
+        If the tab opens in the foreground, a call to :func:`switch_to` will
+        automatically be performed. But if it opens in the background, the current
+        tab will keep its focus.
+
+        :param trigger: Optional, method in how to open the new tab. This can
+         be a string with one of `menu`, `button` or `shortcut`, or a callback
+         which gets triggered with the current :class:`Tab` as parameter.
+         Defaults to `menu`.
+
+        :returns: :class:`Tab` instance for the opened tab
+        """
+        start_handles = self.marionette.window_handles
+
+        # Prepare action which triggers the opening of the browser window
+        if callable(trigger):
+            trigger(self.selected_tab)
+        elif trigger == 'button':
+            self.window.tabbar.newtab_button.click()
+        elif trigger == 'menu':
+            # TODO: Make use of menubar class once it supports ids
+            menu = self.window.marionette.find_element('id', 'menu_newNavigatorTab')
+            menu.click()
+        elif trigger == 'shortcut':
+            self.window.send_shortcut(self.window.get_localized_entity('tabCmd.commandkey'),
+                                      accel=True)
+        # elif - need to add other cases
+        else:
+            raise ValueError('Unknown opening method: "%s"' % trigger)
+
+        # TODO: Needs to be replaced with event handling code (bug 1121705)
+        Wait(self.marionette).until(
+            lambda mn: len(mn.window_handles) == len(start_handles) + 1)
+
+        handles = self.marionette.window_handles
+        [new_handle] = list(set(handles) - set(start_handles))
+        [new_tab] = [tab for tab in self.tabs if tab.handle == new_handle]
+
+        # if the new tab is the currently selected tab, switch to it
+        if new_tab == self.selected_tab:
+            new_tab.switch_to()
+
+        return new_tab
+
+    def switch_to(self, target):
+        """Switches the context to the specified tab.
+
+        :param target: The tab to switch to. `target` can be an index, a :class:`Tab`
+         instance, or a callback that returns True in the context of the desired tab.
+
+        :returns: Instance of the selected :class:`Tab`
+        """
+        start_handle = self.marionette.current_window_handle
+
         if isinstance(target, int):
-            return self.tabs[target]
-
-        if isinstance(target, basestring):
+            return self.tabs[target].switch_to()
+        elif isinstance(target, Tab):
+            return target.switch_to()
+        if callable(target):
             for tab in self.tabs:
-                if target in tab.get_attribute('label'):
+                tab.switch_to()
+                if target(tab):
                     return tab
 
-            raise NoSuchElementException('Tab with a label containing "{}"" not'
-                                         ' found'.format(target))
+            self.marionette.switch_to_window(start_handle)
+            raise errors.UnknownTabError("No tab found for '{}'".format(target))
 
-        raise TypeError("Invalid type for 'target': {}".format(type(target)))
+        raise ValueError("The 'target' parameter must either be an index or a callable")
 
-    def switch_to_tab(self, tab):
+    @staticmethod
+    def get_handle_for_tab(marionette, tab_element):
+        """Retrieves the marionette handle for the given :class:`Tab` instance.
+
+        :param marionette: An instance of the Marionette client.
+
+        :param tab_element: The DOM element corresponding to a tab inside the tabs toolbar.
+
+        :returns: `handle` of the tab
         """
-        Switch to (activate) the specified tab.
+        # TODO: This introduces coupling with marionette's window handles
+        # implementation. To avoid this, the capacity to get the XUL
+        # element corresponding to the active window according to
+        # marionette or a similar ability should be added to marionette.
+        handle = marionette.execute_script("""
+          let win = arguments[0].linkedBrowser.contentWindowAsCPOW;
+          return win.QueryInterface(Ci.nsIInterfaceRequestor)
+                    .getInterface(Ci.nsIDOMWindowUtils)
+                    .outerWindowID.toString();
+        """, script_args=[tab_element])
 
-        :param tab: Either a :class:`TabElement`, an index of `tabs` or a
-                    substring of the label.
+        return handle
+
+
+class Tab(UIBaseLib):
+    """Wraps a tab DOM element."""
+
+    def __init__(self, marionette_getter, window, tab_element):
+        UIBaseLib.__init__(self, marionette_getter, window)
+
+        self._tab_element = tab_element
+        self._handle = TabBar.get_handle_for_tab(self.marionette, tab_element)
+
+        # Ensure the tab has been fully loaded
+        Wait(self.marionette).until(
+            lambda mn: mn.execute_script("""
+              return !arguments[0].hasAttribute('busy');
+            """, script_args=[tab_element])
+        )
+
+    # Properties for visual elements of tabs #
+
+    @property
+    def close_button(self):
+        """The DOM element which represents the tab close button.
+
+        :returns: Reference to the tab close button
         """
-        if not isinstance(tab, HTMLElement):
-            tab = self.get_tab(tab)
-        return tab.click()
+        return self.tab_element.find_element('anon attribute', {'anonid': 'close-button'})
 
-    class TabElement(DOMElement):
+    @property
+    def tab_element(self):
+        """The inner tab DOM element.
+
+        :returns: Tab DOM element
         """
-        Wraps a tab element.
+        return self._tab_element
+
+    # Properties for helpers when working with tabs #
+
+    @property
+    def handle(self):
+        """The `handle` of the content window.
+
+        :returns: content window `handle`
         """
+        return self._handle
 
-        def is_active(self):
-            """
-            :returns: True if the tab is currently selected, otherwise False.
-            """
-            # TODO this doesn't work; see bug 1088223
-            # if tab.get_attribute('selected'):
+    @property
+    def selected(self):
+        """Checks if the tab is selected.
 
-            return self.marionette.execute_script("""
-                let tab = arguments[0];
-                return tab.getAttribute('selected');
-            """, script_args=[self.inner])
+        :return: `True` if the tab is selected
+        """
+        return self.marionette.execute_script("""
+            return arguments[0].hasAttribute('selected');
+        """, script_args=[self.tab_element])
 
-        def close(self):
-            """
-            Closes this tab.
-            """
-            close_button = (self.find_element('anon', None)
-                                .find_element('class name',
-                                              'tab-close-button'))
-            ret = close_button.click()
+    # Methods for helpers when working with tabs #
 
-            def im_gone(m):
-                try:
-                    self.tag_name
-                    return False
-                except StaleElementException:
-                    return True
-            Wait(self.marionette).until(im_gone)
-            return ret
+    def __eq__(self, other):
+        return self.handle == other.handle
+
+    def close(self, trigger='menu', force=False):
+        """Closes the tab by using the specified trigger.
+
+        When the tab is closed a :func:`switch_to` call is automatically performed, so that
+        the new selected tab becomes active.
+
+        :param trigger: Optional, method in how to close the tab. This can
+         be a string with one of `button`, `menu` or `shortcut`, or a callback which
+         gets triggered with the current :class:`Tab` as parameter. Defaults to `menu`.
+
+        :param force: Optional, forces the closing of the window by using the Gecko API.
+         Defaults to `False`.
+        """
+        start_handles = self.marionette.window_handles
+
+        self.switch_to()
+
+        if force:
+            self.marionette.close()
+        elif callable(trigger):
+            trigger(self)
+        elif trigger == 'button':
+            self.close_button.click()
+        elif trigger == 'menu':
+            # TODO: Make use of menubar class once it supports ids
+            menu = self.window.marionette.find_element('id', 'menu_close')
+            menu.click()
+        elif trigger == 'shortcut':
+            self.window.send_shortcut(self.window.get_localized_entity('closeCmd.key'),
+                                      accel=True)
+        else:
+            raise ValueError('Unknown closing method: "%s"' % trigger)
+
+        Wait(self.marionette).until(
+            lambda _: len(self.window.tabbar.tabs) == len(start_handles) - 1)
+
+        # Ensure to switch to the window handle which represents the new selected tab
+        self.window.tabbar.selected_tab.switch_to()
+
+    def select(self):
+        """Selects the tab and sets the focus to it."""
+        self.tab_element.click()
+        self.switch_to()
+
+        # Bug 1121705: Maybe we have to wait for TabSelect event
+        Wait(self.marionette).until(lambda _: self.selected)
+
+    def switch_to(self):
+        """Switches the context of Marionette to this tab.
+
+        Please keep in mind that calling this method will not select the tab.
+        Use the :func:`~Tab.select` method instead.
+        """
+        self.marionette.switch_to_window(self.handle)
 
 
-class MenuPanel(BaseLib):
+class MenuPanel(UIBaseLib):
 
     @property
     def popup(self):

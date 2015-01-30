@@ -133,8 +133,7 @@ class Windows(BaseLib):
                        callback that returns True in the context of the desired
                        window.
 
-        :returns: The old `window_handle`. This makes it easy to switch back
-                  to the original window later.
+        :returns: Instance of the selected :class:`BaseWindow`
         """
         target_handle = None
 
@@ -297,7 +296,7 @@ class BaseWindow(BaseLib):
         """
         # Bug 1121698
         # For more stable tests register an observer topic first
-        prev_win_count = len(self.marionette.chrome_window_handles)
+        start_handles = self.marionette.chrome_window_handles
 
         self.switch_to()
         with self.marionette.using_context('chrome'):
@@ -306,19 +305,20 @@ class BaseWindow(BaseLib):
             else:
                 self.marionette.execute_script(""" window.open(); """)
 
-        # Bug 1121698
-        # Observer code should let us ditch this wait code
-        wait = Wait(self.marionette)
-        wait.until(lambda m: len(m.chrome_window_handles) == prev_win_count + 1)
+        # TODO: Needs to be replaced with observer handling code (bug 1121698)
+        def window_opened(mn):
+            return len(mn.chrome_window_handles) == len(start_handles) + 1
+        Wait(self.marionette).until(window_opened)
 
-        # Ensure we wait long enough until the window has been fully loaded
+        # TODO: Temporary ensure to wait long enough until the window has been fully loaded
         sleep(.5)
 
-        # Browser windows will always open top-most (with observers we will get the
-        # right handle directly)
-        handle = self._windows.focused_chrome_window_handle
+        handles = self.marionette.chrome_window_handles
+        [new_handle] = list(set(handles) - set(start_handles))
 
-        window = self._windows.create_window_instance(handle, expected_window_class)
+        assert new_handle is not None
+
+        window = self._windows.create_window_instance(new_handle, expected_window_class)
         window.switch_to()
 
         return window
@@ -343,7 +343,7 @@ class BaseWindow(BaseLib):
         platform = self.marionette.session_capabilities['platformName'].lower()
 
         keymap = {
-            'accel': Keys.META if platform is 'darwin' else Keys.CONTROL,
+            'accel': Keys.META if platform == 'darwin' else Keys.CONTROL,
             'alt': Keys.ALT,
             'cmd': Keys.COMMAND,
             'ctrl': Keys.CONTROL,
@@ -402,6 +402,11 @@ class BrowserWindow(BaseWindow):
         'chrome://browser/locale/preferences/preferences.properties',
     ]
 
+    def __init__(self, *args, **kwargs):
+        BaseWindow.__init__(self, *args, **kwargs)
+
+        self._tabbar = None
+
     @property
     def is_private(self):
         """Returns True if it is a Private Browsing window."""
@@ -424,14 +429,21 @@ class BrowserWindow(BaseWindow):
         See the :class:`~ui.navbar.NavBar` reference.
         """
 
-    @use_class_as_property('ui.tabbar.Tabs')
+    @property
     def tabbar(self):
         """
         Provides access to the tab bar. This is the toolbar containing all the
         tabs, the new tab button, and the tab menu
 
-        See the :class:`~ui.tabbar.Tabs` reference.
+        See the :class:`~ui.tabbar.TabBar` reference.
         """
+        self.switch_to()
+
+        if not self._tabbar:
+            from .tabbar import TabBar
+            self._tabbar = TabBar(lambda: self.marionette, self)
+
+        return self._tabbar
 
     def close(self, trigger='menu', force=False):
         """Closes the current browser window by using the specified trigger.
@@ -455,7 +467,7 @@ class BrowserWindow(BaseWindow):
                 win.send_shortcut(win.get_localized_entity('closeCmd.key'),
                                   accel=True, shift=True)
             else:
-                raise errors.InvalidValueError('Unknown closing method: "%s"' % trigger)
+                raise ValueError('Unknown closing method: "%s"' % trigger)
 
         BaseWindow.close(self, callback, force)
 
@@ -484,6 +496,6 @@ class BrowserWindow(BaseWindow):
                 win.send_shortcut(win.get_localized_entity(cmd_key),
                                   accel=True, shift=is_private)
             else:
-                raise errors.InvalidValueError('Unknown opening method: "%s"' % trigger)
+                raise ValueError('Unknown opening method: "%s"' % trigger)
 
         return BaseWindow.open_window(self, callback, BrowserWindow)

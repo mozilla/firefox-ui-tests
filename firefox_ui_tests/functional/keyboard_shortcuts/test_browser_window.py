@@ -15,18 +15,19 @@ class TestBrowserWindowShortcuts(FirefoxTestCase):
         with self.marionette.using_context('content'):
             self.marionette.navigate('about:')
 
-        num_tabs = len(self.browser.tabbar.tabs)
-
         # TODO: To be moved to the upcoming add-ons library
-        self.browser.send_shortcut(self.browser.get_localized_entity('addons.commandkey'),
-                                   accel=True, shift=True)
-        self.assertEqual(len(self.browser.tabbar.tabs), num_tabs + 1)
+        def opener(tab):
+            tab.window.send_shortcut(tab.window.get_localized_entity('addons.commandkey'),
+                                     accel=True, shift=True)
+        self.browser.tabbar.open_tab(opener)
 
         # TODO: Marionette currently fails to detect the correct tab
         # with self.marionette.using_content('content'):
         #     self.wait_for_condition(lambda mn: mn.get_url() == "about:addons")
 
-        self.marionette.close()
+        # TODO: remove extra switch once it is done automatically
+        self.browser.tabbar.tabs[1].switch_to()
+        self.browser.tabbar.close_tab()
 
     def test_search_field(self):
         current_name = self.marionette.execute_script("""

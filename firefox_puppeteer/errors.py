@@ -5,11 +5,11 @@
 from marionette.errors import MarionetteException
 
 
-class InvalidValueError(MarionetteException):
+class UnexpectedWindowTypeError(MarionetteException):
     pass
 
 
-class UnexpectedWindowTypeError(MarionetteException):
+class UnknownTabError(MarionetteException):
     pass
 
 

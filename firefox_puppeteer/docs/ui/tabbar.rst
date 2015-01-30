@@ -3,7 +3,7 @@
 Tabbar
 ======
 
-.. autoclass:: Tabs
+.. autoclass:: TabBar
    :members:
 
 Menu Panel

@@ -2,78 +2,158 @@
 # License, v. 2.0. If a copy of the MPL was not distributed with this
 # file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
-from marionette import Wait
-from marionette.errors import NoSuchElementException
-
 from firefox_ui_harness.testcase import FirefoxTestCase
 
 
-class TestTabs(FirefoxTestCase):
+class TestTabBar(FirefoxTestCase):
 
-    def setUp(self):
-        FirefoxTestCase.setUp(self)
+    def test_basics(self):
+        tabbar = self.browser.tabbar
 
-        urls = [
-            'layout/mozilla.html',
-            'layout/mozilla_community.html',
-            'layout/mozilla_contribute.html',
-            'layout/mozilla_governance.html',
-            'layout/mozilla_grants.html',
-            'layout/mozilla_mission.html',
-            'layout/mozilla_organizations.html',
-            'layout/mozilla_projects.html',
-        ]
-        urls = [self.marionette.absolute_url(url) for url in urls]
+        self.assertEqual(tabbar.window, self.browser)
 
-        self.marionette.execute_script("""
-            for (let i = 0; i < arguments.length; ++i) {
-                gBrowser.addTab(arguments[i]);
-            }
-        """, script_args=urls)
+        self.assertEqual(len(tabbar.tabs), 1)
+        self.assertEqual(tabbar.tabs[0].handle, self.marionette.current_window_handle)
 
-        self.prefs.set_pref('browser.tabs.warnOnClose', False)
-        self.prefs.set_pref('browser.tabs.warnOnCloseOtherTabs', False)
+        self.assertEqual(tabbar.newtab_button.get_attribute('localName'), 'toolbarbutton')
+        self.assertEqual(tabbar.toolbar.get_attribute('localName'), 'tabs')
 
-        def tabs_loaded(m):
-            label = m.execute_script("""
-              return gBrowser.tabs[gBrowser.tabs.length-1]
-                             .getAttribute('label');
-            """)
-            return 'Projects' in label
+    def test_open_close(self):
+        tabbar = self.browser.tabbar
 
-        Wait(self.marionette).until(tabs_loaded)
+        self.assertEqual(len(tabbar.tabs), 1)
+        self.assertEqual(tabbar.selected_index, 0)
 
-    def tearDown(self):
-        self.marionette.execute_script("""
-            gBrowser.removeAllTabsBut(gBrowser.tabs[0]);
-        """)
+        # Open with default trigger, and force closing the tab
+        tabbar.open_tab()
+        tabbar.close_tab(force=True)
 
-        self.wait_for_condition(lambda _: len(self.browser.tabbar.tabs) == 1)
+        # Open a new tab by each trigger method
+        open_strategies = ('button',
+                           'menu',
+                           'shortcut',
+                           lambda tab: tabbar.newtab_button.click()
+                           )
+        for trigger in open_strategies:
+            new_tab = tabbar.open_tab(trigger=trigger)
+            self.assertEqual(len(tabbar.tabs), 2)
+            self.assertEqual(new_tab.handle, self.marionette.current_window_handle)
+            self.assertEqual(new_tab.handle, tabbar.tabs[1].handle)
 
-        FirefoxTestCase.tearDown(self)
+            tabbar.close_tab()
+            self.assertEqual(len(tabbar.tabs), 1)
+            self.assertEqual(tabbar.tabs[0].handle, self.marionette.current_window_handle)
+            self.assertNotEqual(new_tab.handle, tabbar.tabs[0].handle)
 
-    def test_switch_to_tab(self):
-        tabs = self.browser.tabbar.tabs
+        # Close a tab by each trigger method
+        close_strategies = ('button',
+                            'menu',
+                            'shortcut',
+                            lambda tab: tab.close_button.click())
+        for trigger in close_strategies:
+            new_tab = tabbar.open_tab()
+            self.assertEqual(len(tabbar.tabs), 2)
+            self.assertEqual(new_tab.handle, self.marionette.current_window_handle)
+            self.assertEqual(new_tab.handle, tabbar.tabs[1].handle)
 
-        self.browser.tabbar.switch_to_tab(3)
-        self.assertEquals(self.browser.tabbar.active_tab, tabs[3])
+            tabbar.close_tab(trigger=trigger)
+            self.assertEqual(len(tabbar.tabs), 1)
+            self.assertEqual(tabbar.tabs[0].handle, self.marionette.current_window_handle)
+            self.assertNotEqual(new_tab.handle, tabbar.tabs[0].handle)
 
-        self.browser.tabbar.switch_to_tab('Mission')
-        self.assertEquals(self.browser.tabbar.active_tab, tabs[6])
+        # Close a tab which is not selected
+        new_tab = tabbar.open_tab()
+        tabbar.close_tab(tabbar.tabs[0])
 
-        self.browser.tabbar.switch_to_tab(tabs[4])
-        self.assertEquals(self.browser.tabbar.active_tab, tabs[4])
+        self.assertEqual(len(tabbar.tabs), 1)
+        self.assertEqual(new_tab, tabbar.tabs[0])
 
-    def test_close_tab(self):
-        num_tabs = len(self.browser.tabbar.tabs)
-        tab = self.browser.tabbar.get_tab('Mission')
-        tab.close()
+        # Close all tabs except the first one
+        orig_tab = tabbar.tabs[0]
 
-        self.assertEquals(len(self.browser.tabbar.tabs), num_tabs - 1)
-        with self.assertRaises(NoSuchElementException):
-            self.browser.tabbar.switch_to_tab('Mission')
+        for i in range(0, 3):
+            tabbar.open_tab()
 
-    def test_newtab_button(self):
-        num_tabs = len(self.browser.tabbar.tabs)
-        self.browser.tabbar.newtab_button.click()
-        self.assertEquals(len(self.browser.tabbar.tabs), num_tabs + 1)
+        tabbar.close_all_tabs([orig_tab])
+        self.assertEqual(len(tabbar.tabs), 1)
+        self.assertEqual(orig_tab.handle, self.marionette.current_window_handle)
+
+    def test_switch_to(self):
+        tabbar = self.browser.tabbar
+
+        # Open a new tab in the foreground (will be auto-selected)
+        new_tab = tabbar.open_tab()
+        self.assertEqual(new_tab.handle, self.marionette.current_window_handle)
+        self.assertEqual(tabbar.selected_index, 1)
+        self.assertEqual(tabbar.selected_tab, new_tab)
+
+        # Switch by index
+        tabbar.switch_to(0)
+        self.assertEqual(tabbar.tabs[0].handle, self.marionette.current_window_handle)
+
+        # Switch by tab
+        tabbar.switch_to(new_tab)
+        self.assertEqual(new_tab.handle, self.marionette.current_window_handle)
+
+        # Switch by callback
+        tabbar.switch_to(lambda tab: tab.window.tabbar.selected_tab != tab)
+        self.assertEqual(tabbar.tabs[0].handle, self.marionette.current_window_handle)
+
+        tabbar.close_tab(tabbar.tabs[1])
+
+
+class TestTab(FirefoxTestCase):
+
+    def test_basic(self):
+        tab = self.browser.tabbar.tabs[0]
+
+        self.assertEqual(tab.window, self.browser)
+
+        self.assertEqual(tab.tab_element.get_attribute('localName'), 'tab')
+        self.assertEqual(tab.close_button.get_attribute('localName'), 'toolbarbutton')
+
+    def test_close(self):
+        tabbar = self.browser.tabbar
+
+        self.assertEqual(len(tabbar.tabs), 1)
+        self.assertEqual(tabbar.selected_index, 0)
+
+        # Force closing the tab
+        new_tab = tabbar.open_tab()
+        new_tab.close(force=True)
+
+        # Close a tab by each trigger method
+        close_strategies = ('button',
+                            'menu',
+                            'shortcut',
+                            lambda tab: tab.close_button.click())
+        for trigger in close_strategies:
+            new_tab = tabbar.open_tab()
+            self.assertEqual(len(tabbar.tabs), 2)
+            self.assertEqual(new_tab.handle, self.marionette.current_window_handle)
+            self.assertEqual(new_tab.handle, tabbar.tabs[1].handle)
+
+            new_tab.close(trigger=trigger)
+            self.assertEqual(len(tabbar.tabs), 1)
+            self.assertEqual(tabbar.tabs[0].handle, self.marionette.current_window_handle)
+            self.assertNotEqual(new_tab.handle, tabbar.tabs[0].handle)
+
+    def test_switch_to(self):
+        tabbar = self.browser.tabbar
+
+        new_tab = tabbar.open_tab()
+
+        # Switch to the first tab, which will not select it
+        tabbar.tabs[0].switch_to()
+        self.assertEqual(tabbar.tabs[0].handle, self.marionette.current_window_handle)
+        # Bug 1128656: We cannot test as long as switch_to_window() auto-selects the tab
+        # self.assertEqual(tabbar.selected_index, 1)
+        # self.assertEqual(tabbar.selected_tab, new_tab)
+
+        # Now select the first tab
+        tabbar.tabs[0].select()
+        self.assertEqual(tabbar.tabs[0].handle, self.marionette.current_window_handle)
+        self.assertTrue(tabbar.tabs[0].selected)
+        self.assertFalse(tabbar.tabs[1].selected)
+
+        new_tab.close()
