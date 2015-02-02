@@ -21,10 +21,10 @@ class TabBar(UIBaseLib):
 
     @property
     def menupanel(self):
-        """A :class:`~ui.menu.MenuPanel` instance which represents the menu panel
+        """A :class:`MenuPanel` instance which represents the menu panel
         at the far right side of the tabs toolbar.
 
-        :returns: :class:`~ui.menu.MenuPanel` instance
+        :returns: :class:`MenuPanel` instance.
         """
         return MenuPanel(lambda: self.marionette, self.window)
 
@@ -32,7 +32,7 @@ class TabBar(UIBaseLib):
     def newtab_button(self):
         """The DOM element which represents the new tab button.
 
-        :returns: Reference to the new tab button
+        :returns: Reference to the new tab button.
         """
         return self.toolbar.find_element('anon attribute', {'anonid': 'tabs-newtab-button'})
 
@@ -40,7 +40,7 @@ class TabBar(UIBaseLib):
     def tabs(self):
         """List of all the :class:`Tab` instances of the current browser window.
 
-        :returns: List of :class:`Tab`'s
+        :returns: List of :class:`Tab` instances.
         """
         tabs = self.toolbar.find_elements('tag name', 'tab')
 
@@ -50,7 +50,7 @@ class TabBar(UIBaseLib):
     def toolbar(self):
         """The DOM element which represents the tab toolbar.
 
-        :returns: Reference to the tabs toolbar
+        :returns: Reference to the tabs toolbar.
         """
         return self.marionette.find_element('id', 'tabbrowser-tabs')
 
@@ -60,7 +60,7 @@ class TabBar(UIBaseLib):
     def selected_index(self):
         """The index of the currently selected tab.
 
-        :return: Index of the selected tab
+        :return: Index of the selected tab.
         """
         return int(self.toolbar.get_attribute('selectedIndex'))
 
@@ -68,7 +68,7 @@ class TabBar(UIBaseLib):
     def selected_tab(self):
         """A :class:`Tab` instance of the currently selected tab.
 
-        :returns: :class:`Tab` instance
+        :returns: :class:`Tab` instance.
         """
         return self.tabs[self.selected_index]
 
@@ -80,7 +80,7 @@ class TabBar(UIBaseLib):
         There is an optional `exceptions` list, which can be used to exclude
         specific tabs from being closed.
 
-        :param exceptions: Optional, list of :class:`Tab` instances not to close
+        :param exceptions: Optional, list of :class:`Tab` instances not to close.
         """
         # Get handles from tab exceptions, and find those which can be closed
         for tab in self.tabs:
@@ -91,14 +91,14 @@ class TabBar(UIBaseLib):
         """Closes the tab by using the specified trigger.
 
         By default the currently selected tab will be closed. If another :class:`Tab`
-        is specified, that one will be closed instead. Also when the tab is closed a
+        is specified, that one will be closed instead. Also when the tab is closed, a
         :func:`switch_to` call is automatically performed, so that the new selected
         tab becomes active.
 
         :param tab: Optional, the :class:`Tab` instance to close. Defaults to
          the currently selected tab.
 
-        :param trigger: Optional, method in how to close the current tab. This can
+        :param trigger: Optional, method to close the current tab. This can
          be a string with one of `menu` or `shortcut`, or a callback which gets triggered
          with the :class:`Tab` as parameter. Defaults to `menu`.
 
@@ -115,12 +115,12 @@ class TabBar(UIBaseLib):
         automatically be performed. But if it opens in the background, the current
         tab will keep its focus.
 
-        :param trigger: Optional, method in how to open the new tab. This can
+        :param trigger: Optional, method to open the new tab. This can
          be a string with one of `menu`, `button` or `shortcut`, or a callback
          which gets triggered with the current :class:`Tab` as parameter.
          Defaults to `menu`.
 
-        :returns: :class:`Tab` instance for the opened tab
+        :returns: :class:`Tab` instance for the opened tab.
         """
         start_handles = self.marionette.window_handles
 
@@ -159,7 +159,7 @@ class TabBar(UIBaseLib):
         :param target: The tab to switch to. `target` can be an index, a :class:`Tab`
          instance, or a callback that returns True in the context of the desired tab.
 
-        :returns: Instance of the selected :class:`Tab`
+        :returns: Instance of the selected :class:`Tab`.
         """
         start_handle = self.marionette.current_window_handle
 
@@ -186,7 +186,7 @@ class TabBar(UIBaseLib):
 
         :param tab_element: The DOM element corresponding to a tab inside the tabs toolbar.
 
-        :returns: `handle` of the tab
+        :returns: `handle` of the tab.
         """
         # TODO: This introduces coupling with marionette's window handles
         # implementation. To avoid this, the capacity to get the XUL
@@ -224,7 +224,7 @@ class Tab(UIBaseLib):
     def close_button(self):
         """The DOM element which represents the tab close button.
 
-        :returns: Reference to the tab close button
+        :returns: Reference to the tab close button.
         """
         return self.tab_element.find_element('anon attribute', {'anonid': 'close-button'})
 
@@ -232,7 +232,7 @@ class Tab(UIBaseLib):
     def tab_element(self):
         """The inner tab DOM element.
 
-        :returns: Tab DOM element
+        :returns: Tab DOM element.
         """
         return self._tab_element
 
@@ -242,7 +242,7 @@ class Tab(UIBaseLib):
     def handle(self):
         """The `handle` of the content window.
 
-        :returns: content window `handle`
+        :returns: content window `handle`.
         """
         return self._handle
 
@@ -250,7 +250,7 @@ class Tab(UIBaseLib):
     def selected(self):
         """Checks if the tab is selected.
 
-        :return: `True` if the tab is selected
+        :return: `True` if the tab is selected.
         """
         return self.marionette.execute_script("""
             return arguments[0].hasAttribute('selected');
@@ -327,9 +327,7 @@ class MenuPanel(UIBaseLib):
         return self.MenuPanelElement(popup)
 
     class MenuPanelElement(DOMElement):
-        """
-        Wraps the menu panel.
-        """
+        """Wraps the menu panel."""
         _buttons = None
 
         @property
@@ -350,7 +348,7 @@ class MenuPanel(UIBaseLib):
             Overrides HTMLElement.click to provide a target to click.
 
             :param target: The label associated with the button to click on,
-             e.g 'New Private Window'.
+             e.g., `New Private Window`.
             """
             if not target:
                 return DOMElement.click(self)

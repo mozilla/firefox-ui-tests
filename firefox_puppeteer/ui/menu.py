@@ -2,7 +2,6 @@
 # License, v. 2.0. If a copy of the MPL was not distributed with this file,
 # You can obtain one at http://mozilla.org/MPL/2.0/.
 
-
 from marionette.errors import NoSuchElementException
 
 from ..base import BaseLib
@@ -10,26 +9,24 @@ from .. import DOMElement
 
 
 class MenuBar(BaseLib):
-    """
-    Class for manipulating the Firefox menubar.
-    """
+    """Wraps the menubar DOM element inside a browser window."""
 
     @property
     def menus(self):
-        """
-        :returns: A list of :class:`MenuElement`'s corresponding to the top
-                  level menus in the menubar.
+        """A list of :class:`MenuElement` instances corresponding to
+        the top level menus in the menubar.
+
+        :returns: A list of :class:`MenuElement` instances.
         """
         menus = (self.marionette.find_element('id', 'main-menubar')
                                 .find_elements('tag name', 'menu'))
         return [self.MenuElement(menu) for menu in menus]
 
     def get_menu(self, label):
-        """
-        Get a MenuElement corresponding to the specified label.
+        """Get a :class:`MenuElement` instance corresponding to the specified label.
 
-        :param label: The label of the menu, e.g 'File' or 'View'
-        :returns: A MenuElement
+        :param label: The label of the menu, e.g., **File** or **View**.
+        :returns: A :class:`MenuElement` instance.
         """
         menu = [m for m in self.menus if m.get_attribute('label') == label]
 
@@ -40,32 +37,29 @@ class MenuBar(BaseLib):
         return menu[0]
 
     def select(self, label, item):
-        """
-        Select an item in a menu.
+        """Select an item in a menu.
 
-        :param label: The label of the menu, e.g 'File' or 'View'
-        :param item: The label of the item in the menu, e.g 'New Tab'
+        :param label: The label of the menu, e.g., **File** or **View**.
+        :param item: The label of the item in the menu, e.g., **New Tab**.
         """
         return self.get_menu(label).select(item)
 
     class MenuElement(DOMElement):
-        """
-        Wraps a menu element.
-        """
+        """Wraps a menu element DOM element."""
 
         @property
         def items(self):
-            """
-            :returns: A list of menuitem elements within this menu.
+            """A list of menuitem DOM elements within this :class:`MenuElement` instance.
+
+            :returns: A list of items in the menu.
             """
             return (self.find_element('tag name', 'menupopup')
                         .find_elements('tag name', 'menuitem'))
 
         def select(self, label):
-            """
-            Click on a menuitem within this menu.
+            """Click on a menu item within this menu.
 
-            :param label: The label of the menuitem, e.g 'New Tab'
+            :param label: The label of the menu item, e.g., **New Tab**.
             """
             item = [l for l in self.items if l.get_attribute('label') == label]
 
