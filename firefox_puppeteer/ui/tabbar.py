@@ -134,8 +134,7 @@ class TabBar(UIBaseLib):
             menu = self.window.marionette.find_element('id', 'menu_newNavigatorTab')
             menu.click()
         elif trigger == 'shortcut':
-            self.window.send_shortcut(self.window.get_localized_entity('tabCmd.commandkey'),
-                                      accel=True)
+            self.window.send_shortcut(self.window.get_entity('tabCmd.commandkey'), accel=True)
         # elif - need to add other cases
         else:
             raise ValueError('Unknown opening method: "%s"' % trigger)
@@ -290,8 +289,7 @@ class Tab(UIBaseLib):
             menu = self.window.marionette.find_element('id', 'menu_close')
             menu.click()
         elif trigger == 'shortcut':
-            self.window.send_shortcut(self.window.get_localized_entity('closeCmd.key'),
-                                      accel=True)
+            self.window.send_shortcut(self.window.get_entity('closeCmd.key'), accel=True)
         else:
             raise ValueError('Unknown closing method: "%s"' % trigger)
 

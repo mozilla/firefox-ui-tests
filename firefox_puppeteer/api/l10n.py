@@ -11,7 +11,7 @@ from ..base import BaseLib
 
 class L10n(BaseLib):
 
-    def get_localized_entity(self, dtd_urls, entity_id):
+    def get_entity(self, dtd_urls, entity_id):
         """Returns the localized string for the specified DTD entity id.
 
         To find the entity all given DTD files will be searched for the id.
@@ -53,7 +53,7 @@ class L10n(BaseLib):
 
         return value
 
-    def get_localized_property(self, property_urls, property_id):
+    def get_property(self, property_urls, property_id):
         """Returns the localized string for the specified property id.
 
         To find the property all given property files will be searched for

@@ -17,7 +17,7 @@ class TestBrowserWindowShortcuts(FirefoxTestCase):
 
         # TODO: To be moved to the upcoming add-ons library
         def opener(tab):
-            tab.window.send_shortcut(tab.window.get_localized_entity('addons.commandkey'),
+            tab.window.send_shortcut(tab.window.get_entity('addons.commandkey'),
                                      accel=True, shift=True)
         self.browser.tabbar.open_tab(opener)
 
@@ -42,8 +42,7 @@ class TestBrowserWindowShortcuts(FirefoxTestCase):
             key = 'searchFocusUnix.commandkey'
         else:
             key = 'searchFocus.commandkey'
-        self.browser.send_shortcut(self.browser.get_localized_entity(key),
-                                   accel=True)
+        self.browser.send_shortcut(self.browser.get_entity(key), accel=True)
 
         # TODO: Check that the right input box is focused
         # Located below searchbar as class="autocomplete-textbox textbox-input"

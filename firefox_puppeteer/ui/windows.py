@@ -263,7 +263,7 @@ class BaseWindow(BaseLib):
         """Sets the focus to the current chrome window"""
         return self._windows.focus(self.handle)
 
-    def get_localized_entity(self, entity_id):
+    def get_entity(self, entity_id):
         """Returns the localized string for the specified DTD entity id.
 
         :param entity_id: The id to retrieve the value from.
@@ -272,9 +272,9 @@ class BaseWindow(BaseLib):
 
         :raises MarionetteException: When entity id is not found.
         """
-        return self._l10n.get_localized_entity(self.dtds, entity_id)
+        return self._l10n.get_entity(self.dtds, entity_id)
 
-    def get_localized_property(self, property_id):
+    def get_property(self, property_id):
         """Returns the localized string for the specified property id.
 
         :param property_id: The id to retrieve the value from.
@@ -283,7 +283,7 @@ class BaseWindow(BaseLib):
 
         :raises MarionetteException: When property id is not found.
         """
-        return self._l10n.get_localized_entity(self.dtds, property_id)
+        return self._l10n.get_entity(self.dtds, property_id)
 
     def open_window(self, callback=None, expected_window_class=None):
         """Opens a new top-level chrome window
@@ -464,8 +464,7 @@ class BrowserWindow(BaseWindow):
                 menu = win.marionette.find_element('id', 'menu_closeWindow')
                 menu.click()
             elif trigger == 'shortcut':
-                win.send_shortcut(win.get_localized_entity('closeCmd.key'),
-                                  accel=True, shift=True)
+                win.send_shortcut(win.get_entity('closeCmd.key'), accel=True, shift=True)
             else:
                 raise ValueError('Unknown closing method: "%s"' % trigger)
 
@@ -493,8 +492,7 @@ class BrowserWindow(BaseWindow):
                 menu.click()
             elif trigger == 'shortcut':
                 cmd_key = 'privateBrowsingCmd.commandkey' if is_private else 'newNavigatorCmd.key'
-                win.send_shortcut(win.get_localized_entity(cmd_key),
-                                  accel=True, shift=is_private)
+                win.send_shortcut(win.get_entity(cmd_key), accel=True, shift=is_private)
             else:
                 raise ValueError('Unknown opening method: "%s"' % trigger)
 

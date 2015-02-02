@@ -22,13 +22,11 @@ class TestL10n(FirefoxTestCase):
         dtds = ['chrome://global/locale/filepicker.dtd',
                 'chrome://browser/locale/baseMenuOverlay.dtd']
 
-        value = self.l10n.get_localized_entity(dtds, 'helpSafeMode.label')
+        value = self.l10n.get_entity(dtds, 'helpSafeMode.label')
         elm = self.marionette.find_element('id', 'helpSafeMode')
         self.assertEqual(value, elm.get_attribute('label'))
 
-        self.assertRaises(MarionetteException,
-                          self.l10n.get_localized_entity,
-                          dtds, 'notExistent')
+        self.assertRaises(MarionetteException, self.l10n.get_entity, dtds, 'notExistent')
 
     # Test navigates between remote and non remote pages (bug 1096488)
     @skip_if_e10s
@@ -36,7 +34,7 @@ class TestL10n(FirefoxTestCase):
         dtds = ['chrome://global/locale/filepicker.dtd',
                 'chrome://global/locale/aboutSupport.dtd']
 
-        value = self.l10n.get_localized_entity(dtds, 'aboutSupport.pageTitle')
+        value = self.l10n.get_entity(dtds, 'aboutSupport.pageTitle')
 
         self.marionette.set_context(self.marionette.CONTEXT_CONTENT)
         self.marionette.navigate('about:support')
@@ -49,9 +47,7 @@ class TestL10n(FirefoxTestCase):
                       'chrome://global/locale/findbar.properties']
 
         # TODO: Find a way to verify the retrieved translated string
-        value = self.l10n.get_localized_property(properties, 'NotFound')
+        value = self.l10n.get_property(properties, 'NotFound')
         self.assertNotEqual(value, '')
 
-        self.assertRaises(MarionetteException,
-                          self.l10n.get_localized_property,
-                          properties, 'notExistent')
+        self.assertRaises(MarionetteException, self.l10n.get_property, properties, 'notExistent')

@@ -26,14 +26,14 @@ class TestAboutPrivateBrowsing(FirefoxTestCase):
         with self.marionette.using_context('content'):
             self.marionette.navigate('about:privatebrowsing')
 
-            description = self.browser.get_localized_entity(
+            description = self.browser.get_entity(
                 'aboutPrivateBrowsing.subtitle.normal')
 
             status_node = self.marionette.find_element(By.CSS_SELECTOR,
                                                        'p.showNormal')
             self.assertEqual(status_node.text, description)
 
-            access_key = self.browser.get_localized_entity(
+            access_key = self.browser.get_entity(
                 'privatebrowsingpage.openPrivateWindow.accesskey')
 
             # Send keys to the top html element.
