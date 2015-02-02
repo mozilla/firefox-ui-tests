@@ -66,16 +66,12 @@ class Windows(BaseLib):
         There is an optional `exceptions` list, which can be used to exclude
         specific chrome windows from being closed.
 
-        :param exceptions: Optional, list or a single entry of handles or
-         :class:`BaseWindow` instances not to close
+        :param exceptions: Optional, list of :class:`BaseWindow` instances not to close
         """
-        handles_to_keep = exceptions or []
-        if not isinstance(handles_to_keep, list):
-            handles_to_keep = [handles_to_keep]
+        windows_to_keep = exceptions or []
 
-        # Ensure we only have handles and no BaseWindow entries
-        handles_to_keep = [entry.handle if isinstance(entry, BaseWindow) else entry
-                           for entry in handles_to_keep]
+        # Get handles of windows_to_keep
+        handles_to_keep = [entry.handle for entry in windows_to_keep]
 
         # Find handles to close and close them all
         handles_to_close = set(self.marionette.chrome_window_handles) - set(handles_to_keep)
