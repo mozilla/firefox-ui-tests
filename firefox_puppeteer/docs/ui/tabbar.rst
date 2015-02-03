@@ -6,6 +6,12 @@ Tabbar
 .. autoclass:: TabBar
    :members:
 
+Tab
+---
+
+.. autoclass:: Tab
+   :members:
+
 Menu Panel
 ----------
 
