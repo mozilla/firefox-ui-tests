@@ -44,7 +44,7 @@ class Windows(BaseLib):
         with self.marionette.using_context('chrome'):
             return self.marionette.execute_script("""
               Cu.import("resource://gre/modules/Services.jsm");
-              var win = Services.wm.getMostRecentWindow("");
+              var win = Services.focus.activeWindow;
               return win.QueryInterface(Ci.nsIInterfaceRequestor)
                         .getInterface(Ci.nsIDOMWindowUtils)
                         .outerWindowID.toString();
