@@ -13,6 +13,12 @@ from firefox_puppeteer.ui.windows import BaseWindow
 
 class TestWindows(FirefoxTestCase):
 
+    def tearDown(self):
+        try:
+            self.windows.close_all([self.browser])
+        finally:
+            FirefoxTestCase.tearDown(self)
+
     def test_windows(self):
         url = self.marionette.absolute_url('layout/mozilla')
 
