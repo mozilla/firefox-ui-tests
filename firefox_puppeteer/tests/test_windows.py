@@ -171,10 +171,10 @@ class TestWindows(FirefoxTestCase):
 
     def test_browser_window_open_close(self):
         # open and close a new browser windows by menu
-        win2 = self.browser.open_browser()
+        win2 = self.browser.open_browser(trigger='menu')
         self.assertEquals(win2, self.windows.current)
         self.assertFalse(self.browser.is_private)
-        win2.close()
+        win2.close(trigger='menu')
 
         # open and close a new browser window by shortcut
         win2 = self.browser.open_browser(trigger='shortcut')
