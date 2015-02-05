@@ -1,38 +1,46 @@
-language: python
+language: c
 
-python:
-    - 2.7
+os:
+    - osx
+    - linux
 
-env: DISPLAY=:99 MOZ_XVFB=1
+compiler:
+    # we don't require a C compiler! if we don't specify one here, we get extra builds,
+    # for both gcc and clang
+    - gcc
+
+env:
+    - DISPLAY=$(if [[ $TRAVIS_OS_NAME = 'linux' ]]; then echo ':99'; fi)
+      MOZ_XVFB=$(if [[ $TRAVIS_OS_NAME = 'linux' ]]; then echo 1; fi)
+      BINARY=$(if [[ $TRAVIS_OS_NAME = 'osx' ]]; then echo 'FirefoxNightly.app/Contents/MacOS/firefox'; else echo 'firefox/firefox'; fi)
 
 before_install:
-    - sudo apt-get update
-    - "/sbin/start-stop-daemon --start --quiet --make-pidfile --pidfile /tmp/custom_xvfb_99.pid --background --exec /usr/bin/Xvfb -- :99 -ac -screen 0 1024x768x24"
+    - ./.travis/before_install.sh
+
+    - virtualenv ~/.venv
+    - source ~/.venv/bin/activate
 
 install:
-    - sudo apt-get install flashplugin-nonfree subversion
-
-    # As long as we have invasive changes lets get the trunk version of marionette-client
+    # As long as we have invasive changes, lets get the trunk version of marionette-client
     - svn checkout https://github.com/mozilla/gecko-dev/trunk/testing/marionette/client
     - "cd client && python setup.py develop && cd .."
 
     - python setup.py develop
-    - pip install mozdownload pep8
+    - pip install mozdownload mozinstall pep8
 
 before_script:
     # Run pep8 on all except the checked out marionette-client folder
     - pep8 --max-line-length=99 --exclude=client .
 
-    # Download Firefox Nightly which is compatible with the used version of
-    # marionette client
-    - mozdownload -t daily
-    - tar -xvf *firefox*.tar.bz2
+    # Download Firefox Nightly, which is compatible with the Marionette client version used
+    - "cd && mozdownload -t daily"
+    - mozinstall *-firefox-*
 
 script:
-    - firefox-ui-tests --binary firefox/firefox
+    - firefox-ui-tests --binary $BINARY
 
 notifications:
-#      email:
-#          - dev-automation@lists.mozilla.org
+    email:
+        - dev-automation@lists.mozilla.org
     irc:
         - "irc.mozilla.org#automation"
