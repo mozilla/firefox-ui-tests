@@ -40,6 +40,7 @@ future. Each library is available from an instance of the FirefoxTestCase class.
    api/appinfo
    api/keys
    api/l10n
+   api/places
    api/prefs
 
 

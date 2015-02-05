@@ -47,6 +47,13 @@ class Puppeteer(object):
         See the :class:`~api.keys.Keys` reference.
         """
 
+    @use_class_as_property('api.places.Places')
+    def places(self):
+        """Provides low-level access to several bookmark and history related actions.
+
+        See the :class:`~api.places.Places` reference.
+        """
+
     @property
     def platform(self):
         """Returns the lowercased platform name.
