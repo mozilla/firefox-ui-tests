@@ -331,6 +331,14 @@ class AutocompleteResults(BaseLib):
         return self.popup.find_element('anon attribute',
                                        {'anonid': 'richlistbox'})
 
+    @property
+    def selected_index(self):
+        """Provides the index of the selected item in the autocomplete list.
+
+        :returns: The index.
+        """
+        return self.results.get_attribute('selectedIndex')
+
 
 class IdentityPopup(BaseLib):
     """Wraps DOM elements and methods for interacting with the identity popup."""
