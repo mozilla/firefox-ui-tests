@@ -67,8 +67,9 @@ class TestWindows(FirefoxTestCase):
         win1 = BaseWindow(lambda: self.marionette, self.browser.handle)
 
         self.assertEquals(win1.handle, self.marionette.current_chrome_window_handle)
-        self.assertEquals(win1.window, self.marionette.find_element(By.CSS_SELECTOR, ':root'))
-        self.assertEquals(win1.window.get_attribute('windowtype'),
+        self.assertEquals(win1.window_element,
+                          self.marionette.find_element(By.CSS_SELECTOR, ':root'))
+        self.assertEquals(win1.window_element.get_attribute('windowtype'),
                           self.marionette.get_window_type())
         self.assertFalse(win1.closed)
 

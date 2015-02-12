@@ -215,7 +215,7 @@ class BaseWindow(BaseLib):
         """
 
     @property
-    def window(self):
+    def window_element(self):
         """Returns the inner DOM window element.
 
         :returns: DOM window element.
@@ -364,7 +364,7 @@ class BaseWindow(BaseLib):
         keys.append(command_key.lower())
 
         self.switch_to()
-        self.window.send_keys(*keys)
+        self.window_element.send_keys(*keys)
 
     def switch_to(self, focus=False):
         """Switches the context to this chrome window.
@@ -418,7 +418,7 @@ class BrowserWindow(BaseWindow):
 
                 let chromeWindow = arguments[0].ownerDocument.defaultView;
                 return PrivateBrowsingUtils.isWindowPrivate(chromeWindow);
-            """, script_args=[self.window])
+            """, script_args=[self.window_element])
 
     @use_class_as_property('ui.toolbars.NavBar')
     def navbar(self):
