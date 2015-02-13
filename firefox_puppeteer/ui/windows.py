@@ -97,6 +97,9 @@ class Windows(BaseLib):
 
         if window_type == 'navigator:browser':
             window = BrowserWindow(lambda: self.marionette, handle)
+        elif window_type == 'Browser:page-info':
+            from .pageinfo.window import PageInfoWindow
+            window = PageInfoWindow(lambda: self.marionette, handle)
         else:
             raise errors.UnknownWindowError('Unknown window type "%s" for handle: "%s"' %
                                             (window_type, handle))
@@ -251,9 +254,6 @@ class BaseWindow(BaseLib):
         # Bug 1121698
         # For more stable tests register an observer topic first
         prev_win_count = len(self.marionette.chrome_window_handles)
-
-        if self.handle != self.marionette.current_chrome_window_handle:
-            self.switch_to()
 
         if force or callback is None:
             self._windows.close(self.handle)
@@ -443,7 +443,9 @@ class BrowserWindow(BaseWindow):
 
         if not self._tabbar:
             from .tabbar import TabBar
-            self._tabbar = TabBar(lambda: self.marionette, self)
+
+            tabbrowser = self.window_element.find_element(By.ID, 'tabbrowser-tabs')
+            self._tabbar = TabBar(lambda: self.marionette, self, tabbrowser)
 
         return self._tabbar
 
@@ -466,7 +468,8 @@ class BrowserWindow(BaseWindow):
                 menu = win.marionette.find_element(By.ID, 'menu_closeWindow')
                 menu.click()
             elif trigger == 'shortcut':
-                win.send_shortcut(win.get_entity('closeCmd.key'), accel=True, shift=True)
+                win.send_shortcut(win.get_entity('closeCmd.key'),
+                                  accel=True, shift=True)
             else:
                 raise ValueError('Unknown closing method: "%s"' % trigger)
 
@@ -494,8 +497,39 @@ class BrowserWindow(BaseWindow):
                 menu.click()
             elif trigger == 'shortcut':
                 cmd_key = 'privateBrowsingCmd.commandkey' if is_private else 'newNavigatorCmd.key'
-                win.send_shortcut(win.get_entity(cmd_key), accel=True, shift=is_private)
+                win.send_shortcut(win.get_entity(cmd_key),
+                                  accel=True, shift=is_private)
             else:
                 raise ValueError('Unknown opening method: "%s"' % trigger)
 
         return BaseWindow.open_window(self, callback, BrowserWindow)
+
+    def open_page_info_window(self, trigger='menu'):
+        """Opens the page info window by using the specified trigger.
+
+        :param trigger: Optional, method in how to open the new browser window. This can
+         be a string with one of `menu` or `shortcut`, or a callback which gets triggered
+         with the current :class:`BrowserWindow` as parameter. Defaults to `menu`.
+
+        :returns: :class:`PageInfoWindow` instance of the opened window.
+        """
+        from .pageinfo.window import PageInfoWindow
+
+        def callback(win):
+            # Prepare action which triggers the opening of the browser window
+            if callable(trigger):
+                trigger(win)
+            elif trigger == 'menu':
+                # TODO: Make use of menubar class once it supports ids
+                menu = win.marionette.find_element(By.ID, 'menu_pageInfo')
+                menu.click()
+            elif trigger == 'shortcut':
+                win.send_shortcut(win.get_entity('pageInfoCmd.commandkey'),
+                                  accel=True)
+            elif trigger == 'context_menu':
+                # TODO: Add once we can do right clicks
+                pass
+            else:
+                raise ValueError('Unknown opening method: "%s"' % trigger)
+
+        return BaseWindow.open_window(self, callback, PageInfoWindow)

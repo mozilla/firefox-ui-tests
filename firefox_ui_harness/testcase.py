@@ -25,6 +25,7 @@ class FirefoxTestCase(MarionetteTestCase, Puppeteer):
 
     def tearDown(self, *args, **kwargs):
         self.marionette.set_context('chrome')
+
         try:
             # Marionette needs an existent window to be selected. Take the first
             # browser window which has at least one open tab

@@ -62,7 +62,16 @@ class TestWindows(FirefoxTestCase):
 
         self.assertEqual(len(self.windows.all), 1)
 
-    def test_base_window_basics(self):
+
+class TestBaseWindow(FirefoxTestCase):
+
+    def tearDown(self):
+        try:
+            self.windows.close_all([self.browser])
+        finally:
+            FirefoxTestCase.tearDown(self)
+
+    def test_basics(self):
         # force BaseWindow instance
         win1 = BaseWindow(lambda: self.marionette, self.browser.handle)
 
@@ -83,7 +92,7 @@ class TestWindows(FirefoxTestCase):
         self.assertRaises(KeyError,
                           win1.send_shortcut, 'l', acel=True)
 
-    def test_base_window_open_close(self):
+    def test_open_close(self):
         # force BaseWindow instance
         win1 = BaseWindow(lambda: self.marionette, self.browser.handle)
 
@@ -128,7 +137,7 @@ class TestWindows(FirefoxTestCase):
                           win1.open_window, expected_window_class=BaseWindow)
         self.windows.close_all([win1])
 
-    def test_base_window_switch_to_and_focus(self):
+    def test_switch_to_and_focus(self):
         # force BaseWindow instance
         win1 = BaseWindow(lambda: self.marionette, self.browser.handle)
 
@@ -166,7 +175,16 @@ class TestWindows(FirefoxTestCase):
 
         win1.switch_to()
 
-    def test_browser_window_basic(self):
+
+class TestBrowserWindow(FirefoxTestCase):
+
+    def tearDown(self):
+        try:
+            self.windows.close_all([self.browser])
+        finally:
+            FirefoxTestCase.tearDown(self)
+
+    def test_basic(self):
         self.assertNotEqual(self.browser.dtds, [])
         self.assertNotEqual(self.browser.properties, [])
 
@@ -176,7 +194,7 @@ class TestWindows(FirefoxTestCase):
         self.assertIsNotNone(self.browser.navbar)
         self.assertIsNotNone(self.browser.tabbar)
 
-    def test_browser_window_open_close(self):
+    def test_open_close(self):
         # open and close a new browser windows by menu
         win2 = self.browser.open_browser(trigger='menu')
         self.assertEquals(win2, self.windows.current)

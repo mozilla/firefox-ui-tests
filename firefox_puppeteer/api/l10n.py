@@ -40,8 +40,8 @@ class L10n(BaseLib):
 
         with self.marionette.using_context('chrome'):
             value = self.marionette.execute_script("""
-                var parser = Cc["@mozilla.org/xmlextras/domparser;1"]
-                              .createInstance(Ci.nsIDOMParser);
+                var parser = Components.classes["@mozilla.org/xmlextras/domparser;1"]
+                             .createInstance(Components.interfaces.nsIDOMParser);
                 var doc = parser.parseFromString(arguments[0], "text/xml");
                 var node = doc.querySelector("elem[id='entity']");
 

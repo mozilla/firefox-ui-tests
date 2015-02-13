@@ -53,7 +53,7 @@ class TabBar(UIBaseLib):
 
         :returns: Reference to the tabs toolbar.
         """
-        return self.marionette.find_element(By.ID, 'tabbrowser-tabs')
+        return self.element
 
     # Properties for helpers when working with the tabs toolbar #
 
@@ -206,19 +206,17 @@ class TabBar(UIBaseLib):
 class Tab(UIBaseLib):
     """Wraps a tab DOM element."""
 
-    def __init__(self, marionette_getter, window, tab_element):
-        UIBaseLib.__init__(self, marionette_getter, window)
+    def __init__(self, marionette_getter, window, element):
+        UIBaseLib.__init__(self, marionette_getter, window, element)
 
-        self._tab_element = tab_element
-        self._handle = TabBar.get_handle_for_tab(self.marionette, tab_element)
-
+        self._handle = TabBar.get_handle_for_tab(self.marionette, element)
         self._security = Security(lambda: self.marionette)
 
         # Ensure the tab has been fully loaded
         Wait(self.marionette).until(
             lambda mn: mn.execute_script("""
               return !arguments[0].hasAttribute('busy');
-            """, script_args=[tab_element])
+            """, script_args=[element])
         )
 
     # Properties for visual elements of tabs #
@@ -237,7 +235,7 @@ class Tab(UIBaseLib):
 
         :returns: Tab DOM element.
         """
-        return self._tab_element
+        return self.element
 
     # Properties for backend values
 

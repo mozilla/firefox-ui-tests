@@ -34,6 +34,7 @@ future. Each library is available from an instance of the FirefoxTestCase class.
 
 .. toctree::
    ui/menu
+   ui/pageinfo/window
    ui/tabbar
    ui/toolbars
    ui/windows
