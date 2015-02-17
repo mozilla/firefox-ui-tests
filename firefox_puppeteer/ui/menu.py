@@ -2,6 +2,7 @@
 # License, v. 2.0. If a copy of the MPL was not distributed with this file,
 # You can obtain one at http://mozilla.org/MPL/2.0/.
 
+from marionette import By
 from marionette.errors import NoSuchElementException
 
 from ..base import BaseLib
@@ -18,8 +19,8 @@ class MenuBar(BaseLib):
 
         :returns: A list of :class:`MenuElement` instances.
         """
-        menus = (self.marionette.find_element('id', 'main-menubar')
-                                .find_elements('tag name', 'menu'))
+        menus = (self.marionette.find_element(By.ID, 'main-menubar')
+                                .find_elements(By.TAG_NAME, 'menu'))
         return [self.MenuElement(menu) for menu in menus]
 
     def get_menu(self, label):
@@ -53,8 +54,8 @@ class MenuBar(BaseLib):
 
             :returns: A list of items in the menu.
             """
-            return (self.find_element('tag name', 'menupopup')
-                        .find_elements('tag name', 'menuitem'))
+            return (self.find_element(By.TAG_NAME, 'menupopup')
+                        .find_elements(By.TAG_NAME, 'menuitem'))
 
         def select(self, label):
             """Click on a menu item within this menu.

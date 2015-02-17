@@ -458,7 +458,7 @@ class BrowserWindow(BaseWindow):
                 trigger(win)
             elif trigger == 'menu':
                 # TODO: Make use of menubar class once it supports ids
-                menu = win.marionette.find_element('id', 'menu_closeWindow')
+                menu = win.marionette.find_element(By.ID, 'menu_closeWindow')
                 menu.click()
             elif trigger == 'shortcut':
                 win.send_shortcut(win.get_entity('closeCmd.key'), accel=True, shift=True)
@@ -485,7 +485,7 @@ class BrowserWindow(BaseWindow):
             elif trigger == 'menu':
                 # TODO: Make use of menubar class once it supports ids
                 menu_id = 'menu_newPrivateWindow' if is_private else 'menu_newNavigator'
-                menu = win.marionette.find_element('id', menu_id)
+                menu = win.marionette.find_element(By.ID, menu_id)
                 menu.click()
             elif trigger == 'shortcut':
                 cmd_key = 'privateBrowsingCmd.commandkey' if is_private else 'newNavigatorCmd.key'

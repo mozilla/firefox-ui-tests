@@ -2,6 +2,7 @@
 # License, v. 2.0. If a copy of the MPL was not distributed with this
 # file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
+from marionette import By
 from marionette.errors import MarionetteException
 
 from firefox_puppeteer.api.l10n import L10n
@@ -23,7 +24,7 @@ class TestL10n(FirefoxTestCase):
                 'chrome://browser/locale/baseMenuOverlay.dtd']
 
         value = self.l10n.get_entity(dtds, 'helpSafeMode.label')
-        elm = self.marionette.find_element('id', 'helpSafeMode')
+        elm = self.marionette.find_element(By.ID, 'helpSafeMode')
         self.assertEqual(value, elm.get_attribute('label'))
 
         self.assertRaises(MarionetteException, self.l10n.get_entity, dtds, 'notExistent')
@@ -39,7 +40,7 @@ class TestL10n(FirefoxTestCase):
         self.marionette.set_context(self.marionette.CONTEXT_CONTENT)
         self.marionette.navigate('about:support')
 
-        elm = self.marionette.find_element('tag name', 'title')
+        elm = self.marionette.find_element(By.TAG_NAME, 'title')
         self.assertEqual(value, elm.text)
 
     def test_properties(self):

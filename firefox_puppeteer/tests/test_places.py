@@ -2,6 +2,8 @@
 # License, v. 2.0. If a copy of the MPL was not distributed with this
 # file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
+from marionette import By
+
 from firefox_ui_harness.testcase import FirefoxTestCase
 
 
@@ -45,7 +47,7 @@ class TestPlaces(FirefoxTestCase):
         self.places.clear_plugin_data()
 
     def test_bookmarks(self):
-        star_button = self.marionette.find_element('id', 'bookmarks-menu-button')
+        star_button = self.marionette.find_element(By.ID, 'bookmarks-menu-button')
 
         # Visit URLs and bookmark them all
         for url in self.urls:

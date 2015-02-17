@@ -3,7 +3,7 @@
 # You can obtain one at http://mozilla.org/MPL/2.0/.
 
 from marionette import (
-    Wait,
+    By, Wait
 )
 
 from marionette.errors import NoSuchElementException
@@ -42,7 +42,7 @@ class TabBar(UIBaseLib):
 
         :returns: List of :class:`Tab` instances.
         """
-        tabs = self.toolbar.find_elements('tag name', 'tab')
+        tabs = self.toolbar.find_elements(By.TAG_NAME, 'tab')
 
         return [Tab(lambda: self.marionette, self.window, tab) for tab in tabs]
 
@@ -52,7 +52,7 @@ class TabBar(UIBaseLib):
 
         :returns: Reference to the tabs toolbar.
         """
-        return self.marionette.find_element('id', 'tabbrowser-tabs')
+        return self.marionette.find_element(By.ID, 'tabbrowser-tabs')
 
     # Properties for helpers when working with the tabs toolbar #
 
@@ -131,7 +131,7 @@ class TabBar(UIBaseLib):
             self.window.tabbar.newtab_button.click()
         elif trigger == 'menu':
             # TODO: Make use of menubar class once it supports ids
-            menu = self.window.marionette.find_element('id', 'menu_newNavigatorTab')
+            menu = self.window.marionette.find_element(By.ID, 'menu_newNavigatorTab')
             menu.click()
         elif trigger == 'shortcut':
             self.window.send_shortcut(self.window.get_entity('tabCmd.commandkey'), accel=True)
@@ -286,7 +286,7 @@ class Tab(UIBaseLib):
             self.close_button.click()
         elif trigger == 'menu':
             # TODO: Make use of menubar class once it supports ids
-            menu = self.window.marionette.find_element('id', 'menu_close')
+            menu = self.window.marionette.find_element(By.ID, 'menu_close')
             menu.click()
         elif trigger == 'shortcut':
             self.window.send_shortcut(self.window.get_entity('closeCmd.key'), accel=True)
@@ -323,7 +323,7 @@ class MenuPanel(UIBaseLib):
         """
         :returns: The :class:`MenuPanelElement`.
         """
-        popup = self.marionette.find_element('id', 'PanelUI-popup')
+        popup = self.marionette.find_element(By.ID, 'PanelUI-popup')
         return self.MenuPanelElement(popup)
 
     class MenuPanelElement(DOMElement):
@@ -336,10 +336,10 @@ class MenuPanel(UIBaseLib):
             :returns: A list of all the clickable buttons in the menu panel.
             """
             if not self._buttons:
-                self._buttons = (self.find_element('id', 'PanelUI-multiView')
+                self._buttons = (self.find_element(By.ID, 'PanelUI-multiView')
                                      .find_element('anon attribute',
                                                    {'anonid': 'viewContainer'})
-                                     .find_elements('tag name',
+                                     .find_elements(By.TAG_NAME,
                                                     'toolbarbutton'))
             return self._buttons
 
