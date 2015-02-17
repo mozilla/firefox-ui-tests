@@ -71,6 +71,14 @@ class Puppeteer(object):
         See the :class:`~api.prefs.Preferences` reference.
         """
 
+    @use_class_as_property('api.security.Security')
+    def security(self):
+        """
+        Provides an api for accessing security related properties and helpers.
+
+        See the :class:`~api.security.Security` reference.
+        """
+
     @use_class_as_property('ui.windows.Windows')
     def windows(self):
         """

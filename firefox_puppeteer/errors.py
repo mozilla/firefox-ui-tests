@@ -5,6 +5,10 @@
 from marionette.errors import MarionetteException
 
 
+class NoCertificateError(MarionetteException):
+    pass
+
+
 class UnexpectedWindowTypeError(MarionetteException):
     pass
 

@@ -11,6 +11,7 @@ from marionette.errors import NoSuchElementException
 import firefox_puppeteer.errors as errors
 
 from .. import DOMElement
+from ..api.security import Security
 from ..base import UIBaseLib
 
 
@@ -211,6 +212,8 @@ class Tab(UIBaseLib):
         self._tab_element = tab_element
         self._handle = TabBar.get_handle_for_tab(self.marionette, tab_element)
 
+        self._security = Security(lambda: self.marionette)
+
         # Ensure the tab has been fully loaded
         Wait(self.marionette).until(
             lambda mn: mn.execute_script("""
@@ -235,6 +238,30 @@ class Tab(UIBaseLib):
         :returns: Tab DOM element.
         """
         return self._tab_element
+
+    # Properties for backend values
+
+    @property
+    def location(self):
+        """Returns the current URL
+
+        :returns: Current URL
+        """
+        self.switch_to()
+
+        return self.marionette.execute_script("""
+          return arguments[0].linkedBrowser.currentURI.spec;
+        """, script_args=[self.tab_element])
+
+    @property
+    def certificate(self):
+        """The SSL certificate assiciated with the loaded web page.
+
+        :returns: Certificate details as JSON blob.
+        """
+        self.switch_to()
+
+        return self._security.get_certificate_for_page(self.tab_element)
 
     # Properties for helpers when working with tabs #
 

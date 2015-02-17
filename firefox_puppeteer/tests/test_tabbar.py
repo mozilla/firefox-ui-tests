@@ -4,8 +4,16 @@
 
 from firefox_ui_harness.testcase import FirefoxTestCase
 
+from firefox_puppeteer.errors import NoCertificateError
+
 
 class TestTabBar(FirefoxTestCase):
+
+    def tearDown(self):
+        try:
+            self.browser.tabbar.close_all_tabs([self.browser.tabbar.tabs[0]])
+        finally:
+            FirefoxTestCase.tearDown(self)
 
     def test_basics(self):
         tabbar = self.browser.tabbar
@@ -104,6 +112,12 @@ class TestTabBar(FirefoxTestCase):
 
 class TestTab(FirefoxTestCase):
 
+    def tearDown(self):
+        try:
+            self.browser.tabbar.close_all_tabs([self.browser.tabbar.tabs[0]])
+        finally:
+            FirefoxTestCase.tearDown(self)
+
     def test_basic(self):
         tab = self.browser.tabbar.tabs[0]
 
@@ -111,6 +125,14 @@ class TestTab(FirefoxTestCase):
 
         self.assertEqual(tab.tab_element.get_attribute('localName'), 'tab')
         self.assertEqual(tab.close_button.get_attribute('localName'), 'toolbarbutton')
+
+    def test_certificate(self):
+        url = self.marionette.absolute_url('layout/mozilla.html')
+
+        with self.marionette.using_context(self.marionette.CONTEXT_CONTENT):
+            self.marionette.navigate(url)
+        with self.assertRaises(NoCertificateError):
+            self.browser.tabbar.tabs[0].certificate
 
     def test_close(self):
         tabbar = self.browser.tabbar
@@ -137,6 +159,12 @@ class TestTab(FirefoxTestCase):
             self.assertEqual(len(tabbar.tabs), 1)
             self.assertEqual(tabbar.tabs[0].handle, self.marionette.current_window_handle)
             self.assertNotEqual(new_tab.handle, tabbar.tabs[0].handle)
+
+    def test_location(self):
+        url = self.marionette.absolute_url('layout/mozilla.html')
+        with self.marionette.using_context(self.marionette.CONTEXT_CONTENT):
+            self.marionette.navigate(url)
+        self.assertEqual(self.browser.tabbar.tabs[0].location, url)
 
     def test_switch_to(self):
         tabbar = self.browser.tabbar

@@ -42,6 +42,7 @@ future. Each library is available from an instance of the FirefoxTestCase class.
    api/l10n
    api/places
    api/prefs
+   api/security
 
 
 Indices and tables
