@@ -44,6 +44,7 @@ future. Each library is available from an instance of the FirefoxTestCase class.
    api/places
    api/prefs
    api/security
+   api/software_update
    api/utils
 
 
