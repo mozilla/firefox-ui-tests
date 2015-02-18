@@ -11,6 +11,7 @@ import firefox_puppeteer.errors as errors
 from ..api.l10n import L10n
 from ..base import BaseLib
 from ..decorators import use_class_as_property
+from ..api.prefs import Preferences
 
 
 class Windows(BaseLib):
@@ -172,6 +173,7 @@ class BaseWindow(BaseLib):
     def __init__(self, marionette_getter, window_handle):
         BaseLib.__init__(self, marionette_getter)
         self._l10n = L10n(self.get_marionette)
+        self._prefs = Preferences(self.get_marionette)
         self._windows = Windows(self.get_marionette)
 
         if window_handle not in self.marionette.chrome_window_handles:
@@ -413,6 +415,14 @@ class BrowserWindow(BaseWindow):
         self._tabbar = None
 
     @property
+    def default_homepage(self):
+        """The default homepage as used by the current locale.
+
+        :returns: The default homepage for the current locale.
+        """
+        return self._prefs.get_pref('browser.startup.homepage', interface='nsIPrefLocalizedString')
+
+    @property
     def is_private(self):
         """Returns True if this is a Private Browsing window."""
         self.switch_to()
@@ -474,6 +484,18 @@ class BrowserWindow(BaseWindow):
                 raise ValueError('Unknown closing method: "%s"' % trigger)
 
         BaseWindow.close(self, callback, force)
+
+    def get_final_url(self, url):
+        """Loads the page at `url` and returns the resulting url.
+
+        This function enables testing redirects.
+
+        :param url: The url to test.
+        :returns: The resulting loaded url.
+        """
+        with self.marionette.using_context('content'):
+            self.marionette.navigate(url)
+            return self.marionette.get_url()
 
     def open_browser(self, trigger='menu', is_private=False):
         """Opens a new browser window by using the specified trigger.

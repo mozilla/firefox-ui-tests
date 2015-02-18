@@ -10,6 +10,22 @@ from ..base import BaseLib
 class Utils(BaseLib):
     """Low-level access to utility actions."""
 
+    def remove_perms(self, host, permission):
+        """Remove permission for web host.
+
+        Permissions include safe-browsing, install, geolocation, and others described here:
+        https://dxr.mozilla.org/mozilla-central/source/browser/modules/SitePermissions.jsm#144
+        and elsewhere.
+
+        :param host: The web host whose permission will be removed.
+        :param permission: The type of permission to be removed.
+        """
+        with self.marionette.using_context('chrome'):
+            self.marionette.execute_script("""
+              Components.utils.import("resource://gre/modules/Services.jsm");
+              Services.perms.remove(arguments[0], arguments[1]);
+            """, script_args=[host, permission])
+
     def sanitize(self, data_type):
         """Sanitize user data, including cache, cookies, offlineApps, history, formdata,
         downloads, passwords, sessions, siteSettings.
