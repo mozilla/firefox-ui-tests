@@ -36,6 +36,7 @@ default_prefs = {
     'extensions.showMismatchUI': False,
     'extensions.update.enabled': False,
     'extensions.update.notifyUser': False,
+    'focusmanager.testmode': False,
     'geo.provider.testing': True,
     'javascript.options.showInConsole': True,
     'security.notification_enable_delay': 0,
