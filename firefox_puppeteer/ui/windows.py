@@ -282,7 +282,7 @@ class BaseWindow(BaseLib):
 
         :raises MarionetteException: When property id is not found.
         """
-        return self._l10n.get_entity(self.dtds, property_id)
+        return self._l10n.get_property(self.properties, property_id)
 
     def open_window(self, callback=None, expected_window_class=None):
         """Opens a new top-level chrome window.
