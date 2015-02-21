@@ -54,6 +54,13 @@ class Puppeteer(object):
         See the :class:`~api.places.Places` reference.
         """
 
+    @use_class_as_property('api.utils.Utils')
+    def utils(self):
+        """Provides an api for interacting with utility actions.
+
+        See the :class:`~api.utils.Utils` reference.
+        """
+
     @property
     def platform(self):
         """Returns the lowercased platform name.
