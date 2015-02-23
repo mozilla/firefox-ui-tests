@@ -35,7 +35,7 @@ class Preferences(BaseLib):
 
         with self.marionette.using_context('chrome'):
             return self.marionette.execute_script("""
-              Cu.import("resource://gre/modules/Services.jsm");
+              Components.utils.import("resource://gre/modules/Services.jsm");
 
               let pref_name = arguments[0];
               let default_branch = arguments[1];
@@ -52,7 +52,7 @@ class Preferences(BaseLib):
               // If an interface has been set, handle it differently
               if (interface !== null) {
                 return prefBranch.getComplexValue(pref_name,
-                                                  Ci[interface]).data;
+                                                  Components.interfaces[interface]).data;
               }
 
               let type = prefBranch.getPrefType(pref_name);
@@ -88,7 +88,7 @@ class Preferences(BaseLib):
 
         with self.marionette.using_context('chrome'):
             return self.marionette.execute_script("""
-              Cu.import("resource://gre/modules/Services.jsm");
+              Components.utils.import("resource://gre/modules/Services.jsm");
               let prefBranch = Services.prefs;
 
               let pref_name = arguments[0];
@@ -159,7 +159,7 @@ class Preferences(BaseLib):
                 self.archive[pref_name] = self.get_pref(pref_name)
 
             retval = self.marionette.execute_script("""
-              Cu.import("resource://gre/modules/Services.jsm");
+              Components.utils.import("resource://gre/modules/Services.jsm");
               let prefBranch = Services.prefs;
 
               let pref_name = arguments[0];

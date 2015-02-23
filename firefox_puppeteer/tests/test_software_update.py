@@ -40,15 +40,15 @@ class TestSoftwareUpdate(FirefoxTestCase):
         self.assertEqual(build_info['channel'], self.software_update.update_channel.channel)
 
     def test_force_fallback(self):
+        status_file = os.path.join(self.software_update.staging_directory, 'update.status')
+
         try:
             self.software_update.force_fallback()
-            with open(
-                    os.path.join(
-                            self.software_update.staging_directory, 'update.status'), 'r')as f:
+            with open(status_file, 'r') as f:
                 content = f.read()
             self.assertEqual(content, 'failed: 6\n')
         finally:
-            os.remove(os.path.join(self.software_update.staging_directory, 'update.status'))
+            os.remove(status_file)
 
     def test_get_update_url(self):
         update_url = self.software_update.get_update_url()

@@ -33,6 +33,7 @@ The following libraries are currently implemented. More will be added in the
 future. Each library is available from an instance of the FirefoxTestCase class.
 
 .. toctree::
+   ui/about/window
    ui/menu
    ui/pageinfo/window
    ui/tabbar
