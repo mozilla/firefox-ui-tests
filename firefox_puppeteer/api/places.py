@@ -4,7 +4,7 @@
 
 from collections import namedtuple
 
-from marionette_driver.errors import TimeoutException
+from marionette_driver.errors import MarionetteException, TimeoutException
 
 from ..base import BaseLib
 
@@ -77,30 +77,31 @@ class Places(BaseLib):
 
     def restore_default_bookmarks(self):
         """Restores the default bookmarks for the current profile."""
-        try:
-            return self.marionette.execute_async_script("""
-              Cu.import("resource://gre/modules/BookmarkHTMLUtils.jsm");
-              Cu.import("resource://gre/modules/Services.jsm");
+        retVal = self.marionette.execute_async_script("""
+          Cu.import("resource://gre/modules/BookmarkHTMLUtils.jsm");
+          Cu.import("resource://gre/modules/Services.jsm");
 
-              // Default bookmarks.html file is stored inside omni.jar,
-              // so get it via a resource URI
-              let defaultBookmarks = 'resource:///defaults/profile/bookmarks.html';
+          // Default bookmarks.html file is stored inside omni.jar,
+          // so get it via a resource URI
+          let defaultBookmarks = 'resource:///defaults/profile/bookmarks.html';
 
-              let observer = {
-                observe: function (aSubject, aTopic, aData) {
-                  Services.obs.removeObserver(observer, "bookmarks-restore-success");
+          let observer = {
+            observe: function (aSubject, aTopic, aData) {
+              Services.obs.removeObserver(observer, "bookmarks-restore-success");
+              Services.obs.removeObserver(observer, "bookmarks-restore-failed");
 
-                  marionetteScriptFinished(true);
-                }
-              };
+              marionetteScriptFinished(aTopic == "bookmarks-restore-success");
+            }
+          };
 
-              // Trigger the import of the default bookmarks
-              Services.obs.addObserver(observer, "bookmarks-restore-success", false);
-              BookmarkHTMLUtils.importFromURL(defaultBookmarks, true);
-            """, script_timeout=10000)
-        except TimeoutException:
-            # TODO: In case of a timeout clean-up the registered topic
-            pass
+          // Trigger the import of the default bookmarks
+          Services.obs.addObserver(observer, "bookmarks-restore-success", false);
+          Services.obs.addObserver(observer, "bookmarks-restore-failed", false);
+          BookmarkHTMLUtils.importFromURL(defaultBookmarks, true);
+        """, script_timeout=10000)
+
+        if not retVal:
+            raise errors.MarionetteException("Restore Default Bookmarks failed")
 
     # Browser history related helpers #
 
