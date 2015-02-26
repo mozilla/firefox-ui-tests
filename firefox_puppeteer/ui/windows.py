@@ -4,9 +4,9 @@
 
 from time import sleep
 
-from marionette import By, Wait
-from marionette.errors import NoSuchWindowException
-from marionette.keys import Keys
+from marionette_driver import By, Wait
+from marionette_driver.errors import NoSuchWindowException
+from marionette_driver.keys import Keys
 
 import firefox_puppeteer.errors as errors
 

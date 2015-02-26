@@ -4,7 +4,7 @@
 
 from collections import namedtuple
 
-from marionette.errors import TimeoutException
+from marionette_driver.errors import TimeoutException
 
 from ..base import BaseLib
 

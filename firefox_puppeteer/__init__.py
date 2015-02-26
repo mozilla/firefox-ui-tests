@@ -4,7 +4,7 @@
 
 import os
 
-from marionette import HTMLElement
+from marionette_driver.marionette import HTMLElement
 
 from .decorators import use_class_as_property
 

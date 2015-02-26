@@ -2,11 +2,11 @@
 # License, v. 2.0. If a copy of the MPL was not distributed with this file,
 # You can obtain one at http://mozilla.org/MPL/2.0/.
 
-from marionette import (
+from marionette_driver import (
     By, Wait
 )
 
-from marionette.errors import NoSuchElementException
+from marionette_driver.errors import NoSuchElementException
 
 import firefox_puppeteer.errors as errors
 

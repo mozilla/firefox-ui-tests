@@ -3,7 +3,7 @@
 # file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
 import mozversion
-from marionette.errors import MarionetteException
+from marionette_driver.errors import MarionetteException
 
 from firefox_ui_harness.testcase import FirefoxTestCase
 

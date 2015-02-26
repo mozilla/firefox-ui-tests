@@ -4,10 +4,10 @@
 
 from setuptools import setup, find_packages
 
-PACKAGE_VERSION = '0.1'
+PACKAGE_VERSION = '0.2'
 
 deps = [
-    'marionette-client == 0.8.7',
+    'marionette-client == 0.9',
 ]
 
 setup(name='firefox-ui-tests',

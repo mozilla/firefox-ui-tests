@@ -4,7 +4,7 @@
 
 import copy
 
-from marionette.errors import MarionetteException
+from marionette_driver.errors import MarionetteException
 
 from ..base import BaseLib
 

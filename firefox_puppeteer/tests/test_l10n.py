@@ -2,8 +2,8 @@
 # License, v. 2.0. If a copy of the MPL was not distributed with this
 # file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
-from marionette import By
-from marionette.errors import MarionetteException
+from marionette_driver import By
+from marionette_driver.errors import MarionetteException
 
 from firefox_puppeteer.api.l10n import L10n
 from firefox_ui_harness.decorators import skip_if_e10s

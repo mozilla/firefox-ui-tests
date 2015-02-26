@@ -2,10 +2,10 @@
 # License, v. 2.0. If a copy of the MPL was not distributed with this file,
 # You can obtain one at http://mozilla.org/MPL/2.0/.
 
-import marionette
+import marionette_driver
 
 
-class Keys(marionette.keys.Keys):
+class Keys(marionette_driver.keys.Keys):
     """Proxy to marionette's keys with an "accel" provided for convenience
     testing across platforms."""
 
