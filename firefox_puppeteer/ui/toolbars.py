@@ -94,8 +94,8 @@ class LocationBar(BaseLib):
 
         :returns: Reference to the urlbar context menu.
         """
-        parent = self.urlbar.find_element('anon attribute', {'anonid': 'textbox-input-box'})
-        return parent.find_element('anon attribute', {'anonid': 'input-box-contextmenu'})
+        parent = self.urlbar.find_element(By.ANON_ATTRIBUTE, {'anonid': 'textbox-input-box'})
+        return parent.find_element(By.ANON_ATTRIBUTE, {'anonid': 'input-box-contextmenu'})
 
     @property
     def favicon(self):
@@ -142,7 +142,7 @@ class LocationBar(BaseLib):
 
         :returns: Reference to the history drop marker.
         """
-        return self.urlbar.find_element('anon attribute', {'anonid': 'historydropmarker'})
+        return self.urlbar.find_element(By.ANON_ATTRIBUTE, {'anonid': 'historydropmarker'})
 
     @use_class_as_property('ui.toolbars.IdentityPopup')
     def identity_popup(self):
@@ -218,7 +218,7 @@ class LocationBar(BaseLib):
 
         :returns: Reference to the urlbar input.
         """
-        return self.urlbar.find_element('anon attribute', {'anonid': 'input'})
+        return self.urlbar.find_element(By.ANON_ATTRIBUTE, {'anonid': 'input'})
 
     @property
     def value(self):
@@ -328,7 +328,7 @@ class AutocompleteResults(BaseLib):
         """
         :returns: The autocomplete result container node.
         """
-        return self.popup.find_element('anon attribute',
+        return self.popup.find_element(By.ANON_ATTRIBUTE,
                                        {'anonid': 'richlistbox'})
 
     @property

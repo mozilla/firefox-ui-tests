@@ -35,7 +35,7 @@ class TabBar(UIBaseLib):
 
         :returns: Reference to the new tab button.
         """
-        return self.toolbar.find_element('anon attribute', {'anonid': 'tabs-newtab-button'})
+        return self.toolbar.find_element(By.ANON_ATTRIBUTE, {'anonid': 'tabs-newtab-button'})
 
     @property
     def tabs(self):
@@ -229,7 +229,7 @@ class Tab(UIBaseLib):
 
         :returns: Reference to the tab close button.
         """
-        return self.tab_element.find_element('anon attribute', {'anonid': 'close-button'})
+        return self.tab_element.find_element(By.ANON_ATTRIBUTE, {'anonid': 'close-button'})
 
     @property
     def tab_element(self):
@@ -364,7 +364,7 @@ class MenuPanel(UIBaseLib):
             """
             if not self._buttons:
                 self._buttons = (self.find_element(By.ID, 'PanelUI-multiView')
-                                     .find_element('anon attribute',
+                                     .find_element(By.ANON_ATTRIBUTE,
                                                    {'anonid': 'viewContainer'})
                                      .find_elements(By.TAG_NAME,
                                                     'toolbarbutton'))
