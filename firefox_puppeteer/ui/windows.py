@@ -2,8 +2,6 @@
 # License, v. 2.0. If a copy of the MPL was not distributed with this file,
 # You can obtain one at http://mozilla.org/MPL/2.0/.
 
-from time import sleep
-
 from marionette_driver import By, Wait
 from marionette_driver.errors import NoSuchWindowException
 from marionette_driver.keys import Keys
@@ -207,6 +205,18 @@ class BaseWindow(BaseLib):
         """
         return self._handle
 
+    @property
+    def loaded(self):
+        """Checks if the window has been fully loaded.
+
+        :returns: True, if the window is loaded.
+        """
+        self.switch_to()
+
+        return self.marionette.execute_script("""
+          return arguments[0].ownerDocument.readyState === "complete";
+        """, script_args=[self.window_element])
+
     @use_class_as_property('ui.menu.MenuBar')
     def menubar(self):
         """Provides access to the menu bar, for example, the **File** menu.
@@ -254,9 +264,6 @@ class BaseWindow(BaseLib):
         # Observer code should let us ditch this wait code
         wait = Wait(self.marionette)
         wait.until(lambda m: len(m.chrome_window_handles) == prev_win_count - 1)
-
-        # Ensure we wait long enough until the window has been fully loaded
-        sleep(.5)
 
     def focus(self):
         """Sets the focus to the current chrome window."""
@@ -309,16 +316,13 @@ class BaseWindow(BaseLib):
             return len(mn.chrome_window_handles) == len(start_handles) + 1
         Wait(self.marionette).until(window_opened)
 
-        # TODO: Temporary ensure to wait long enough until the window has been fully loaded
-        sleep(.5)
-
         handles = self.marionette.chrome_window_handles
         [new_handle] = list(set(handles) - set(start_handles))
 
         assert new_handle is not None
 
         window = self._windows.create_window_instance(new_handle, expected_window_class)
-        window.switch_to()
+        Wait(self.marionette).until(lambda _: window.loaded)
 
         return window
 
