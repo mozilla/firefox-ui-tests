@@ -407,6 +407,7 @@ class BrowserWindow(BaseWindow):
         'chrome://branding/locale/browserconfig.properties',
         'chrome://browser/locale/browser.properties',
         'chrome://browser/locale/preferences/preferences.properties',
+        'chrome://global/locale/browser.properties',
     ]
 
     def __init__(self, *args, **kwargs):
