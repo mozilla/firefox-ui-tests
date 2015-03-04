@@ -12,7 +12,6 @@ compiler:
 env:
     - DISPLAY=$(if [[ $TRAVIS_OS_NAME = 'linux' ]]; then echo ':99'; fi)
       MOZ_XVFB=$(if [[ $TRAVIS_OS_NAME = 'linux' ]]; then echo 1; fi)
-      BINARY=$(if [[ $TRAVIS_OS_NAME = 'osx' ]]; then echo 'FirefoxNightly.app/Contents/MacOS/firefox'; else echo 'firefox/firefox'; fi)
 
 before_install:
     - ./.travis/before_install.sh
@@ -32,12 +31,11 @@ before_script:
     # Run pep8 on all except the checked out marionette-client folder
     - pep8 --max-line-length=99 --exclude=client .
 
-    # Download Firefox Nightly, which is compatible with the Marionette client version used
-    - "cd && mozdownload -t daily"
-    - mozinstall *-firefox-*
+    # Download latest Firefox Nightly, which is compatible with the Marionette client version used
+    - mozdownload -t daily
 
 script:
-    - firefox-ui-tests --binary $BINARY
+    - firefox-ui-tests --installer *-firefox-*
 
 notifications:
     email:

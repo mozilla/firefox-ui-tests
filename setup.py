@@ -8,6 +8,8 @@ PACKAGE_VERSION = '0.2'
 
 deps = [
     'marionette-client == 0.9',
+    'mozinstall == 1.11',
+    'mozlog == 2.10',
 ]
 
 setup(name='firefox-ui-tests',
@@ -33,5 +35,5 @@ setup(name='firefox-ui-tests',
       install_requires=deps,
       entry_points="""
         [console_scripts]
-        firefox-ui-tests = firefox_ui_harness:run
+        firefox-ui-tests = firefox_ui_harness:cli
       """)
