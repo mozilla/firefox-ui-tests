@@ -20,7 +20,7 @@ class Security(BaseLib):
         with the following entries: `city`, `country`, `postal_code`, `state`, `street`.
 
         :param certificate: A JSON object representing the certificate, which can usually be
-         retrieved via the current tab: `self.browser.tabbar.selectedTab.certificate`.
+         retrieved via the current tab: `self.browser.tabbar.selected_tab.certificate`.
 
         :returns: Address details as dictionary
         """
@@ -54,3 +54,15 @@ class Security(BaseLib):
             raise NoCertificateError('No certificate found for "{}"'.format(uri))
 
         return cert
+
+    def get_domain_from_common_name(self, common_name):
+        """Retrieves the domain associated with a page's security certificate from the common name.
+
+        :param certificate: A string containing the certificate's common name, which can usually
+         be retrieved like so: `certificate['commonName']`.
+
+        :returns: Domain as string
+        """
+        return self.marionette.execute_script("""
+          return Services.eTLD.getBaseDomainFromHost(arguments[0]);
+        """, script_args=[common_name])
