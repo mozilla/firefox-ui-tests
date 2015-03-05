@@ -446,3 +446,21 @@ class IdentityPopup(BaseLib):
         :returns: Reference to the identity-popup content verifier.
         """
         return self.marionette.find_element(By.ID, 'identity-popup-content-verifier')
+
+    def close(self, force=False):
+        """Closes the identity popup by hitting the escape key.
+
+        :param force: Optional, If `True` force close the popup.
+         Defaults to `False`
+        """
+        if not self.is_open:
+            return
+
+        if force:
+            self.marionette.execute_script("""
+              arguments[0].hidePopup();
+            """, script_args=[self.popup])
+        else:
+            self.popup.send_keys(Keys.ESCAPE)
+
+        Wait(self.marionette).until(lambda _: not self.is_open)
