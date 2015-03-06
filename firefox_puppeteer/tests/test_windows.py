@@ -2,8 +2,8 @@
 # License, v. 2.0. If a copy of the MPL was not distributed with this
 # file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
-from marionette_driver import By
-from marionette_driver.errors import NoSuchWindowException
+from marionette_driver import By, Wait
+from marionette_driver.errors import NoSuchWindowException, TimeoutException
 
 import firefox_puppeteer.errors as errors
 
@@ -111,9 +111,9 @@ class TestBaseWindow(FirefoxTestCase):
         self.assertTrue(win2.closed)
         self.assertEquals(len(self.marionette.chrome_window_handles), 1)
         self.assertEquals(win2.handle, self.marionette.current_chrome_window_handle)
-        self.assertTrue(win1.focused)
+        Wait(self.marionette).until(lambda _: win1.focused)  # catch the no focused window
 
-        win1.switch_to()
+        win1.focus()
 
         # Open and close a new window by a custom callback
         def opener(window):
@@ -128,9 +128,9 @@ class TestBaseWindow(FirefoxTestCase):
         win2 = BaseWindow(lambda: self.marionette, win2.handle)
 
         self.assertEquals(len(self.marionette.chrome_window_handles), 2)
-
         win2.close(callback=closer)
-        win1.switch_to()
+
+        win1.focus()
 
         # Check for an unexpected window class
         self.assertRaises(errors.UnexpectedWindowTypeError,
@@ -147,12 +147,9 @@ class TestBaseWindow(FirefoxTestCase):
         # force BaseWindow instance
         win2 = BaseWindow(lambda: self.marionette, win2.handle)
 
+        self.assertEquals(win2.handle, self.marionette.current_chrome_window_handle)
         self.assertEquals(win2.handle, self.windows.focused_chrome_window_handle)
         self.assertFalse(win1.focused)
-        self.assertTrue(win2.focused)
-
-        win2.switch_to()
-        self.assertEquals(win2.handle, self.marionette.current_chrome_window_handle)
         self.assertTrue(win2.focused)
 
         # Switch back to win1 without moving the focus, but focus separately

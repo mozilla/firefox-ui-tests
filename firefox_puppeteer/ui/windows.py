@@ -38,15 +38,23 @@ class Windows(BaseLib):
     def focused_chrome_window_handle(self):
         """Returns the currently focused chrome window handle.
 
+        In case of `None` being returned no window is currently active. This can happen
+        when a new window is opened and the currently focused one gets lowered.
+
         :returns: The `window handle` of the focused chrome window.
         """
         with self.marionette.using_context('chrome'):
             return self.marionette.execute_script("""
-              Cu.import("resource://gre/modules/Services.jsm");
-              var win = Services.focus.activeWindow;
-              return win.QueryInterface(Ci.nsIInterfaceRequestor)
-                        .getInterface(Ci.nsIDOMWindowUtils)
-                        .outerWindowID.toString();
+              Components.utils.import("resource://gre/modules/Services.jsm");
+
+              let win = Services.focus.activeWindow;
+              if (win) {
+                return win.QueryInterface(Components.interfaces.nsIInterfaceRequestor)
+                          .getInterface(Components.interfaces.nsIDOMWindowUtils)
+                          .outerWindowID.toString();
+              }
+
+              return null;
             """)
 
     def close(self, handle):
@@ -121,8 +129,7 @@ class Windows(BaseLib):
         with self.marionette.using_context('chrome'):
             self.marionette.execute_script(""" window.focus(); """)
 
-        wait = Wait(self.marionette)
-        wait.until(lambda m: handle == self.focused_chrome_window_handle)
+        Wait(self.marionette).until(lambda _: handle == self.focused_chrome_window_handle)
 
     def switch_to(self, target):
         """Switches context to the specified chrome window.
@@ -293,14 +300,15 @@ class BaseWindow(BaseLib):
         """
         return self._l10n.get_property(self.properties, property_id)
 
-    def open_window(self, callback=None, expected_window_class=None):
+    def open_window(self, callback=None, expected_window_class=None, expect_focus=True):
         """Opens a new top-level chrome window.
 
         :param callback: Optional, function to trigger the window to open. It is
          triggered with the current :class:`BaseWindow` as parameter.
          Defaults to `window.open()`.
-
         :param expected_class: Optional, check for the correct window class.
+        :param expect_focus: Optional, waits until the new window has the expected focus state
+         Defaults to `True`.
         """
         # Bug 1121698
         # For more stable tests register an observer topic first
@@ -325,6 +333,8 @@ class BaseWindow(BaseLib):
 
         window = self._windows.create_window_instance(new_handle, expected_window_class)
         Wait(self.marionette).until(lambda _: window.loaded)
+
+        Wait(self.marionette).until(lambda _: window.focused == expect_focus)
 
         return window
 
