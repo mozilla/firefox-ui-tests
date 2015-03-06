@@ -55,8 +55,8 @@ class TestPlaces(FirefoxTestCase):
                 self.marionette.navigate(url)
 
             star_button.click()
-            self.wait_for_condition(lambda _: self.places.is_bookmark_star_button_ready())
-            self.assertTrue(self.places.is_bookmarked(url))
+            self.wait_for_condition(lambda _: self.places.is_bookmarked(url))
+            self.assertEqual(self.places.is_bookmark_star_button_ready(), True)
 
             ids = self.places.get_folder_ids_for_url(url)
             self.assertEqual(len(ids), 1)
