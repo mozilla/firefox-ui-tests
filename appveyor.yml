@@ -1,0 +1,35 @@
+build: false
+
+environment:
+  matrix:
+    - PYTHON: "C:/Python27"
+
+platform:
+  - x86
+
+install:
+  - ps: (new-object net.webclient).DownloadFile('https://raw.github.com/pypa/pip/master/contrib/get-pip.py', 'C:/get-pip.py')
+  - "%PYTHON%/python.exe C:/get-pip.py"
+  - "%PYTHON%/Scripts/pip install mozdownload==1.14 pep8"
+
+  - cinst tortoisesvn
+  - svn checkout https://github.com/mozilla/gecko-dev/trunk/testing/marionette/client
+  - cd client && python setup.py develop && cd ..
+
+  - "%PYTHON%/python setup.py develop"
+
+before_test:
+    # Run pep8 on all except the checked out marionette-client folder
+    - "%PYTHON%/Scripts/pep8 --max-line-length=99 --exclude=client ."
+
+    # Download latest Firefox Nightly, which is compatible with the Marionette client version used
+    - "%PYTHON%/Scripts/mozdownload -t daily -p win32 --destination %CD%/firefox-installer.exe"
+
+test_script:
+  - "%PYTHON%/Scripts/firefox-ui-tests --installer firefox-installer.exe"
+
+notifications:
+  email:
+      #- dev-automation@lists.mozilla.org
+  irc:
+      #- "irc.mozilla.org#automation"

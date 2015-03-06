@@ -68,9 +68,6 @@ def startTestRunner(runner_class, options, tests):
         if options.installer:
             installer = os.path.realpath(options.installer)
 
-            if not mozinstall.is_installer(installer):
-                raise Exception('Not a valid installer: {}'.format(installer))
-
             dest_folder = tempfile.mkdtemp()
             options.logger.info('Installing build "%s" to "%s"...' % (installer,
                                                                       dest_folder))
