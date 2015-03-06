@@ -212,13 +212,6 @@ class Tab(UIBaseLib):
         self._handle = TabBar.get_handle_for_tab(self.marionette, element)
         self._security = Security(lambda: self.marionette)
 
-        # Ensure the tab has been fully loaded
-        Wait(self.marionette).until(
-            lambda mn: mn.execute_script("""
-              return !arguments[0].hasAttribute('busy');
-            """, script_args=[element])
-        )
-
     # Properties for visual elements of tabs #
 
     @property
