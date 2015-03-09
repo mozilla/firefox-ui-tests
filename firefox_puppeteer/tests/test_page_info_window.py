@@ -2,7 +2,7 @@
 # License, v. 2.0. If a copy of the MPL was not distributed with this
 # file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
-
+from marionette_driver import By
 from firefox_ui_harness.testcase import FirefoxTestCase
 
 
@@ -61,7 +61,7 @@ class TestPageInfoWindow(FirefoxTestCase):
     def test_open_window(self):
         """Test various opening strategies."""
         def opener(win):
-            win.send_shortcut(win.get_entity('pageInfoCmd.commandkey'), accel=True)
+            win.marionette.find_element(By.ID, 'menu_pageInfo').click()
 
         open_strategies = ('menu',
                            'shortcut',
@@ -69,6 +69,12 @@ class TestPageInfoWindow(FirefoxTestCase):
                            )
 
         for trigger in open_strategies:
+            if self.platform == 'winnt' and trigger == 'shortcut':
+                # The shortcut for page info window does not exist on windows.
+                self.assertRaises(ValueError, self.browser.open_page_info_window,
+                                  trigger=trigger)
+                continue
+
             page_info = self.browser.open_page_info_window(trigger=trigger)
             self.assertEquals(page_info, self.windows.current)
             page_info.close()
