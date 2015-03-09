@@ -15,6 +15,8 @@ class AppInfo(BaseLib):
     def __getattr__(self, attr):
         with self.marionette.using_context('chrome'):
             value = self.marionette.execute_script("""
+              Components.utils.import("resource://gre/modules/Services.jsm");
+
               return Services.appinfo[arguments[0]];
             """, script_args=[attr])
 
@@ -28,16 +30,16 @@ class AppInfo(BaseLib):
     def locale(self):
         with self.marionette.using_context('chrome'):
             return self.marionette.execute_script("""
-              var registry = Cc["@mozilla.org/chrome/chrome-registry;1"]
-                             .getService(Ci.nsIXULChromeRegistry);
-              return registry.getSelectedLocale("global");
+              return Components.classes["@mozilla.org/chrome/chrome-registry;1"]
+                               .getService(Components.interfaces.nsIXULChromeRegistry)
+                               .getSelectedLocale("global");
             """)
 
     @property
     def user_agent(self):
         with self.marionette.using_context('chrome'):
             return self.marionette.execute_script("""
-              return Cc["@mozilla.org/network/protocol;1?name=http"]
-                     .getService(Ci.nsIHttpProtocolHandler)
-                     .userAgent;
+              return Components.classes["@mozilla.org/network/protocol;1?name=http"]
+                               .getService(Components.interfaces.nsIHttpProtocolHandler)
+                               .userAgent;
             """)

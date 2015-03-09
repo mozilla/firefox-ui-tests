@@ -29,7 +29,7 @@ class AboutWindow(BaseWindow):
         BaseWindow.__init__(self, *args, **kwargs)
 
         self._software_update = SoftwareUpdate(lambda: self.marionette)
-        self._download_duration = -1
+        self._download_duration = None
 
     @property
     def deck(self):
@@ -37,6 +37,8 @@ class AboutWindow(BaseWindow):
 
         :returns: Reference to the deck.
         """
+        self.switch_to()
+
         deck = self.window_element.find_element(By.ID, 'updateDeck')
         return Deck(lambda: self.marionette, self, deck)
 
@@ -48,12 +50,23 @@ class AboutWindow(BaseWindow):
         """
         patch = self._software_update.patch_info
         patch['download_duration'] = self._download_duration
+
         return patch
 
     def check_for_updates(self):
-        """Clicks on "Check for Updates" button, and waits for check to complete."""
+        """Clicks on "Check for Updates" button, and waits for check to complete.
+
+        :returns: True, if an update is available.
+        """
+        assert self.deck.selected_panel == self.deck.check_for_updates
+
         self.deck.check_for_updates.button.click()
-        self.wait_for_check_finished()
+        Wait(self.marionette, self.TIMEOUT_UPDATE_CHECK).until(
+            lambda _: self.deck.selected_panel not in
+            (self.deck.check_for_updates, self.deck.checking_for_updates),
+            message='Check for updates has been finished.')
+
+        return self.deck.selected_panel != self.deck.no_updates_found
 
     def download(self, wait_for_finish=True, timeout=TIMEOUT_UPDATE_DOWNLOAD):
         """ Download the update.
@@ -63,13 +76,6 @@ class AboutWindow(BaseWindow):
         :param timeout: Optional, How long to wait for the download to finish,
         default to 360 seconds
         """
-        assert (self._software_update.update_channel.default_channel ==
-                self._software_update.update_channel.channel,
-                'The update channel has been set correctly. '
-                'default_channel: is {}, while channel is: {}'.format(
-                    self._software_update.update_channel.default_channel,
-                    self._software_update.update_channel.channel))
-
         if self.deck.selected_panel == self.deck.download_and_install:
             self.deck.download_and_install.button.click()
 
@@ -94,18 +100,7 @@ class AboutWindow(BaseWindow):
         if wait_for_finish:
             start_time = datetime.now()
             self.wait_for_download_finished(timeout)
-            self._download_duration = datetime.now() - start_time
-
-    def wait_for_check_finished(self, timeout=TIMEOUT_UPDATE_CHECK):
-        """Waits for update checking to complete.
-
-        :param timeout: Optional, How long to wait for the update check to finish,
-        default to 30 seconds
-        """
-        Wait(self.marionette, self.TIMEOUT_UPDATE_CHECK).until(
-            lambda _: self.deck.selected_panel not in
-            (self.deck.check_for_updates, self.deck.checking_for_updates),
-            message='An update has been found.')
+            self._download_duration = (datetime.now() - start_time).total_seconds()
 
     def wait_for_download_finished(self, timeout=TIMEOUT_UPDATE_DOWNLOAD):
         """ Waits until download is completed.

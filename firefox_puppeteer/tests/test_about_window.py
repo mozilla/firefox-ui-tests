@@ -76,5 +76,5 @@ class TestAboutWindow(FirefoxTestCase):
             about_window.close()
 
     def test_patch_info(self):
-        self.assertEqual(self.about_window.patch_info['download_duration'], -1)
+        self.assertEqual(self.about_window.patch_info['download_duration'], None)
         self.assertIsNotNone(self.about_window.patch_info['channel'])

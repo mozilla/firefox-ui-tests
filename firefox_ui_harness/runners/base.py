@@ -2,7 +2,16 @@
 # License, v. 2.0. If a copy of the MPL was not distributed with this
 # file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
-default_prefs = {
+import os
+
+import mozinfo
+from marionette import BaseMarionetteTestRunner
+
+import firefox_ui_tests
+from ..testcase import FirefoxTestCase
+
+
+DEFAULT_PREFS = {
     'app.update.auto': False,
     'app.update.enabled': False,
     'browser.dom.window.dump.enabled': True,
@@ -17,7 +26,6 @@ default_prefs = {
     'browser.shell.checkDefaultBrowser': False,
     'browser.startup.page': 0,
     'browser.tabs.animate': False,
-    'browser.tabs.remote.autostart': False,
     'browser.tabs.warnOnClose': False,
     'browser.tabs.warnOnOpen': False,
     'browser.uitour.enabled': False,
@@ -41,9 +49,43 @@ default_prefs = {
     'focusmanager.testmode': True,
     'geo.provider.testing': True,
     'javascript.options.showInConsole': True,
+    'marionette.logging': False,
     'security.notification_enable_delay': 0,
     'signon.rememberSignons': False,
     'startup.homepage_welcome_url': 'about:blank',
     'toolkit.startup.max_resumed_crashes': -1,
     'toolkit.telemetry.enabled': False,
 }
+
+
+class FirefoxUITestRunner(BaseMarionetteTestRunner):
+    def __init__(self, **kwargs):
+        BaseMarionetteTestRunner.__init__(self, **kwargs)
+
+        if not self.server_root:
+            self.server_root = firefox_ui_tests.resources
+
+        # Bug 1146847: This needs a refactoring given that our default
+        # preferences are not coming from the command line
+        self.prefs.update(DEFAULT_PREFS)
+
+        if not kwargs.get('e10s'):
+            self.prefs.update({'browser.tabs.remote.autostart': False})
+
+        self.test_handlers = [FirefoxTestCase]
+
+    def get_application_folder(self, binary):
+        """Returns the directory of the application."""
+        if mozinfo.isMac:
+            end_index = binary.find('.app') + 4
+            return binary[:end_index]
+        else:
+            return os.path.dirname(binary)
+
+    def run_tests(self, tests):
+        # Ensure Marionette is always reset before starting tests
+        # This might need support in Marionette base
+        self.marionette = None
+        self.tests = []
+
+        BaseMarionetteTestRunner.run_tests(self, tests)

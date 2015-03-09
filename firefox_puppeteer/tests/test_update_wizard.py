@@ -68,5 +68,5 @@ class TestUpdateWizard(FirefoxTestCase):
                          'progressmeter')
 
     def test_patch_info(self):
-        self.assertEqual(self.dialog.patch_info['download_duration'], -1)
+        self.assertEqual(self.dialog.patch_info['download_duration'], None)
         self.assertIsNotNone(self.dialog.patch_info['channel'])

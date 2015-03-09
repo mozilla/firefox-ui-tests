@@ -5,15 +5,30 @@
 from marionette import MarionetteTestCase
 
 from firefox_puppeteer import Puppeteer
+from firefox_puppeteer.ui.windows import BrowserWindow
 
 
 class FirefoxTestCase(MarionetteTestCase, Puppeteer):
-    """
-    Test case that inherits from a Puppeteer object so Firefox specific
-    libraries are exposed to test scope.
+    """Base testcase class for Firefox Desktop tests.
+
+    It enhances the Marionette testcase by inserting the Puppeteer mixin class,
+    so Firefox specific API modules are exposed to test scope.
     """
     def __init__(self, *args, **kwargs):
         MarionetteTestCase.__init__(self, *args, **kwargs)
+
+    def restart(self, flags=None):
+        """Restart Firefox and re-initialize data.
+
+        :param flags: Specific restart flags for Firefox
+        """
+        self.marionette.restart(in_app=True)
+
+        # Marionette doesn't keep the former context, so restore to chrome
+        self.marionette.set_context('chrome')
+
+        # Ensure that we always have a valid browser instance available
+        self.browser = self.windows.switch_to(lambda win: type(win) is BrowserWindow)
 
     def setUp(self, *args, **kwargs):
         MarionetteTestCase.setUp(self, *args, **kwargs)
@@ -36,6 +51,7 @@ class FirefoxTestCase(MarionetteTestCase, Puppeteer):
             # browser window which has at least one open tab
             # TODO: We might have to make this more error prone in case the
             # original window has been closed.
+            self.browser.focus()
             self.browser.tabbar.tabs[0].switch_to()
 
             self.prefs.restore_all_prefs()

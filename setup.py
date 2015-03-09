@@ -8,6 +8,8 @@ PACKAGE_VERSION = '0.2'
 
 deps = [
     'marionette-client == 0.9',
+    'mozfile == 1.1',
+    'mozinfo == 0.7',
     'mozinstall == 1.11',
     'mozlog == 2.10',
 ]
@@ -36,4 +38,5 @@ setup(name='firefox-ui-tests',
       entry_points="""
         [console_scripts]
         firefox-ui-tests = firefox_ui_harness:cli
+        firefox-ui-update = firefox_ui_harness:cli_update
       """)

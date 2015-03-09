@@ -12,7 +12,7 @@ from ...api.software_update import SoftwareUpdate
 from .wizard import Wizard
 
 
-# TODO: Bug 1143020 - Subclass from BaseDialog ui class with possible wizard mixin
+# Bug 1143020 - Subclass from BaseDialog ui class with possible wizard mixin
 class UpdateWizardDialog(BaseWindow):
     """Representation of the old Software Update Wizard Dialog."""
     window_type = 'Update:Wizard'
@@ -43,7 +43,7 @@ class UpdateWizardDialog(BaseWindow):
 
         self._prefs = Preferences(lambda: self.marionette)
         self._software_update = SoftwareUpdate(lambda: self.marionette)
-        self._download_duration = -1
+        self._download_duration = None
 
     @property
     def wizard(self):
@@ -76,13 +76,6 @@ class UpdateWizardDialog(BaseWindow):
         self._prefs.set_pref(self.PREF_APP_UPDATE_ALTWINDOWTYPE, self.window_type)
 
         try:
-            channel = self._software_update.update_channel
-            assert channel.default_channel == channel.channel, \
-                'The update channel has been set correctly. ' \
-                'default_channel: is {}, while channel is: {}'.format(
-                    self._software_update.update_channel.default_channel,
-                    self._software_update.update_channel.channel)
-
             # If updates have already been found, proceed to download
             if self.wizard.selected_panel in (self.wizard.updates_found_basic,
                                               self.wizard.updates_found_billboard,
@@ -105,7 +98,7 @@ class UpdateWizardDialog(BaseWindow):
                 if wait_for_finish:
                     start_time = datetime.now()
                     self.wait_for_download_finished(timeout)
-                    self._download_duration = datetime.now() - start_time
+                    self._download_duration = (datetime.now() - start_time).total_seconds()
 
                     Wait(self.marionette).until(
                         lambda _: self.wizard.selected_panel in (self.wizard.finished,
@@ -126,3 +119,18 @@ class UpdateWizardDialog(BaseWindow):
 
         self.wizard.next_button.click()
         Wait(self.marionette).until(lambda _: self.wizard.selected_panel != current_panel)
+
+    def wait_for_download_finished(self, timeout=TIMEOUT_UPDATE_DOWNLOAD):
+        """Waits until download is completed.
+
+        :param timeout: Optional, How long to wait for the download to finish,
+        default to 360 seconds.
+        """
+        Wait(self.marionette, timeout).until(
+            lambda _: self.wizard.selected_panel != self.wizard.downloading,
+            message='Download has been completed.')
+
+        assert self.wizard.selected_panel not in (self.wizard.error,
+                                                  self.wizard.error_extra,
+                                                  ), \
+            'Update has been successfully downloaded.'

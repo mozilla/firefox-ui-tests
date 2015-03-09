@@ -150,14 +150,14 @@ class MARChannels(BaseLib):
 
         :param channels: A set of channel names to add
         """
-        self.channels = self.channels | channels
+        self.channels = self.channels | set(channels)
 
     def remove_channels(self, channels):
         """Remove channels from the update-settings.ini file.
 
         :param channels: A set of channel names to remove
         """
-        self.channels = self.channels - channels
+        self.channels = self.channels - set(channels)
 
 
 class SoftwareUpdate(BaseLib):
@@ -165,6 +165,7 @@ class SoftwareUpdate(BaseLib):
     PREF_APP_DISTRIBUTION = 'distribution.id'
     PREF_APP_DISTRIBUTION_VERSION = 'distribution.version'
     PREF_APP_UPDATE_URL = 'app.update.url'
+    PREF_APP_UPDATE_URL_OVERRIDE = 'app.update.url.override'
     PREF_DISABLED_ADDONS = 'extensions.disabledAddons'
 
     def __init__(self, marionette_getter):
@@ -246,9 +247,9 @@ class SoftwareUpdate(BaseLib):
 
         # Ensure Partial and Complete patches produced have unique urls
         if patch_count == 2:
-            patch0_URL = self.active_update.get_patch_at(0)['URL']
-            patch1_URL = self.active_update.get_patch_at(1)['URL']
-            assert patch0_URL != patch1_URL,\
+            patch0_url = self.active_update.get_patch_at(0)['URL']
+            patch1_url = self.active_update.get_patch_at(1)['URL']
+            assert patch0_url != patch1_url,\
                 'Partial and Complete download URLs are different'
 
         return self.active_update.selected_patch['type'] == 'complete'
@@ -323,85 +324,10 @@ class SoftwareUpdate(BaseLib):
         """Returns the type of the active update."""
         return self.active_update.type
 
-    def assert_update_applied(self, update_data):
-        """Checks if an update has been applied correctly.
-
-        :param update_data: All the data collected during the update process
-        """
-        # Get the information from the last update
-        info = update_data['updates'][update_data['update']['index']]
-
-        # The upgraded version should be identical with the version given by
-        # the update and we shouldn't have run a downgrade
-        check = self.marionette.execute_script("""
-          Components.utils.import("resource://gre/modules/Services.jsm");
-
-          return  Services.vc.compare(arguments[0], arguments[1]);
-        """, script_args=[info['build_post']['version'], info['build_pre']['version']])
-
-        assert check >= 0, 'The version of the upgraded build is higher or equal'
-
-        # If there was an update, the post build id should be identical with the patch
-        if info['patch']['buildid']:
-            assert info['build_post']['buildid'] == info['patch']['buildid'], \
-                'The post buildid is equal to the buildid of the update'
-
-        # If a target build id has been given, check if it matches the updated build
-        info['target_buildid'] = update_data['update'].get('target_buildid')
-        if info['target_buildid']:
-            assert info['build_post']['buildid'] == info['target_buildid'], \
-                'Post buildid matches target buildid of the update patch'
-
-        # An upgrade should not change the builds locale
-        assert info['build_post']['locale'] == info['build_pre']['locale'],\
-            'The locale of the updated build has not been changed'
-
-        # Check that no application-wide add-ons have been disabled
-        assert info['build_post']['disabled_addons'] == info['build_pre']['disabled_addons'],\
-            'No application-wide add-ons have been disabled by the update'
-
     def force_fallback(self):
         """Update the update.status file and set the status to 'failed:6'"""
         with open(os.path.join(self.staging_directory, 'update.status'), 'w') as f:
             f.write('failed: 6\n')
-
-    def init_update_tests(self, fallback=False):
-        """Initialize all the data used by update tests.
-
-        :param fallback: It is a fallback update
-        """
-        # Prepare persisted object for update results
-        # If an update fails the post build will be the same as the pre build.
-        persisted = {
-            'update': {
-                'index': 0,
-                'staging_path': self.staging_directory},
-            # Create results object with information of the unmodified pre build
-            # TODO: Lets change to persisted.update.results once the issue is fixed:
-            # https://github.com/mozilla/mozmill-automation/issues/175
-            'updates': [
-                {
-                    'build_pre': self.build_info,
-                    'build_post': self.build_info,
-                    'fallback': fallback,
-                    'patch': {},
-                    'success': False}]}
-
-        # If requested modify the default update channel. It will be active
-        # after the next restart of the application
-        if persisted['update']['channel']:
-            # Backup the original content and the path of the channel-prefs.js file
-            persisted['update']['default_update_channel'] = {
-                'content': self.update_channel.file_contents,
-                'path': self.update_channel.file_path}
-            self.update_channel.default_channel = persisted['update']['channel']
-
-        # If requested modify the list of allowed MAR channels
-        if persisted['update']['allowed_mar_channels']:
-            # Backup the original content and the path of the update-settings.ini file
-            persisted['update']['default_mar_channels'] = {
-                'content': self.mar_channels.config_file_contents,
-                'path': self.mar_channels.config_file_path}
 
     def get_update_url(self, force=False):
         """Retrieve the AUS update URL the update snippet is retrieved from
@@ -410,28 +336,29 @@ class SoftwareUpdate(BaseLib):
 
         :returns: The URL of the update snippet
         """
-        url = self.prefs.get_pref(self.PREF_APP_UPDATE_URL, '')
+        url = self.prefs.get_pref(self.PREF_APP_UPDATE_URL_OVERRIDE)
 
         if not url:
-            return None
+            url = self.prefs.get_pref(self.PREF_APP_UPDATE_URL)
 
-        # get the next two prefs from the default branch
-        dist = self.prefs.get_pref(self.PREF_APP_DISTRIBUTION, True) or 'default'
-        dist_version = self.prefs.get_pref(self.PREF_APP_DISTRIBUTION_VERSION, True) or 'default'
+            # get the next two prefs from the default branch
+            dist = self.prefs.get_pref(self.PREF_APP_DISTRIBUTION, True) or 'default'
+            dist_version = self.prefs.get_pref(self.PREF_APP_DISTRIBUTION_VERSION,
+                                               True) or 'default'
 
-        # Not all placeholders are getting replaced correctly by formatURL
-        url = url.replace('%PRODUCT%', self.app_info.name)
-        url = url.replace('%BUILD_ID%', self.app_info.appBuildID)
-        url = url.replace('%BUILD_TARGET%', self.app_info.OS + '_' + self.ABI)
-        url = url.replace('%OS_VERSION%', self.os_version)
-        url = url.replace('%CHANNEL%', self.update_channel.channel)
-        url = url.replace('%DISTRIBUTION%', dist)
-        url = url.replace('%DISTRIBUTION_VERSION%', dist_version)
+            # Not all placeholders are getting replaced correctly by formatURL
+            url = url.replace('%PRODUCT%', self.app_info.name)
+            url = url.replace('%BUILD_ID%', self.app_info.appBuildID)
+            url = url.replace('%BUILD_TARGET%', self.app_info.OS + '_' + self.ABI)
+            url = url.replace('%OS_VERSION%', self.os_version)
+            url = url.replace('%CHANNEL%', self.update_channel.channel)
+            url = url.replace('%DISTRIBUTION%', dist)
+            url = url.replace('%DISTRIBUTION_VERSION%', dist_version)
 
-        url = self.marionette.execute_script("""
-          Components.utils.import("resource://gre/modules/Services.jsm");
-          return Services.urlFormatter.formatURL(arguments[0]);
-        """, script_args=[url])
+            url = self.marionette.execute_script("""
+              Components.utils.import("resource://gre/modules/Services.jsm");
+              return Services.urlFormatter.formatURL(arguments[0]);
+            """, script_args=[url])
 
         if force:
             if '?' in url:
@@ -439,6 +366,7 @@ class SoftwareUpdate(BaseLib):
             else:
                 url += '?'
             url += 'force=1'
+
         return url
 
 
