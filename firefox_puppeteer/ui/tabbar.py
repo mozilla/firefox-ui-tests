@@ -195,6 +195,9 @@ class TabBar(UIBaseLib):
         # marionette or a similar ability should be added to marionette.
         handle = marionette.execute_script("""
           let win = arguments[0].linkedBrowser.contentWindowAsCPOW;
+          if (!win) {
+            return null;
+          }
           return win.QueryInterface(Ci.nsIInterfaceRequestor)
                     .getInterface(Ci.nsIDOMWindowUtils)
                     .outerWindowID.toString();
@@ -209,8 +212,8 @@ class Tab(UIBaseLib):
     def __init__(self, marionette_getter, window, element):
         UIBaseLib.__init__(self, marionette_getter, window, element)
 
-        self._handle = TabBar.get_handle_for_tab(self.marionette, element)
         self._security = Security(lambda: self.marionette)
+        self._handle = None
 
     # Properties for visual elements of tabs #
 
@@ -262,6 +265,13 @@ class Tab(UIBaseLib):
 
         :returns: content window `handle`.
         """
+        def get_handle(_):
+            self._handle = TabBar.get_handle_for_tab(self.marionette, self.element)
+            return self._handle is not None
+
+        # With e10s enabled, contentWindowAsCPOW isn't available right away.
+        if self._handle is None:
+            Wait(self.marionette).until(get_handle)
         return self._handle
 
     @property

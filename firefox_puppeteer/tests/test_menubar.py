@@ -14,9 +14,13 @@ class TestMenuBar(FirefoxTestCase):
 
     def test_click_item_in_menubar(self):
         num_tabs = len(self.browser.tabbar.tabs)
-        # Hard-coded labels will not work in localized builds
-        self.browser.menubar.select('File', 'New Tab')
-        self.assertEquals(len(self.browser.tabbar.tabs), num_tabs + 1)
+
+        def opener(_):
+            # Hard-coded labels will not work in localized builds
+            self.browser.menubar.select('File', 'New Tab')
+
+        self.browser.tabbar.open_tab(trigger=opener)
+
         self.browser.tabbar.tabs[-1].close()
 
     def test_click_non_existent_menu_and_item(self):
