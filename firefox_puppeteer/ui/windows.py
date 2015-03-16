@@ -114,6 +114,9 @@ class Windows(BaseLib):
         elif window_type == 'Browser:page-info':
             from .pageinfo.window import PageInfoWindow
             window = PageInfoWindow(lambda: self.marionette, handle)
+        elif window_type == 'Update:Wizard':
+            from update_wizard import UpdateWizardDialog
+            window = UpdateWizardDialog(lambda: self.marionette, handle)
         else:
             raise errors.UnknownWindowError('Unknown window type "%s" for handle: "%s"' %
                                             (window_type, handle))

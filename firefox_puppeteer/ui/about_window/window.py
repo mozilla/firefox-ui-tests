@@ -7,8 +7,9 @@ from datetime import datetime
 from marionette_driver import By, Wait
 
 from ..windows import BaseWindow
+from ..update_wizard import UpdateWizardDialog
 from ...api.software_update import SoftwareUpdate
-from deck import Deck
+from .deck import Deck
 
 
 class AboutWindow(BaseWindow):
@@ -76,23 +77,19 @@ class AboutWindow(BaseWindow):
             Wait(self.marionette).until(
                 lambda _: self.deck.selected_panel != self.deck.download_and_install)
 
-        # If there are incompatible addons we fallback on old software update dialog for updating
+        # If there are incompatible addons, handle the old software update dialog
         if self.deck.selected_panel == self.deck.apply_billboard:
-            # The rest of the code inside this method uses the update wizard which is
-            # not being converted yet, so raise a NotImplementedError.
-            raise NotImplementedError('Fallback dialog logic not yet implemented.')
+            # Clicking the update button will open the old update wizard dialog
+            wizard = self.browser.open_window(callback=lambda _: self.deck.update_button.click(),
+                                              expected_window_class=UpdateWizardDialog)
+            Wait(self.marionette).until(
+                lambda _: wizard.deck.selected_panel == wizard.deck.updates_found_basic)
 
-            # self.deck.update_button.click()
-            #
-            # The current JS code is:
-            #
-            #     var wizard = updateWizard.handleUpdateWizardDialog();
-            #     wizard.waitForWizardPage(updateWizard.WIZARD_PAGES.updatesfoundbasic);
-            #     wizard.download();
-            #     wizard.close();
-            #     this._downloadDuration = wizard._downloadDuration;
-            #
-            #     return;
+            wizard.download()
+            wizard.close()
+
+            self._download_duration = wizard.download_duration
+            return
 
         if wait_for_finish:
             start_time = datetime.now()
