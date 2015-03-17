@@ -37,6 +37,10 @@ class TestSafeBrowsingNotificationBar(FirefoxTestCase):
         # hg.mozilla.org/mozilla-central/file/46aebcd9481e/browser/base/content/browser.js#l1194
         time.sleep(3)
 
+        # TODO: Bug 1139544: While we don't have a reliable way to close the safe browsing
+        # notification bar when a test fails, run this test in a new tab.
+        self.browser.tabbar.open_tab()
+
     def tearDown(self):
         try:
             self.utils.remove_perms('www.itisatrap.org', 'safe-browsing')
