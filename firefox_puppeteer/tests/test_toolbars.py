@@ -141,6 +141,7 @@ class TestIdentityPopup(FirefoxTestCase):
     def setUp(self):
         FirefoxTestCase.setUp(self)
         self.identity_popup = self.browser.navbar.locationbar.identity_popup
+        self.url = self.marionette.absolute_url('layout/mozilla.html')
 
     def tearDown(self):
         try:
@@ -161,9 +162,8 @@ class TestIdentityPopup(FirefoxTestCase):
 
     @skip_under_xvfb
     def test_popup_elements(self):
-        data_uri = 'data:text/html,<title>Title</title>'
-        locationbar = self.browser.navbar.locationbar
-        locationbar.load_url(data_uri)
+        with self.marionette.using_context('content'):
+            self.marionette.navigate(self.url)
 
         self.identity_popup.box.click()
         self.wait_for_condition(lambda _: self.identity_popup.is_open)
@@ -182,9 +182,8 @@ class TestIdentityPopup(FirefoxTestCase):
 
     @skip_under_xvfb
     def test_open_close(self):
-        data_uri = 'data:text/html,<title>Title</title>'
-        locationbar = self.browser.navbar.locationbar
-        locationbar.load_url(data_uri)
+        with self.marionette.using_context('content'):
+            self.marionette.navigate(self.url)
 
         self.assertFalse(self.identity_popup.is_open)
 
@@ -197,9 +196,8 @@ class TestIdentityPopup(FirefoxTestCase):
 
     @skip_under_xvfb
     def test_force_close(self):
-        data_uri = 'data:text/html,<title>Title</title>'
-        locationbar = self.browser.navbar.locationbar
-        locationbar.load_url(data_uri)
+        with self.marionette.using_context('content'):
+            self.marionette.navigate(self.url)
 
         self.assertFalse(self.identity_popup.is_open)
 
