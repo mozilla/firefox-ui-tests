@@ -20,7 +20,7 @@ class TestWindows(FirefoxTestCase):
             FirefoxTestCase.tearDown(self)
 
     def test_windows(self):
-        url = self.marionette.absolute_url('layout/mozilla')
+        url = self.marionette.absolute_url('layout/mozilla.html')
 
         # Open two more windows
         for index in range(0, 2):
