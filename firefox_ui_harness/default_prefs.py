@@ -6,7 +6,9 @@ default_prefs = {
     'app.update.auto': False,
     'app.update.enabled': False,
     'browser.dom.window.dump.enabled': True,
-    'browser.newtab.url': 'about:blank',
+    # Bug 1145668 - Has to be reverted to about:blank once Marionette
+    # can correctly handle error pages
+    'browser.newtab.url': 'about:newtab',
     'browser.newtabpage.enabled': False,
     'browser.safebrowsing.enabled': False,
     'browser.safebrowsing.malware.enabled': False,

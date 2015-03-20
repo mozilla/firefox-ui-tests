@@ -21,7 +21,12 @@ class FirefoxTestCase(MarionetteTestCase, Puppeteer):
 
         self._start_handle_count = len(self.marionette.window_handles)
         self.marionette.set_context('chrome')
+
         self.browser = self.windows.current
+        self.browser.focus()
+        with self.marionette.using_context(self.marionette.CONTEXT_CONTENT):
+            # Ensure that we have a default page opened
+            self.marionette.navigate(self.prefs.get_pref('browser.newtab.url'))
 
     def tearDown(self, *args, **kwargs):
         self.marionette.set_context('chrome')
