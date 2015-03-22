@@ -22,6 +22,14 @@ class FirefoxTestCase(MarionetteTestCase, Puppeteer):
 
         :param flags: Specific restart flags for Firefox
         """
+        # TODO: Bug 1148220 Marionette's in_app restart has to send 'quit-application-requested'
+        # observer notification before an in_app restart
+        self.marionette.execute_script("""
+          Components.utils.import("resource://gre/modules/Services.jsm");
+          let cancelQuit = Components.classes["@mozilla.org/supports-PRBool;1"]
+                                     .createInstance(Components.interfaces.nsISupportsPRBool);
+          Services.obs.notifyObservers(cancelQuit, "quit-application-requested", null);
+        """)
         self.marionette.restart(in_app=True)
 
         # Marionette doesn't keep the former context, so restore to chrome
