@@ -3,6 +3,7 @@
 # file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
 import time
+import unittest
 
 from marionette_driver import By
 from marionette_driver.errors import MarionetteException
@@ -20,27 +21,14 @@ class TestSecurityNotification(FirefoxTestCase):
             'https://summitbook.mozilla.org',
             # Secure page
             'https://ssl-ev.mozqa.com/',
-            # Unsecure page
+            # Insecure page
             'http://www.mozqa.com'
         ]
 
         self.identity_box = self.browser.navbar.locationbar.identity_popup.box
 
-    def test_security_notification(self):
-        # Go to a secure (https) site
-        with self.marionette.using_context('content'):
-            self.marionette.navigate(self.urls[1])
-
-        self.wait_for_condition(lambda _: self.identity_box.get_attribute('className') ==
-                                'verifiedIdentity')
-
-        # Go to an insecure (http) site
-        with self.marionette.using_context('content'):
-            self.marionette.navigate(self.urls[2])
-
-        self.wait_for_condition(lambda _: self.identity_box.get_attribute('className') ==
-                                'unknownIdentity')
-
+    @unittest.skip('Bug 1106077 - Broken root certificate for http://summitbook.mozilla.org')
+    def test_invalid_cert(self):
         with self.marionette.using_context('content'):
             # Go to a site that has an invalid (expired) cert
             self.assertRaises(MarionetteException, self.marionette.navigate, self.urls[0])
@@ -58,3 +46,17 @@ class TestSecurityNotification(FirefoxTestCase):
 
             # Verify the error code is correct
             self.assertIn('sec_error_expired_certificate', text.get_attribute('textContent'))
+
+    def test_secure_website(self):
+        with self.marionette.using_context('content'):
+            self.marionette.navigate(self.urls[1])
+
+        self.wait_for_condition(lambda _: self.identity_box.get_attribute('className') ==
+                                'verifiedIdentity')
+
+    def test_insecure_website(self):
+        with self.marionette.using_context('content'):
+            self.marionette.navigate(self.urls[2])
+
+        self.wait_for_condition(lambda _: self.identity_box.get_attribute('className') ==
+                                'unknownIdentity')
