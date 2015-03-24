@@ -4,6 +4,9 @@ environment:
   matrix:
     - PYTHON: "C:/Python27"
 
+os:
+  - unstable
+
 platform:
   - x86
 
@@ -19,17 +22,20 @@ install:
   - "%PYTHON%/python setup.py develop"
 
 before_test:
-    # Run pep8 on all except the checked out marionette-client folder
-    - "%PYTHON%/Scripts/pep8 --max-line-length=99 --exclude=client ."
+  # Run pep8 on all except the checked out marionette-client folder
+  - "%PYTHON%/Scripts/pep8 --max-line-length=99 --exclude=client ."
 
-    # Download latest Firefox Nightly, which is compatible with the Marionette client version used
-    - "%PYTHON%/Scripts/mozdownload -t daily -p win32 --destination %CD%/firefox-installer.exe"
+  # Download latest Firefox Nightly, which is compatible with the Marionette client version used
+  - "%PYTHON%/Scripts/mozdownload -t daily -p win32 --destination %CD%/firefox-installer.exe"
+  - "%PYTHON%/Scripts/mozinstall firefox-installer.exe"
 
 test_script:
-  - "%PYTHON%/Scripts/firefox-ui-tests --installer firefox-installer.exe"
+  # Bug 1125732 - Workaround for hang during uninstall of the build
+  # - "%PYTHON%/Scripts/firefox-ui-tests --installer firefox-installer.exe"
+  - "%PYTHON%/Scripts/firefox-ui-tests --binary firefox-installer/firefox.exe
 
 notifications:
   email:
-      #- dev-automation@lists.mozilla.org
+    #- dev-automation@lists.mozilla.org
   irc:
-      #- "irc.mozilla.org#automation"
+    #- "irc.mozilla.org#automation"
