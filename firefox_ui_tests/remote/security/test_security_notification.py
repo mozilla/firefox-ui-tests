@@ -18,7 +18,7 @@ class TestSecurityNotification(FirefoxTestCase):
 
         self.urls = [
             # Invalid cert page
-            'https://summitbook.mozilla.org',
+            'https://ssl-expired.mozqa.com',
             # Secure page
             'https://ssl-ev.mozqa.com/',
             # Insecure page
@@ -27,7 +27,6 @@ class TestSecurityNotification(FirefoxTestCase):
 
         self.identity_box = self.browser.navbar.locationbar.identity_popup.box
 
-    @unittest.skip('Bug 1106077 - Broken root certificate for http://summitbook.mozilla.org')
     def test_invalid_cert(self):
         with self.marionette.using_context('content'):
             # Go to a site that has an invalid (expired) cert
