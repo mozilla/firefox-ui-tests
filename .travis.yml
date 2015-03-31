@@ -20,9 +20,11 @@ before_install:
     - source ~/.venv/bin/activate
 
 install:
-    # As long as we have invasive changes, lets get the trunk version of marionette-client
-    - svn checkout https://github.com/mozilla/gecko-dev/trunk/testing/marionette/client
-    - "cd client && python setup.py develop && cd .."
+    # We need to either pin our marionette version or get every dependent package from
+    # tree to avoid bustage. Pinning marionette means we're more likely to work out of the
+    # the box for those working locally without a clone of m-c.
+    # - svn checkout https://github.com/mozilla/gecko-dev/trunk/testing/marionette/client
+    # - "cd client && python setup.py develop && cd .."
 
     - python setup.py develop
     - pip install mozdownload mozinstall pep8
