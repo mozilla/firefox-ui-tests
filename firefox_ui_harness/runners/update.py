@@ -17,6 +17,7 @@ import firefox_ui_tests
 
 DEFAULT_PREFS = {
     'app.update.log': True,
+    'startup.homepage_override_url': 'about:blank',
 }
 
 
