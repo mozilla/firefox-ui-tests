@@ -2,7 +2,7 @@
 # License, v. 2.0. If a copy of the MPL was not distributed with this
 # file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
-from marionette_driver import By
+from marionette_driver import By, Wait
 
 from firefox_ui_harness.testcase import FirefoxTestCase
 
@@ -54,9 +54,9 @@ class TestPlaces(FirefoxTestCase):
             with self.marionette.using_context('content'):
                 self.marionette.navigate(url)
 
+            Wait(self.marionette).until(lambda _: self.places.is_bookmark_star_button_ready())
             star_button.click()
-            self.wait_for_condition(lambda _: self.places.is_bookmarked(url))
-            self.assertEqual(self.places.is_bookmark_star_button_ready(), True)
+            Wait(self.marionette).until(lambda _: self.places.is_bookmarked(url))
 
             ids = self.places.get_folder_ids_for_url(url)
             self.assertEqual(len(ids), 1)
