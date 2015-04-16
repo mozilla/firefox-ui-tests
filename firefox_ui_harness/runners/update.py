@@ -58,6 +58,8 @@ class UpdateTestRunner(FirefoxUITestRunner):
         failed = 0
         source_folder = self.get_application_folder(self.original_bin)
 
+        results = {}
+
         def _run_tests(manifest):
             target_folder = None
 
@@ -83,11 +85,18 @@ class UpdateTestRunner(FirefoxUITestRunner):
         if self.run_direct_update:
             _run_tests(manifest=firefox_ui_tests.manifest_update_direct)
             failed += self.failed
+            results['Direct'] = False if self.failed else True
 
         # Run fallback update tests if wanted
         if self.run_fallback_update:
             _run_tests(manifest=firefox_ui_tests.manifest_update_fallback)
             failed += self.failed
+            results['Fallback'] = False if self.failed else True
+
+        self.logger.info("Summary of update tests:")
+        for test_type, result in results.iteritems():
+            self.logger.info("\t%s update test ran and %s" %
+                             (test_type, 'PASSED' if result else 'FAILED'))
 
         # Combine failed tests for all run_test() executions
         self.failed = failed

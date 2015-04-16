@@ -2,6 +2,8 @@
 # License, v. 2.0. If a copy of the MPL was not distributed with this
 # file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
+import pprint
+
 from ..testcase import FirefoxTestCase
 
 from firefox_puppeteer.api.software_update import SoftwareUpdate
@@ -226,7 +228,8 @@ class UpdateTestCase(FirefoxTestCase):
     def tearDown(self):
         try:
             # Print results for now until we have treeherder integration
-            self.logger.info('Update test results: {}'.format(self.updates))
+            output = pprint.pformat(self.updates)
+            self.logger.info('Update test results: \n{}'.format(output))
 
         finally:
             FirefoxTestCase.tearDown(self)
