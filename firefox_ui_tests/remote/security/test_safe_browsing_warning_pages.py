@@ -4,7 +4,7 @@
 
 import time
 
-from marionette_driver import By, expected
+from marionette_driver import By, expected, Wait
 
 from firefox_ui_harness.testcase import FirefoxTestCase
 
@@ -74,10 +74,6 @@ class TestSafeBrowsingWarningPages(FirefoxTestCase):
         # Wait for the button to become stale, then wait for page load
         # so we can verify the url
         self.wait_for_condition(expected.element_stale(button))
-        # TODO: Bug 1140470: use replacement for mozmill's waitforPageLoad
-        self.wait_for_condition(lambda mn: mn.execute_script("""
-          return document.readyState == 'complete';
-        """))
 
         # Get the base URL to check; this will result in a redirect.
         with self.marionette.using_context('chrome'):
@@ -95,7 +91,8 @@ class TestSafeBrowsingWarningPages(FirefoxTestCase):
                 """, script_args=[unsafe_page])
 
         # check that our current url matches the final url we expect
-        self.assertEquals(self.marionette.get_url(), self.browser.get_final_url(url))
+        target_url = self.browser.get_final_url(url)
+        Wait(self.marionette).until(lambda mn: mn.get_url() == target_url)
 
     def check_ignore_warning_button(self, unsafe_page):
         button = self.marionette.find_element(By.ID, 'ignoreWarningButton')
