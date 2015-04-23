@@ -11,7 +11,7 @@ deps = [
     'marionette-driver == 0.4',
     'mozfile == 1.1',
     'mozinfo == 0.7',
-    'mozinstall == 1.11',
+    'mozinstall == 1.12',
     'mozlog == 2.10',
 ]
 
