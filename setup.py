@@ -8,7 +8,7 @@ PACKAGE_VERSION = '0.2'
 
 deps = [
     'marionette-client == 0.10',
-    'marionette-driver == 0.4',
+    'marionette-driver == 0.5',
     'mozfile == 1.1',
     'mozinfo == 0.7',
     'mozinstall == 1.12',
