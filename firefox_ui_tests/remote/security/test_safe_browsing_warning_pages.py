@@ -19,7 +19,7 @@ class TestSafeBrowsingWarningPages(FirefoxTestCase):
             'https://www.itisatrap.org/firefox/its-a-trap.html',
             # Malware URL
             'https://www.itisatrap.org/firefox/its-an-attack.html'
-            ]
+        ]
 
         self.prefs.set_pref('browser.safebrowsing.enabled', True)
         self.prefs.set_pref('browser.safebrowsing.malware.enabled', True)
@@ -68,31 +68,28 @@ class TestSafeBrowsingWarningPages(FirefoxTestCase):
         self.wait_for_condition(lambda mn: self.browser.default_homepage in mn.get_url())
 
     def check_report_button(self, unsafe_page):
+        # Get the URL of the support site for phishing and malware. This may result in a redirect.
+        with self.marionette.using_context('chrome'):
+            url = self.marionette.execute_script("""
+              Components.utils.import("resource://gre/modules/Services.jsm");
+              return Services.urlFormatter.formatURLPref("app.support.baseURL")
+                                                         + "phishing-malware";
+            """)
+
         button = self.marionette.find_element(By.ID, "reportButton")
         button.click()
 
         # Wait for the button to become stale, then wait for page load
-        # so we can verify the url
+        # so we can verify the url even if a redirect happens
         self.wait_for_condition(expected.element_stale(button))
 
-        # Get the base URL to check; this will result in a redirect.
-        with self.marionette.using_context('chrome'):
-            if 'its-a-trap' in unsafe_page:
-                url = self.marionette.execute_script("""
-                  Components.utils.import("resource://gre/modules/Services.jsm");
-                  return Services.urlFormatter.formatURLPref("app.support.baseURL")
-                                                             + "phishing-malware";
-                """)
-            else:
-                url = self.marionette.execute_script("""
-                  Components.utils.import("resource://gre/modules/Services.jsm");
-                  return Services.urlFormatter.formatURLPref(
-                  "browser.safebrowsing.malware.reportURL") + arguments[0];
-                """, script_args=[unsafe_page])
+        # TODO: Bug 1140470: use replacement for mozmill's waitforPageLoad
+        self.wait_for_condition(lambda mn: mn.execute_script("""
+          return document.readyState == 'complete';
+        """))
 
         # check that our current url matches the final url we expect
-        target_url = self.browser.get_final_url(url)
-        Wait(self.marionette).until(lambda mn: mn.get_url() == target_url)
+        self.assertEquals(self.marionette.get_url(), self.browser.get_final_url(url))
 
     def check_ignore_warning_button(self, unsafe_page):
         button = self.marionette.find_element(By.ID, 'ignoreWarningButton')
