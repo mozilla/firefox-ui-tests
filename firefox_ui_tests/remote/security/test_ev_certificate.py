@@ -4,7 +4,7 @@
 
 from marionette_driver.errors import NoSuchElementException
 
-from firefox_ui_harness.decorators import skip_if_e10s, skip_under_xvfb
+from firefox_ui_harness.decorators import skip_under_xvfb
 from firefox_ui_harness.testcase import FirefoxTestCase
 
 
@@ -28,7 +28,6 @@ class TestEVCertificate(FirefoxTestCase):
         finally:
             FirefoxTestCase.tearDown(self)
 
-    @skip_if_e10s
     @skip_under_xvfb
     def test_ev_certificate(self):
         with self.marionette.using_context('content'):

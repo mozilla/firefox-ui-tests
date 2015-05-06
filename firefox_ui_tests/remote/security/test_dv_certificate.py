@@ -2,9 +2,9 @@
 # License, v. 2.0. If a copy of the MPL was not distributed with this
 # file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
-from marionette_driver import By, Wait
+from marionette_driver import Wait
 
-from firefox_ui_harness.decorators import skip_under_xvfb, skip_if_e10s
+from firefox_ui_harness.decorators import skip_under_xvfb
 from firefox_ui_harness.testcase import FirefoxTestCase
 
 
@@ -24,7 +24,6 @@ class TestDVCertificate(FirefoxTestCase):
         finally:
             FirefoxTestCase.tearDown(self)
 
-    @skip_if_e10s
     @skip_under_xvfb
     def test_dv_cert(self):
 
