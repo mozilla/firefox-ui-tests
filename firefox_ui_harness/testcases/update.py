@@ -4,7 +4,7 @@
 
 import pprint
 
-from ..testcase import FirefoxTestCase
+from . import FirefoxTestCase
 
 from firefox_puppeteer.api.software_update import SoftwareUpdate
 from firefox_puppeteer.ui.update_wizard import UpdateWizardDialog

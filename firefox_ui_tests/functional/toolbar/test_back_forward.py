@@ -5,7 +5,7 @@
 import time
 
 from firefox_ui_harness.decorators import skip_if_e10s
-from firefox_ui_harness.testcase import FirefoxTestCase
+from firefox_ui_harness import FirefoxTestCase
 
 
 class TestBackForward(FirefoxTestCase):

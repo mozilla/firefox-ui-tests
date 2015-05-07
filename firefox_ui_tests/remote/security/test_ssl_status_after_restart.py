@@ -5,7 +5,7 @@
 from marionette_driver import Wait
 
 from firefox_ui_harness.decorators import skip_if_e10s, skip_under_xvfb
-from firefox_ui_harness.testcase import FirefoxTestCase
+from firefox_ui_harness import FirefoxTestCase
 
 
 class TestSSLStatusAfterRestart(FirefoxTestCase):

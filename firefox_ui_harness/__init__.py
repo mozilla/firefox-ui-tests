@@ -6,8 +6,6 @@ from runtests import (cli,
                       cli_update,
                       )
 
-from testcases import (UpdateTestCase,
+from testcases import (FirefoxTestCase,
+                       UpdateTestCase,
                        )
-
-# Bug 1145638 To be moved to testcases
-from testcase import FirefoxTestCase

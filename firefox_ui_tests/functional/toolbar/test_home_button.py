@@ -4,7 +4,7 @@
 
 import time
 
-from firefox_ui_harness.testcase import FirefoxTestCase
+from firefox_ui_harness import FirefoxTestCase
 
 homepage_pref = 'browser.startup.homepage'
 

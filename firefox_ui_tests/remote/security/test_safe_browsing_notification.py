@@ -6,7 +6,7 @@ import time
 
 from marionette_driver import By, expected
 
-from firefox_ui_harness.testcase import FirefoxTestCase
+from firefox_ui_harness import FirefoxTestCase
 
 
 class TestSafeBrowsingNotificationBar(FirefoxTestCase):

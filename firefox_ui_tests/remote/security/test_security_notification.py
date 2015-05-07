@@ -8,7 +8,7 @@ import unittest
 from marionette_driver import By
 from marionette_driver.errors import MarionetteException
 
-from firefox_ui_harness.testcase import FirefoxTestCase
+from firefox_ui_harness import FirefoxTestCase
 
 
 class TestSecurityNotification(FirefoxTestCase):

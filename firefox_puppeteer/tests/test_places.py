@@ -4,7 +4,7 @@
 
 from marionette_driver import By, Wait
 
-from firefox_ui_harness.testcase import FirefoxTestCase
+from firefox_ui_harness import FirefoxTestCase
 
 
 class TestPlaces(FirefoxTestCase):

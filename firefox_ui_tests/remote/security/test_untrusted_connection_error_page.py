@@ -7,7 +7,7 @@ import time
 from marionette_driver import By, Wait
 from marionette_driver.errors import MarionetteException
 
-from firefox_ui_harness.testcase import FirefoxTestCase
+from firefox_ui_harness import FirefoxTestCase
 
 
 class TestUntrustedConnectionErrorPage(FirefoxTestCase):

@@ -8,7 +8,7 @@ import mozinfo
 from marionette import BaseMarionetteTestRunner
 
 import firefox_ui_tests
-from ..testcase import FirefoxTestCase
+from ..testcases import FirefoxTestCase
 
 
 DEFAULT_PREFS = {

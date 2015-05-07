@@ -5,7 +5,7 @@
 from marionette_driver.errors import NoSuchElementException
 
 from firefox_ui_harness.decorators import skip_under_xvfb
-from firefox_ui_harness.testcase import FirefoxTestCase
+from firefox_ui_harness import FirefoxTestCase
 
 
 class TestEVCertificate(FirefoxTestCase):
