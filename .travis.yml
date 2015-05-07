@@ -37,7 +37,11 @@ before_script:
     - mozdownload -t daily
 
 script:
+    # Run in non-e10s mode
     - firefox-ui-tests --installer *-firefox-*
+
+    # Run in e10s mode
+    - firefox-ui-tests --installer *-firefox-* --e10s
 
 notifications:
     email:

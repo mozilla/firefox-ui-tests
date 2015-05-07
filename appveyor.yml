@@ -32,7 +32,11 @@ before_test:
 test_script:
   # Bug 1125732 - Workaround for hang during uninstall of the build
   # - "%PYTHON%/Scripts/firefox-ui-tests --installer firefox-installer.exe"
+  # Run in non-e10s mode
   - "%PYTHON%/Scripts/firefox-ui-tests --binary firefox-installer/firefox.exe
+
+  # Run in e10s mode
+  - "%PYTHON%/Scripts/firefox-ui-tests --binary firefox-installer/firefox.exe --e10s
 
 notifications:
   email:

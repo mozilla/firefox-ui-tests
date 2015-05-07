@@ -4,6 +4,7 @@
 
 import time
 
+from firefox_ui_harness.decorators import skip_if_e10s
 from firefox_ui_harness.testcase import FirefoxTestCase
 
 
@@ -28,12 +29,13 @@ class TestBackForward(FirefoxTestCase):
         self.test_urls = [self.marionette.absolute_url(t)
                           for t in self.test_urls]
 
+    @skip_if_e10s
+    def test_back_forward(self):
         with self.marionette.using_context('content'):
             for url in self.test_urls:
                 self.marionette.navigate(url)
             self.assertEquals(self.marionette.get_url(), self.test_urls[-1])
 
-    def test_back_forward(self):
         back = self.browser.navbar.back_button
         forward = self.browser.navbar.forward_button
         self.assertFalse(forward.is_displayed())

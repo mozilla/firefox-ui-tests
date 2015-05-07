@@ -4,6 +4,7 @@
 
 from marionette_driver import By
 
+from firefox_ui_harness.decorators import skip_if_e10s
 from firefox_ui_harness.testcase import FirefoxTestCase
 
 
@@ -16,6 +17,7 @@ class TestAboutPrivateBrowsing(FirefoxTestCase):
     def tearDown(self):
         self.marionette.close()
 
+    @skip_if_e10s
     def testCheckAboutPrivateBrowsing(self):
         self.assertFalse(self.browser.is_private)
 
