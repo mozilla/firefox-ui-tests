@@ -1,5 +1,10 @@
 language: c
 
+branches:
+  exclude:
+    # Do not run tests for ESR releases, because there are no latest builds available
+    - /^mozilla-esr.*$/
+
 os:
     - osx
     - linux
@@ -33,15 +38,15 @@ before_script:
     # Run pep8 on all except the checked out marionette-client folder
     - pep8 --max-line-length=99 --exclude=client .
 
-    # Download latest Firefox Nightly, which is compatible with the Marionette client version used
-    - mozdownload -t daily
+    # Prepare the build and everything else
+    - ./.travis/before_script.sh
 
 script:
     # Run in non-e10s mode
-    - firefox-ui-tests --installer *-firefox-*
+    - firefox-ui-tests --installer *firefox-*
 
     # Run in e10s mode
-    - firefox-ui-tests --installer *-firefox-* --e10s
+    - firefox-ui-tests --installer *firefox-* --e10s
 
 notifications:
     email:
