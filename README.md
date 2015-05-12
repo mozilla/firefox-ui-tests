@@ -12,11 +12,8 @@ It is recommended that [virtualenv](http://virtualenv.readthedocs.org/en/latest/
 
 Then:
 
-    pip install firefox-ui-tests
-
-Alternatively you may want to clone the repo for development:
-
     git clone https://github.com/mozilla/firefox-ui-tests.git
+    cd firefox-ui-tests
     python setup.py develop
 
 Usage
@@ -25,6 +22,10 @@ Usage
 To run all tests:
 
     firefox-ui-tests --binary <path to firefox binary>
+
+To run the update tests:
+
+    firefox-ui-update --binary <path to firefox binary>
 
 To run a specific test or directory of tests:
 
