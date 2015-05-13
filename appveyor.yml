@@ -11,15 +11,8 @@ platform:
   - x86
 
 install:
-  - ps: (new-object net.webclient).DownloadFile('https://raw.github.com/pypa/pip/master/contrib/get-pip.py', 'C:/get-pip.py')
-  - "%PYTHON%/python.exe C:/get-pip.py"
-  - "%PYTHON%/Scripts/pip install mozdownload==1.14 pep8"
-
-  - cinst tortoisesvn
-  - svn checkout https://github.com/mozilla/gecko-dev/trunk/testing/marionette/client
-  - cd client && python setup.py develop && cd ..
-
-  - "%PYTHON%/python setup.py develop"
+  - "%PYTHON%/python create_venv.py venv"
+  - "venv/Scripts/activate.bat"
 
 before_test:
   # Run pep8 on all except the checked out marionette-client folder

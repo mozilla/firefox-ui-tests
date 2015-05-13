@@ -21,9 +21,6 @@ env:
 before_install:
     - ./.travis/before_install.sh
 
-    - virtualenv ~/.venv
-    - source ~/.venv/bin/activate
-
 install:
     # We need to either pin our marionette version or get every dependent package from
     # tree to avoid bustage. Pinning marionette means we're more likely to work out of the
@@ -31,8 +28,8 @@ install:
     # - svn checkout https://github.com/mozilla/gecko-dev/trunk/testing/marionette/client
     # - "cd client && python setup.py develop && cd .."
 
-    - python setup.py develop
-    - pip install mozdownload mozinstall pep8
+    - python create_venv.py ~/.venv
+    - source ~/.venv/bin/activate
 
 before_script:
     # Run pep8 on all except the checked out marionette-client folder

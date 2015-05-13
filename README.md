@@ -19,6 +19,11 @@ Alternatively you may want to clone the repo for development:
     git clone https://github.com/mozilla/firefox-ui-tests.git
     python setup.py develop
 
+If you do not have installed virtualenv and virtualenvwrapper you can also use the create_venv.py script to let it automatically create a virtual environmnet with all the packages installed:
+
+    ./create_venv.py venv
+    source venv/bin/activate
+
 Usage
 -----
 
