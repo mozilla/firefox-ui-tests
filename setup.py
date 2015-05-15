@@ -9,12 +9,10 @@ PACKAGE_VERSION = '0.2'
 deps = [
     'marionette-client == 0.12',
     'marionette-driver == 0.5',
-    'mozdownload == 1.14',
     'mozfile == 1.1',
     'mozinfo == 0.7',
     'mozinstall == 1.12',
     'mozlog == 2.10',
-    'pep8 == 1.6.2',
 ]
 
 setup(name='firefox-ui-tests',

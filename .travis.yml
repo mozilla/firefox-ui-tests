@@ -28,7 +28,7 @@ install:
     # - svn checkout https://github.com/mozilla/gecko-dev/trunk/testing/marionette/client
     # - "cd client && python setup.py develop && cd .."
 
-    - python create_venv.py ~/.venv
+    - python create_venv.py --with-optional-packages ~/.venv
     - source ~/.venv/bin/activate
 
 before_script:

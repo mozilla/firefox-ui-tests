@@ -11,7 +11,7 @@ platform:
   - x86
 
 install:
-  - "%PYTHON%/python create_venv.py venv"
+  - "%PYTHON%/python create_venv.py --with-optional-packages venv"
   - "venv/Scripts/activate.bat"
 
 before_test:
