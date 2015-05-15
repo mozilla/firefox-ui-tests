@@ -6,7 +6,9 @@
 
 """
 The script can be used to setup a virtual environment for running Firefox UI Tests.
-It will automatically install the firefox ui test package, and all its dependencies.
+It will automatically install the firefox ui test package, all its dependencies,
+and optional packages if specified.
+
 """
 
 import optparse
@@ -84,6 +86,11 @@ def main():
                       dest='python',
                       metavar='BINARY',
                       help='The Python interpreter to use.')
+    parser.add_option('--with-optional-packages',
+                      dest='with_optional',
+                      action='store_true',
+                      default='False',
+                      help='Installs optional packages for enhanced usability.')
     (options, args) = parser.parse_args(args=None, values=None)
 
     if len(args) != 1:
@@ -104,7 +111,13 @@ def main():
 
     # Install Firefox UI Tests package
     subprocess.check_call([os.path.join(target, venv_python_bin),
-                           os.path.join(here, 'setup.py'), 'develop'])
+                           os.path.join(here, 'setup.py'),
+                           'develop'
+                           ])
+
+    if options.with_optional:
+        print 'Installing optional packages...'
+        subprocess.check_call(['pip', 'install', '-r', 'optional_packages.txt'])
 
     # Print the user instructions
     print usage_message.format('' if sys.platform == 'win32' else 'source ',
