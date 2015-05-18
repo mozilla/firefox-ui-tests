@@ -8,6 +8,9 @@ root = os.path.abspath(os.path.dirname(__file__))
 
 manifest_all = os.path.join(root, 'manifest.ini')
 
+manifest_functional = os.path.join(root, 'functional', 'manifest.ini')
+manifest_remote = os.path.join(root, 'remote', 'manifest.ini')
+
 manifest_update_direct = os.path.join(root, 'update', 'direct', 'manifest.ini')
 manifest_update_fallback = os.path.join(root, 'update', 'fallback', 'manifest.ini')
 
