@@ -56,8 +56,4 @@ class UpdateOptions(FirefoxUIOptions):
             self.error('Options --update-direct-only and --update-fallback-only '
                        'are mutually exclusive.')
 
-        if options.update_target_buildid and not options.update_target_version:
-            self.error('Option --update-target-buildid also expects '
-                       '--update-target-version to be set.')
-
         FirefoxUIOptions.verify_usage(self, options, tests)
