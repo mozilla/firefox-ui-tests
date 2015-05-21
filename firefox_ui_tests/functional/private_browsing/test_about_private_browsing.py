@@ -2,65 +2,55 @@
 # License, v. 2.0. If a copy of the MPL was not distributed with this
 # file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
-from marionette_driver import By
+from marionette_driver import By, Wait
 
 from firefox_ui_harness.decorators import skip_if_e10s
 from firefox_ui_harness import FirefoxTestCase
+
+from firefox_puppeteer.ui.windows import BrowserWindow
 
 
 class TestAboutPrivateBrowsing(FirefoxTestCase):
 
     def setUp(self):
         FirefoxTestCase.setUp(self)
-        self.pb_url = self.marionette.absolute_url('private_browsing/about.html?')
 
-    def tearDown(self):
-        self.marionette.close()
+        # Use a fake local support URL
+        support_url = 'about:blank?'
+        self.prefs.set_pref('app.support.baseURL', support_url)
+
+        self.pb_url = support_url + 'private-browsing'
 
     @skip_if_e10s
     def testCheckAboutPrivateBrowsing(self):
         self.assertFalse(self.browser.is_private)
 
-        self.prefs.set_pref('app.support.baseURL', self.pb_url)
-
         with self.marionette.using_context('content'):
             self.marionette.navigate('about:privatebrowsing')
 
-            description = self.browser.get_entity(
-                'aboutPrivateBrowsing.subtitle.normal')
+            status_node = self.marionette.find_element(By.CSS_SELECTOR, 'p.showNormal')
+            self.assertEqual(status_node.text,
+                             self.browser.get_entity('aboutPrivateBrowsing.subtitle.normal'),
+                             'Status text indicates we are in private browsing mode')
 
-            status_node = self.marionette.find_element(By.CSS_SELECTOR,
-                                                       'p.showNormal')
-            self.assertEqual(status_node.text, description)
+        def window_opener(win):
+            with win.marionette.using_context('content'):
+                button = self.marionette.find_element(By.ID, 'startPrivateBrowsing')
+                button.click()
 
-            access_key = self.browser.get_entity(
-                'privatebrowsingpage.openPrivateWindow.accesskey')
+        pb_window = self.browser.open_window(callback=window_opener,
+                                             expected_window_class=BrowserWindow)
 
-            # Send keys to the top html element.
-            top_html = self.marionette.find_element(By.TAG_NAME, 'html')
-            top_html.send_keys(self.keys.SHIFT, self.keys.ACCEL, access_key)
+        try:
+            self.assertTrue(pb_window.is_private)
 
-        self.wait_for_condition(lambda mn: len(self.windows.all) == 2)
-        self.browser_pb = self.windows.switch_to(lambda win: win.is_private)
-        self.assertTrue(self.browser_pb.is_private)
+            def tab_opener(tab):
+                with tab.marionette.using_context('content'):
+                    link = tab.marionette.find_element(By.ID, 'learnMore')
+                    link.click()
 
-        def opener(tab):
-            with tab.marionette.using_context('content'):
-                link = tab.marionette.find_element(By.ID, 'learnMore')
-                link.click()
-        self.browser_pb.tabbar.open_tab(opener)
+            tab = pb_window.tabbar.open_tab(trigger=tab_opener)
+            Wait(self.marionette).until(lambda _: tab.location == self.pb_url)
 
-        self.assertEqual(len(self.browser_pb.tabbar.tabs), 2,
-                         "A new tab has been opened")
-
-        target_url = self.pb_url + 'private-browsing'
-        url_bar = self.marionette.find_element(By.ID, 'urlbar')
-
-        # TODO: get_url does not correspond to what we want here.
-        self.assertIn(url_bar.get_attribute('value'), target_url)
-
-        # TODO: Can be removed once Marionette can directly close a window.
-        # For now the opened tab gets closed first. See bug 1114623
-        self.browser_pb.close()
-
-        self.assertTrue(self.browser_pb.closed)
+        finally:
+            pb_window.close()
