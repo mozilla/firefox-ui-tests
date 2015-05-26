@@ -19,6 +19,7 @@ DEFAULT_PREFS = {
     # can correctly handle error pages
     'browser.newtab.url': 'about:newtab',
     'browser.newtabpage.enabled': False,
+    'browser.reader.detectedFirstArticle': True,
     'browser.safebrowsing.enabled': False,
     'browser.safebrowsing.malware.enabled': False,
     'browser.search.update': False,
