@@ -8,7 +8,6 @@ from firefox_ui_harness.decorators import skip_under_xvfb
 from firefox_ui_harness import FirefoxTestCase
 
 
-@skip_under_xvfb
 class TestStarInAutocomplete(FirefoxTestCase):
     """ This replaces
     http://hg.mozilla.org/qa/mozmill-tests/file/default/firefox/tests/functional/testAwesomeBar/testSuggestBookmarks.js
@@ -38,6 +37,7 @@ class TestStarInAutocomplete(FirefoxTestCase):
         finally:
             FirefoxTestCase.tearDown(self)
 
+    @skip_under_xvfb
     def test_star_in_autocomplete(self):
         search_string = 'grants'
 
