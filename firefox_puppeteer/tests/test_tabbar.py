@@ -69,14 +69,20 @@ class TestTabBar(FirefoxTestCase):
             self.assertEqual(tabbar.tabs[0].handle, self.marionette.current_window_handle)
             self.assertNotEqual(new_tab.handle, tabbar.tabs[0].handle)
 
-        # Close a tab which is not selected
+    def test_close_not_selected_tab(self):
+        tabbar = self.browser.tabbar
+
+        # Bug 1169600 - We cannot close the first tab, so open two new ones
+        tabbar.open_tab()
         new_tab = tabbar.open_tab()
-        tabbar.close_tab(tabbar.tabs[0])
+        tabbar.close_tab(tabbar.tabs[1])
 
-        self.assertEqual(len(tabbar.tabs), 1)
-        self.assertEqual(new_tab, tabbar.tabs[0])
+        self.assertEqual(len(tabbar.tabs), 2)
+        self.assertEqual(new_tab, tabbar.tabs[1])
 
-        # Close all tabs except the first one
+    def test_close_all_tabs_except_first(self):
+        tabbar = self.browser.tabbar
+
         orig_tab = tabbar.tabs[0]
 
         for i in range(0, 3):
