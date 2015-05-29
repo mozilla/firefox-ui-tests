@@ -40,10 +40,10 @@ before_script:
 
 script:
     # Run in non-e10s mode
-    - firefox-ui-tests --installer *firefox-*
+    - firefox-ui-tests --installer *firefox-* --gecko-log -
 
     # Run in e10s mode
-    - firefox-ui-tests --installer *firefox-* --e10s
+    - firefox-ui-tests --installer *firefox-* --gecko-log - --e10s
 
 notifications:
     irc:
