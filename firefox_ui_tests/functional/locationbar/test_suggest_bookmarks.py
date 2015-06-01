@@ -76,10 +76,10 @@ class TestStarInAutocomplete(FirefoxTestCase):
         # and for there to be exactly one autocomplete result
         self.wait_for_condition(lambda mn: locationbar.value == search_string)
         self.wait_for_condition(lambda mn: autocomplete_results.is_open)
-        self.wait_for_condition(lambda mn: len(autocomplete_results.visible_results) == 1)
+        self.wait_for_condition(lambda mn: len(autocomplete_results.visible_results) == 2)
 
         # Compare the highlighted text in the autocomplete result to the search string
-        first_result = autocomplete_results.visible_results[0]
+        first_result = autocomplete_results.visible_results[1]
         matching_titles = autocomplete_results.get_matching_text(first_result, 'title')
         for title in matching_titles:
             self.wait_for_condition(lambda mn: title.lower() == search_string)
