@@ -2,6 +2,8 @@
 # License, v. 2.0. If a copy of the MPL was not distributed with this
 # file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
+import unittest
+
 from marionette_driver.errors import NoSuchElementException
 
 from firefox_ui_harness.decorators import skip_under_xvfb
@@ -70,6 +72,7 @@ class TestLocationBar(FirefoxTestCase):
         self.assertEqual('toolbarbutton', stop_button.get_attribute('localName'))
 
 
+@unittest.skip('Bug 1170148 - Fix test_toolbars.py for unified auto-complete feature')
 class TestAutoCompleteResults(FirefoxTestCase):
     def setUp(self):
         FirefoxTestCase.setUp(self)
