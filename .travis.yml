@@ -46,7 +46,5 @@ script:
     - firefox-ui-tests --installer *firefox-* --e10s
 
 notifications:
-    email:
-        - dev-automation@lists.mozilla.org
     irc:
         - "irc.mozilla.org#automation"
