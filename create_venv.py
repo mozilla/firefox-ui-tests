@@ -88,8 +88,8 @@ def main():
                       help='The Python interpreter to use.')
     parser.add_option('--with-optional-packages',
                       dest='with_optional',
+                      default=False,
                       action='store_true',
-                      default='False',
                       help='Installs optional packages for enhanced usability.')
     (options, args) = parser.parse_args(args=None, values=None)
 
@@ -109,15 +109,14 @@ def main():
     tps_env = os.path.join(target, venv_activate_this)
     execfile(tps_env, dict(__file__=tps_env))
 
-    # Install Firefox UI Tests package
-    subprocess.check_call([os.path.join(target, venv_python_bin),
-                           os.path.join(here, 'setup.py'),
-                           'develop'
-                           ])
-
+    # Install Firefox UI tests, dependencies and optional packages
+    command = ['pip', 'install', os.getcwd()]
     if options.with_optional:
-        print 'Installing optional packages...'
-        subprocess.check_call(['pip', 'install', '-r', 'optional_packages.txt'])
+        command.extend(['-r', 'optional_packages.txt'])
+
+    print 'Installing Firefox UI Tests and dependencies...'
+    print 'Command: %s' % command
+    subprocess.check_call(command)
 
     # Print the user instructions
     print usage_message.format('' if sys.platform == 'win32' else 'source ',
