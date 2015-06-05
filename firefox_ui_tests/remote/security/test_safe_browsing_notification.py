@@ -15,6 +15,14 @@ class TestSafeBrowsingNotificationBar(FirefoxTestCase):
         FirefoxTestCase.setUp(self)
 
         self.test_data = [
+            # Unwanted software URL
+            {
+                # First two properties are not needed,
+                # since these errors are not reported
+                'button_property': None,
+                'report_page': None,
+                'unsafe_page': 'https://www.itisatrap.org/firefox/unwanted.html'
+            },
             # Phishing URL info
             {
                 'button_property': 'safebrowsing.notAForgeryButton.label',
@@ -51,16 +59,18 @@ class TestSafeBrowsingNotificationBar(FirefoxTestCase):
     def test_notification_bar(self):
         with self.marionette.using_context('content'):
             for item in self.test_data:
-                label = item['button_property']
+                button_property = item['button_property']
                 report_page, unsafe_page = item['report_page'], item['unsafe_page']
 
                 # Navigate to the unsafe page
                 # Check "ignore warning" link then notification bar's "not badware" button
-                self.marionette.navigate(unsafe_page)
-                # Wait for the DOM to receive events for about:blocked
-                time.sleep(1)
-                self.check_ignore_warning_button(unsafe_page)
-                self.check_not_badware_button(label, report_page)
+                # Only do this if feature supports it
+                if button_property is not None:
+                    self.marionette.navigate(unsafe_page)
+                    # Wait for the DOM to receive events for about:blocked
+                    time.sleep(1)
+                    self.check_ignore_warning_button(unsafe_page)
+                    self.check_not_badware_button(button_property, report_page)
 
                 # Return to the unsafe page
                 # Check "ignore warning" link then notification bar's "get me out" button
