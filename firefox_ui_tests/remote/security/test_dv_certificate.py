@@ -56,22 +56,25 @@ class TestDVCertificate(FirefoxTestCase):
                          'verifiedDomain',
                          'The Larry UI is domain verified (aka Blue)')
 
-        encryption_icon = self.identity_popup.encryption_icon
-        self.assertNotEqual(encryption_icon.value_of_css_property('list-style-image'),
-                            'none',
-                            'There is a lock icon')
+        self.assertNotEqual(self.identity_popup.icon.value_of_css_property('list-style-image'),
+                            'none')
 
         # Bug 443116
         # Larry strips the 'www.' from the CName using the eTLDService
         # This is expected behaviour for the time being
-        self.assertEqual(self.identity_popup.host.get_attribute('textContent'),
-                         self.security.get_domain_from_common_name(cert['commonName']),
-                         'The site identifier string is equal to the cert host')
+        self.assertEqual(self.identity_popup.host.get_attribute('value'),
+                         self.security.get_domain_from_common_name(cert['commonName']))
 
         verifier_label = self.browser.get_property('identity.identified.verifier')
         self.assertEqual(self.identity_popup.verifier.get_attribute('textContent'),
-                         verifier_label.replace("%S", cert['issuerOrganization']),
-                         'The "Verified by: %S" string is set')
+                         verifier_label.replace("%S", cert['issuerOrganization']))
+
+        # Only the secure label is visible
+        secure_label = self.identity_popup.secure_connection_label
+        self.assertNotEqual(secure_label.value_of_css_property('display'), 'none')
+
+        insecure_label = self.identity_popup.insecure_connection_label
+        self.assertEqual(insecure_label.value_of_css_property('display'), 'none')
 
         def opener(mn):
             self.identity_popup.more_info_button.click()
