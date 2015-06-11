@@ -51,6 +51,13 @@ class TestNoCertificate(FirefoxTestCase):
         self.assertEqual(self.identity_popup.popup.get_attribute('className'),
                          'unknownIdentity', 'The Larry UI is unknown (aka Grey)')
 
+        # Only the insecure label is visible
+        secure_label = self.identity_popup.secure_connection_label
+        self.assertEqual(secure_label.value_of_css_property('display'), 'none')
+
+        insecure_label = self.identity_popup.insecure_connection_label
+        self.assertNotEqual(insecure_label.value_of_css_property('display'), 'none')
+
         # Open the Page Info window by clicking the More Information button
         page_info = self.browser.open_page_info_window(
             lambda _: self.identity_popup.more_info_button.click())

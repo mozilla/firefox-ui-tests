@@ -172,10 +172,12 @@ class TestIdentityPopup(FirefoxTestCase):
         self.identity_popup.box.click()
         self.wait_for_condition(lambda _: self.identity_popup.is_open)
 
-        self.assertEqual(self.identity_popup.encryption_label.get_attribute('localName'),
-                         'description')
-        self.assertEqual(self.identity_popup.encryption_icon.get_attribute('localName'), 'image')
-        self.assertEqual(self.identity_popup.host.get_attribute('localName'), 'description')
+        self.assertEqual(self.identity_popup.icon.get_attribute('localName'), 'image')
+        self.assertEqual(self.identity_popup.secure_connection_label.get_attribute('localName'),
+                         'label')
+        self.assertEqual(self.identity_popup.host.get_attribute('localName'), 'label')
+        self.assertEqual(self.identity_popup.insecure_connection_label.get_attribute('localName'),
+                         'label')
         self.assertEqual(self.identity_popup.more_info_button.get_attribute('localName'),
                          'button')
         self.assertEqual(self.identity_popup.owner.get_attribute('localName'), 'description')

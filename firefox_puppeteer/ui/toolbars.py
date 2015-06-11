@@ -352,6 +352,14 @@ class IdentityPopup(BaseLib):
         return self.marionette.find_element(By.ID, 'identity-box')
 
     @property
+    def secure_connection_label(self):
+        """The DOM element which represents the identity popup secure connection label.
+
+        :returns: Reference to the identity-popup secure connection label.
+        """
+        return self.marionette.find_element(By.ID, 'identity-popup-connection-secure')
+
+    @property
     def country_label(self):
         """The DOM element which represents the identity icon country label.
 
@@ -360,28 +368,28 @@ class IdentityPopup(BaseLib):
         return self.marionette.find_element(By.ID, 'identity-icon-country-label')
 
     @property
-    def encryption_label(self):
-        """The DOM element which represents the identity-popup encryption label.
-
-        :returns: Reference to the identity-popup encryption label.
-        """
-        return self.marionette.find_element(By.ID, 'identity-popup-encryption-label')
-
-    @property
-    def encryption_icon(self):
-        """The DOM element which represents the identity-popup encryption icon.
-
-        :returns: Reference to the identity-popup encryption icon.
-        """
-        return self.marionette.find_element(By.ID, 'identity-popup-encryption-icon')
-
-    @property
     def host(self):
         """The DOM element which represents the identity-popup content host.
 
         :returns: Reference to the identity-popup content host.
         """
         return self.marionette.find_element(By.ID, 'identity-popup-content-host')
+
+    @property
+    def icon(self):
+        """The DOM element which represents the icon shown in the identity popup.
+
+        :returns: Reference to the icon in the identity popup.
+        """
+        return self.marionette.find_element(By.ID, 'identity-popup-icon')
+
+    @property
+    def insecure_connection_label(self):
+        """The DOM element which represents the identity popup insecure connection label.
+
+        :returns: Reference to the identity-popup insecure connection label.
+        """
+        return self.marionette.find_element(By.ID, 'identity-popup-connection-not-secure')
 
     @property
     def is_open(self):

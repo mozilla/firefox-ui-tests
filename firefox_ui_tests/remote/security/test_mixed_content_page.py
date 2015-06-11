@@ -41,5 +41,9 @@ class TestMixedContentPage(FirefoxTestCase):
 
         Wait(self.marionette).until(lambda _: self.identity_popup.is_open)
 
-        self.assertEqual(self.identity_popup.encryption_label.text,
-                         self.browser.get_property('identity.broken_loaded'))
+        # Only the insecure label is visible
+        secure_label = self.identity_popup.secure_connection_label
+        self.assertEqual(secure_label.value_of_css_property('display'), 'none')
+
+        insecure_label = self.identity_popup.insecure_connection_label
+        self.assertNotEqual(insecure_label.value_of_css_property('display'), 'none')
