@@ -227,6 +227,8 @@ class UpdateTestCase(FirefoxTestCase):
 
     def tearDown(self):
         try:
+            self.browser.tabbar.close_all_tabs([self.browser.tabbar.selected_tab])
+
             # Print results for now until we have treeherder integration
             output = pprint.pformat(self.updates)
             self.logger.info('Update test results: \n{}'.format(output))
