@@ -123,10 +123,11 @@ class TestAutoCompleteResults(FirefoxTestCase):
 
     @skip_under_xvfb
     def test_matching_text(self):
-        # TODO: This test is not very robust because it relies on the history
-        # in the default profile.
+        # The default profile always has links to mozilla.org. So multiple results
+        # will be found with 'moz'.
+        input_text = 'moz'
+
         autocompleteresults = self.browser.navbar.locationbar.autocomplete_results
-        input_text = 'a'
         self.browser.navbar.locationbar.urlbar.send_keys(input_text)
         self.wait_for_condition(lambda _: autocompleteresults.is_open)
         visible_results = autocompleteresults.visible_results
