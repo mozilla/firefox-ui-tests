@@ -72,7 +72,6 @@ class TestLocationBar(FirefoxTestCase):
         self.assertEqual('toolbarbutton', stop_button.get_attribute('localName'))
 
 
-@unittest.skip('Bug 1170148 - Fix test_toolbars.py for unified auto-complete feature')
 class TestAutoCompleteResults(FirefoxTestCase):
     def setUp(self):
         FirefoxTestCase.setUp(self)
@@ -97,7 +96,7 @@ class TestAutoCompleteResults(FirefoxTestCase):
         self.assertFalse(autocompleteresults.is_open)
         self.browser.navbar.locationbar.urlbar.send_keys('a')
         results = autocompleteresults.results
-        self.wait_for_condition(lambda _: autocompleteresults.is_open)
+        self.wait_for_condition(lambda _: autocompleteresults.is_complete)
         visible_result_count = len(autocompleteresults.visible_results)
         self.assertTrue(visible_result_count > 0)
         self.assertEqual(visible_result_count,
@@ -129,16 +128,19 @@ class TestAutoCompleteResults(FirefoxTestCase):
 
         autocompleteresults = self.browser.navbar.locationbar.autocomplete_results
         self.browser.navbar.locationbar.urlbar.send_keys(input_text)
-        self.wait_for_condition(lambda _: autocompleteresults.is_open)
+        self.wait_for_condition(lambda _: autocompleteresults.is_complete)
         visible_results = autocompleteresults.visible_results
         self.assertTrue(len(visible_results) > 0)
         for result in visible_results:
+            # check matching text only for results of type bookmark
+            if result.get_attribute('type') != 'bookmark':
+                continue
             title_matches = autocompleteresults.get_matching_text(result, "title")
             url_matches = autocompleteresults.get_matching_text(result, "url")
             all_matches = title_matches + url_matches
             self.assertTrue(len(all_matches) > 0)
             for match_fragment in all_matches:
-                self.assertIn(match_fragment, (input_text, input_text.upper()))
+                self.assertIn(match_fragment.lower(), input_text)
 
 
 class TestIdentityPopup(FirefoxTestCase):

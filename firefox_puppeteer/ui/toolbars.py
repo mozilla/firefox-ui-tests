@@ -315,6 +315,22 @@ class AutocompleteResults(BaseLib):
         return self.popup.get_attribute('state') == 'open'
 
     @property
+    def is_complete(self):
+        """Returns when this popup is open and autocomplete results are complete.
+
+        :returns: True, when autocomplete results have been populated.
+        """
+        return self.marionette.execute_script("""
+          Components.utils.import("resource://gre/modules/Services.jsm");
+          let win = Services.focus.activeWindow;
+          if (win) {
+            return win.gURLBar.controller.searchStatus >=
+                   Ci.nsIAutoCompleteController.STATUS_COMPLETE_NO_MATCH;
+          }
+          return null;
+        """)
+
+    @property
     def popup(self):
         """Provides access to the popup result element.
 
