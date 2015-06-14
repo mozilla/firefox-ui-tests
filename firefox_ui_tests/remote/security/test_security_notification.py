@@ -3,9 +3,8 @@
 # file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
 import time
-import unittest
 
-from marionette_driver import By
+from marionette_driver import By, Wait
 from marionette_driver.errors import MarionetteException
 
 from firefox_ui_harness import FirefoxTestCase
@@ -50,12 +49,14 @@ class TestSecurityNotification(FirefoxTestCase):
         with self.marionette.using_context('content'):
             self.marionette.navigate(self.urls[1])
 
-        self.wait_for_condition(lambda _: self.identity_box.get_attribute('className') ==
-                                'verifiedIdentity')
+        Wait(self.marionette).until(lambda _: (
+            self.identity_box.get_attribute('className') == 'verifiedIdentity')
+        )
 
     def test_insecure_website(self):
         with self.marionette.using_context('content'):
             self.marionette.navigate(self.urls[2])
 
-        self.wait_for_condition(lambda _: self.identity_box.get_attribute('className') ==
-                                'unknownIdentity')
+        Wait(self.marionette).until(lambda _: (
+            self.identity_box.get_attribute('className') == 'unknownIdentity')
+        )
