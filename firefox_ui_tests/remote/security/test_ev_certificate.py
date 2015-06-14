@@ -2,6 +2,7 @@
 # License, v. 2.0. If a copy of the MPL was not distributed with this
 # file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
+from marionette_driver import Wait
 from marionette_driver.errors import NoSuchElementException
 
 from firefox_ui_harness.decorators import skip_under_xvfb
@@ -46,14 +47,14 @@ class TestEVCertificate(FirefoxTestCase):
         # Check the favicon
         # TODO: find a better way to check, e.g., mozmill's isDisplayed
         favicon = self.browser.navbar.locationbar.favicon
-        self.wait_for_condition(lambda _: favicon.get_attribute('hidden') == 'false')
+        Wait(self.marionette).until(lambda _: favicon.get_attribute('hidden') == 'false')
 
         # Check the identity popup box
         self.assertEqual(self.identity_popup.box.get_attribute('className'),
                          'verifiedIdentity')
 
         self.identity_popup.box.click()
-        self.wait_for_condition(lambda _: self.identity_popup.is_open)
+        Wait(self.marionette).until(lambda _: self.identity_popup.is_open)
 
         # Check the idenity popup doorhanger
         self.assertEqual(self.identity_popup.popup.get_attribute('className'),

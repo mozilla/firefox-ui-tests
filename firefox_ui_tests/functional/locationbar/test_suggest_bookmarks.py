@@ -2,7 +2,7 @@
 # License, v. 2.0. If a copy of the MPL was not distributed with this
 # file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
-from marionette_driver import By
+from marionette_driver import By, Wait
 
 from firefox_ui_harness.decorators import skip_under_xvfb
 from firefox_ui_harness import FirefoxTestCase
@@ -57,7 +57,7 @@ class TestStarInAutocomplete(FirefoxTestCase):
 
         # TODO: Replace hard-coded selector with library method when one is available
         done_button = self.marionette.find_element(By.ID, 'editBookmarkPanelDoneButton')
-        self.wait_for_condition(lambda mn: done_button.is_displayed)
+        Wait(self.marionette).until(lambda mn: done_button.is_displayed)
         done_button.click()
 
         # We must open the blank page so the autocomplete result isn't "Switch to tab"
@@ -74,15 +74,15 @@ class TestStarInAutocomplete(FirefoxTestCase):
 
         # Wait for the search string to be present, for the autocomplete results to appear
         # and for there to be exactly one autocomplete result
-        self.wait_for_condition(lambda mn: locationbar.value == search_string)
-        self.wait_for_condition(lambda mn: autocomplete_results.is_complete)
-        self.wait_for_condition(lambda mn: len(autocomplete_results.visible_results) == 2)
+        Wait(self.marionette).until(lambda mn: locationbar.value == search_string)
+        Wait(self.marionette).until(lambda mn: autocomplete_results.is_open)
+        Wait(self.marionette).until(lambda mn: len(autocomplete_results.visible_results) == 2)
 
         # Compare the highlighted text in the autocomplete result to the search string
         first_result = autocomplete_results.visible_results[1]
         matching_titles = autocomplete_results.get_matching_text(first_result, 'title')
         for title in matching_titles:
-            self.wait_for_condition(lambda mn: title.lower() == search_string)
+            Wait(self.marionette).until(lambda mn: title.lower() == search_string)
 
         self.assertIn('bookmark',
                       first_result.get_attribute('type'),
