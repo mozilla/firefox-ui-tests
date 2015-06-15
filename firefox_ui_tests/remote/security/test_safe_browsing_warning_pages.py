@@ -15,6 +15,8 @@ class TestSafeBrowsingWarningPages(FirefoxTestCase):
         FirefoxTestCase.setUp(self)
 
         self.urls = [
+            # Unwanted software URL
+            'https://www.itisatrap.org/firefox/unwanted.html',
             # Phishing URL
             'https://www.itisatrap.org/firefox/its-a-trap.html',
             # Malware URL
