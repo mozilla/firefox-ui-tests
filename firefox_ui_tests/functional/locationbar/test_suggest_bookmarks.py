@@ -14,15 +14,15 @@ class TestStarInAutocomplete(FirefoxTestCase):
     Check a star appears in autocomplete list for a bookmarked page.
     """
 
-    PREF_LOCATION_BAR_SUGGEST = 'browser.urlbar.default.behavior'
+    PREF_SUGGEST_SEARCHES = 'browser.urlbar.suggest.searches'
 
     def setUp(self):
         FirefoxTestCase.setUp(self)
 
         self.test_urls = [self.marionette.absolute_url('layout/mozilla_grants.html')]
 
-        # Location bar suggests 'History and Bookmarks'
-        self.prefs.set_pref(self.PREF_LOCATION_BAR_SUGGEST, 0)
+        # Disable search suggestions to only get results for history and bookmarks
+        self.prefs.set_pref(self.PREF_SUGGEST_SEARCHES, False)
 
         with self.marionette.using_context('content'):
             self.marionette.navigate('about:blank')
@@ -75,7 +75,7 @@ class TestStarInAutocomplete(FirefoxTestCase):
         # Wait for the search string to be present, for the autocomplete results to appear
         # and for there to be exactly one autocomplete result
         self.wait_for_condition(lambda mn: locationbar.value == search_string)
-        self.wait_for_condition(lambda mn: autocomplete_results.is_open)
+        self.wait_for_condition(lambda mn: autocomplete_results.is_complete)
         self.wait_for_condition(lambda mn: len(autocomplete_results.visible_results) == 2)
 
         # Compare the highlighted text in the autocomplete result to the search string
