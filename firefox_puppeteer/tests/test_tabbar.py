@@ -72,13 +72,11 @@ class TestTabBar(FirefoxTestCase):
     def test_close_not_selected_tab(self):
         tabbar = self.browser.tabbar
 
-        # Bug 1169600 - We cannot close the first tab, so open two new ones
-        tabbar.open_tab()
         new_tab = tabbar.open_tab()
-        tabbar.close_tab(tabbar.tabs[1])
+        tabbar.close_tab(tabbar.tabs[0])
 
-        self.assertEqual(len(tabbar.tabs), 2)
-        self.assertEqual(new_tab, tabbar.tabs[1])
+        self.assertEqual(len(tabbar.tabs), 1)
+        self.assertEqual(new_tab, tabbar.tabs[0])
 
     def test_close_all_tabs_except_first(self):
         tabbar = self.browser.tabbar
