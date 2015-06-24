@@ -2,6 +2,7 @@
 # License, v. 2.0. If a copy of the MPL was not distributed with this
 # file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
+from marionette_driver import Wait
 from marionette_driver.errors import NoSuchElementException
 
 from firefox_ui_harness.decorators import skip_under_xvfb
@@ -34,7 +35,7 @@ class TestLocationBar(FirefoxTestCase):
         locationbar.load_url(data_uri)
 
         with self.marionette.using_context('content'):
-            self.wait_for_condition(lambda mn: mn.get_url() == data_uri)
+            Wait(self.marionette).until(lambda mn: mn.get_url() == data_uri)
 
     def test_urlbar_input(self):
         urlbar_input = self.browser.navbar.locationbar.urlbar_input
@@ -94,7 +95,7 @@ class TestAutoCompleteResults(FirefoxTestCase):
         self.assertFalse(autocompleteresults.is_open)
         self.browser.navbar.locationbar.urlbar.send_keys('a')
         results = autocompleteresults.results
-        self.wait_for_condition(lambda _: autocompleteresults.is_open)
+        Wait(self.marionette).until(lambda _: autocompleteresults.is_open)
         visible_result_count = len(autocompleteresults.visible_results)
         self.assertTrue(visible_result_count > 0)
         self.assertEqual(visible_result_count,
@@ -104,7 +105,7 @@ class TestAutoCompleteResults(FirefoxTestCase):
     def test_close(self):
         autocompleteresults = self.browser.navbar.locationbar.autocomplete_results
         self.browser.navbar.locationbar.urlbar.send_keys('a')
-        self.wait_for_condition(lambda _: autocompleteresults.is_open)
+        Wait(self.marionette).until(lambda _: autocompleteresults.is_open)
         # The Wait in the library implementation will fail this if this doesn't
         # end up closing.
         autocompleteresults.close()
@@ -113,7 +114,7 @@ class TestAutoCompleteResults(FirefoxTestCase):
     def test_force_close(self):
         autocompleteresults = self.browser.navbar.locationbar.autocomplete_results
         self.browser.navbar.locationbar.urlbar.send_keys('a')
-        self.wait_for_condition(lambda _: autocompleteresults.is_open)
+        Wait(self.marionette).until(lambda _: autocompleteresults.is_open)
         # The Wait in the library implementation will fail this if this doesn't
         # end up closing.
         autocompleteresults.close(force=True)
@@ -126,7 +127,7 @@ class TestAutoCompleteResults(FirefoxTestCase):
 
         autocompleteresults = self.browser.navbar.locationbar.autocomplete_results
         self.browser.navbar.locationbar.urlbar.send_keys(input_text)
-        self.wait_for_condition(lambda _: autocompleteresults.is_open)
+        Wait(self.marionette).until(lambda _: autocompleteresults.is_open)
         visible_results = autocompleteresults.visible_results
         self.assertTrue(len(visible_results) > 0)
         for result in visible_results:
@@ -167,7 +168,7 @@ class TestIdentityPopup(FirefoxTestCase):
             self.marionette.navigate(self.url)
 
         self.identity_popup.box.click()
-        self.wait_for_condition(lambda _: self.identity_popup.is_open)
+        Wait(self.marionette).until(lambda _: self.identity_popup.is_open)
 
         self.assertEqual(self.identity_popup.encryption_label.get_attribute('localName'),
                          'description')
@@ -189,7 +190,7 @@ class TestIdentityPopup(FirefoxTestCase):
         self.assertFalse(self.identity_popup.is_open)
 
         self.identity_popup.box.click()
-        self.wait_for_condition(lambda _: self.identity_popup.is_open)
+        Wait(self.marionette).until(lambda _: self.identity_popup.is_open)
 
         self.identity_popup.close()
 
@@ -203,7 +204,7 @@ class TestIdentityPopup(FirefoxTestCase):
         self.assertFalse(self.identity_popup.is_open)
 
         self.identity_popup.box.click()
-        self.wait_for_condition(lambda _: self.identity_popup.is_open)
+        Wait(self.marionette).until(lambda _: self.identity_popup.is_open)
 
         self.identity_popup.close(force=True)
 
