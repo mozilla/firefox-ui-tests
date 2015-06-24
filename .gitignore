@@ -4,3 +4,4 @@
 .*.swp
 _build/
 dist/
+venv/
