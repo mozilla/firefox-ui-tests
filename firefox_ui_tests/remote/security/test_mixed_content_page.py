@@ -12,9 +12,10 @@ class TestMixedContentPage(FirefoxTestCase):
     def setUp(self):
         FirefoxTestCase.setUp(self)
 
-        self.url = 'https://mozqa.com/data/firefox/security/mixedcontent.html'
+        self.locationbar = self.browser.navbar.locationbar
+        self.identity_popup = self.locationbar.identity_popup
 
-        self.identity_popup = self.browser.navbar.locationbar.identity_popup
+        self.url = 'https://mozqa.com/data/firefox/security/mixedcontent.html'
 
     def tearDown(self):
         try:
@@ -28,22 +29,32 @@ class TestMixedContentPage(FirefoxTestCase):
             self.marionette.navigate(self.url)
 
         favicon = self.browser.navbar.locationbar.favicon
-
-        favicon_hidden = self.marionette.execute_script("""
-          return arguments[0].hasAttribute("hidden");
-        """, script_args=[favicon])
-        self.assertFalse(favicon_hidden, 'The page proxy favicon should be visible')
-
         self.assertTrue("identity-icons-https-mixed-display" in
                         favicon.value_of_css_property('list-style-image'))
 
-        self.identity_popup.box.click()
-
+        # Open the identity popup
+        self.locationbar.identity_box.click()
         Wait(self.marionette).until(lambda _: self.identity_popup.is_open)
 
-        # Only the insecure label is visible
-        secure_label = self.identity_popup.secure_connection_label
+        # Only the insecure label is visible in the main view
+        secure_label = self.identity_popup.view.main.secure_connection_label
         self.assertEqual(secure_label.value_of_css_property('display'), 'none')
 
-        insecure_label = self.identity_popup.insecure_connection_label
+        insecure_label = self.identity_popup.view.main.insecure_connection_label
         self.assertNotEqual(insecure_label.value_of_css_property('display'), 'none')
+
+        # TODO: Bug 1177417 - Needs to open and close the security view, but a second
+        # click on the expander doesn't hide the security view
+        # self.identity_popup.view.main.expander.click()
+        # Wait(self.marionette).until(lambda _: self.identity_popup.view.security.selected)
+
+        # Only the insecure label is visible in the security view
+        secure_label = self.identity_popup.view.security.secure_connection_label
+        self.assertEqual(secure_label.value_of_css_property('display'), 'none')
+
+        insecure_label = self.identity_popup.view.security.insecure_connection_label
+        self.assertNotEqual(insecure_label.value_of_css_property('display'), 'none')
+
+        # Not fully secure message is visible
+        owner_location = self.identity_popup.view.security.owner_location
+        self.assertNotEqual(owner_location.value_of_css_property('display'), 'none')

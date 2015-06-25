@@ -2,8 +2,6 @@
 # License, v. 2.0. If a copy of the MPL was not distributed with this
 # file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
-import unittest
-
 from marionette_driver import expected, By, Wait
 from marionette_driver.errors import NoSuchElementException
 
@@ -87,6 +85,27 @@ class TestLocationBar(FirefoxTestCase):
 
         self.locationbar = self.browser.navbar.locationbar
 
+    def test_elements(self):
+        self.assertEqual(self.locationbar.urlbar.get_attribute('localName'), 'textbox')
+        self.assertIn('urlbar-input', self.locationbar.urlbar_input.get_attribute('className'))
+
+        self.assertEqual(self.locationbar.identity_box.get_attribute('localName'), 'box')
+        self.assertEqual(self.locationbar.identity_country_label.get_attribute('localName'),
+                         'label')
+        self.assertEqual(self.locationbar.identity_organization_label.get_attribute('localName'),
+                         'label')
+        self.assertEqual(self.locationbar.favicon.get_attribute('localName'), 'image')
+        self.assertEqual(self.locationbar.history_drop_marker.get_attribute('localName'),
+                         'dropmarker')
+        self.assertEqual(self.locationbar.reload_button.get_attribute('localName'),
+                         'toolbarbutton')
+        self.assertEqual(self.locationbar.stop_button.get_attribute('localName'),
+                         'toolbarbutton')
+
+        self.assertEqual(self.locationbar.contextmenu.get_attribute('localName'), 'menupopup')
+        self.assertEqual(self.locationbar.get_contextmenu_entry('paste').get_attribute('cmd'),
+                         'cmd_paste')
+
     def test_reload(self):
         event_types = ["shortcut", "shortcut2", "button"]
         for event in event_types:
@@ -112,39 +131,6 @@ class TestLocationBar(FirefoxTestCase):
 
         with self.marionette.using_context('content'):
             Wait(self.marionette).until(lambda mn: mn.get_url() == data_uri)
-
-    def test_urlbar_input(self):
-        urlbar_input = self.locationbar.urlbar_input
-        self.assertEqual('input', urlbar_input.get_attribute('localName'))
-        self.assertIn('urlbar-input', urlbar_input.get_attribute('className'))
-
-    def test_contextmenu(self):
-        contextmenu = self.locationbar.contextmenu
-        self.assertEqual('menupopup', contextmenu.get_attribute('localName'))
-
-    def test_contextment_entry(self):
-        contextmenu_entry = self.locationbar.get_contextmenu_entry('paste')
-        self.assertEqual('cmd_paste', contextmenu_entry.get_attribute('cmd'))
-
-    def test_reloadbutton(self):
-        reload_button = self.locationbar.reload_button
-        self.assertEqual('toolbarbutton', reload_button.get_attribute('localName'))
-
-    def test_urlbar(self):
-        urlbar = self.locationbar.urlbar
-        self.assertEqual('textbox', urlbar.get_attribute('localName'))
-
-    def test_favicon(self):
-        favicon = self.locationbar.favicon
-        self.assertEqual('image', favicon.get_attribute('localName'))
-
-    def test_history_drop_marker(self):
-        drop_marker = self.locationbar.history_drop_marker
-        self.assertEqual('dropmarker', drop_marker.get_attribute('localName'))
-
-    def test_stopbutton(self):
-        stop_button = self.locationbar.stop_button
-        self.assertEqual('toolbarbutton', stop_button.get_attribute('localName'))
 
 
 class TestAutoCompleteResults(FirefoxTestCase):
@@ -220,47 +206,51 @@ class TestAutoCompleteResults(FirefoxTestCase):
 class TestIdentityPopup(FirefoxTestCase):
     def setUp(self):
         FirefoxTestCase.setUp(self)
-        self.identity_popup = self.browser.navbar.locationbar.identity_popup
-        self.url = self.marionette.absolute_url('layout/mozilla.html')
+
+        self.locationbar = self.browser.navbar.locationbar
+        self.identity_popup = self.locationbar.identity_popup
+
+        self.url = 'https://ssl-ev.mozqa.com'
+
+        with self.marionette.using_context('content'):
+            self.marionette.navigate(self.url)
 
     def tearDown(self):
         try:
             self.identity_popup.close(force=True)
-        except NoSuchElementException:
-            # TODO: A NoSuchElementException may be thrown here when tests accessing the
-            # identity_popup.popup element are skipped.
-            pass
         finally:
             FirefoxTestCase.tearDown(self)
 
-    def test_elements(self):
-        self.assertEqual(self.identity_popup.box.get_attribute('localName'), 'box')
-        self.assertEqual(self.identity_popup.country_label.get_attribute('localName'), 'label')
-        self.assertEqual(self.identity_popup.organization_label.get_attribute('localName'),
-                         'label')
-
-    @unittest.skip('Bug 1177417 - Lots of failures due to UI changes of the identity popup')
     @skip_under_xvfb
-    def test_popup_elements(self):
-        with self.marionette.using_context('content'):
-            self.marionette.navigate(self.url)
-
-        self.identity_popup.box.click()
+    def test_elements(self):
+        self.locationbar.identity_box.click()
         Wait(self.marionette).until(lambda _: self.identity_popup.is_open)
 
-        self.assertEqual(self.identity_popup.icon.get_attribute('localName'), 'image')
-        self.assertEqual(self.identity_popup.secure_connection_label.get_attribute('localName'),
-                         'label')
-        self.assertEqual(self.identity_popup.host.get_attribute('localName'), 'label')
-        self.assertEqual(self.identity_popup.insecure_connection_label.get_attribute('localName'),
-                         'label')
-        self.assertEqual(self.identity_popup.more_info_button.get_attribute('localName'),
-                         'button')
-        self.assertEqual(self.identity_popup.owner.get_attribute('localName'), 'description')
-        self.assertEqual(self.identity_popup.owner_location.get_attribute('localName'),
-                         'description')
-        self.assertEqual(self.identity_popup.permissions.get_attribute('localName'), 'vbox')
-        self.assertEqual(self.identity_popup.verifier.get_attribute('localName'), 'description')
+        self.assertEqual(self.identity_popup.host.get_attribute('localName'), 'broadcaster')
+
+        # Test main view elements
+        main = self.identity_popup.view.main
+        self.assertEqual(main.element.get_attribute('localName'), 'panelview')
+
+        self.assertEqual(main.expander.get_attribute('localName'), 'button')
+        self.assertEqual(main.insecure_connection_label.get_attribute('localName'), 'label')
+        self.assertEqual(main.internal_connection_label.get_attribute('localName'), 'label')
+        self.assertEqual(main.secure_connection_label.get_attribute('localName'), 'label')
+
+        self.assertEqual(main.more_info_button.get_attribute('localName'), 'button')
+        self.assertEqual(main.permissions.get_attribute('localName'), 'vbox')
+
+        # Test security view elements
+        security = self.identity_popup.view.security
+        self.assertEqual(security.element.get_attribute('localName'), 'panelview')
+
+        self.assertEqual(security.insecure_connection_label.get_attribute('localName'), 'label')
+        self.assertEqual(security.internal_connection_label.get_attribute('localName'), 'label')
+        self.assertEqual(security.secure_connection_label.get_attribute('localName'), 'label')
+
+        self.assertEqual(security.owner.get_attribute('localName'), 'description')
+        self.assertEqual(security.owner_location.get_attribute('localName'), 'description')
+        self.assertEqual(security.verifier.get_attribute('localName'), 'description')
 
     @skip_under_xvfb
     def test_open_close(self):
@@ -269,11 +259,10 @@ class TestIdentityPopup(FirefoxTestCase):
 
         self.assertFalse(self.identity_popup.is_open)
 
-        self.identity_popup.box.click()
+        self.locationbar.identity_box.click()
         Wait(self.marionette).until(lambda _: self.identity_popup.is_open)
 
         self.identity_popup.close()
-
         self.assertFalse(self.identity_popup.is_open)
 
     @skip_under_xvfb
@@ -283,9 +272,8 @@ class TestIdentityPopup(FirefoxTestCase):
 
         self.assertFalse(self.identity_popup.is_open)
 
-        self.identity_popup.box.click()
+        self.locationbar.identity_box.click()
         Wait(self.marionette).until(lambda _: self.identity_popup.is_open)
 
         self.identity_popup.close(force=True)
-
         self.assertFalse(self.identity_popup.is_open)

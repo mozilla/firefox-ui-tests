@@ -24,7 +24,7 @@ class TestSecurityNotification(FirefoxTestCase):
             'http://www.mozqa.com'
         ]
 
-        self.identity_box = self.browser.navbar.locationbar.identity_popup.box
+        self.identity_box = self.browser.navbar.locationbar.identity_box
 
     def test_invalid_cert(self):
         with self.marionette.using_context('content'):

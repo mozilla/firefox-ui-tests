@@ -3,7 +3,6 @@
 # file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
 from marionette_driver import Wait
-from marionette_driver.errors import NoSuchElementException
 
 from firefox_ui_harness.decorators import skip_under_xvfb
 from firefox_ui_harness import FirefoxTestCase
@@ -14,18 +13,16 @@ class TestEVCertificate(FirefoxTestCase):
     def setUp(self):
         FirefoxTestCase.setUp(self)
 
-        self.url = 'https://ssl-ev.mozqa.com/'
+        self.locationbar = self.browser.navbar.locationbar
+        self.identity_popup = self.locationbar.identity_popup
 
-        self.identity_popup = self.browser.navbar.locationbar.identity_popup
+        self.url = 'https://ssl-ev.mozqa.com/'
 
     def tearDown(self):
         try:
+            self.browser.switch_to()
             self.identity_popup.close(force=True)
             self.windows.close_all([self.browser])
-        except NoSuchElementException:
-            # TODO: A NoSuchElementException may be thrown here when the test is skipped
-            # as under xvfb.
-            pass
         finally:
             FirefoxTestCase.tearDown(self)
 
@@ -34,49 +31,59 @@ class TestEVCertificate(FirefoxTestCase):
         with self.marionette.using_context('content'):
             self.marionette.navigate(self.url)
 
+        # The lock icon should be shown
+        self.assertIn('identity-icons-https',
+                      self.locationbar.favicon.value_of_css_property('list-style-image'))
+
+        # Check the identity box
+        self.assertEqual(self.locationbar.identity_box.get_attribute('className'),
+                         'verifiedIdentity')
+
         # Get the information from the certificate
         cert = self.browser.tabbar.selected_tab.certificate
         address = self.security.get_address_from_certificate(cert)
 
         # Check the identity popup label displays
-        self.assertEqual(self.identity_popup.organization_label.get_attribute('value'),
+        self.assertEqual(self.locationbar.identity_organization_label.get_attribute('value'),
                          cert['organization'])
-        self.assertEqual(self.identity_popup.country_label.get_attribute('value'),
+        self.assertEqual(self.locationbar.identity_country_label.get_attribute('value'),
                          '(' + address['country'] + ')')
 
-        # Check the favicon
-        # TODO: find a better way to check, e.g., mozmill's isDisplayed
-        favicon = self.browser.navbar.locationbar.favicon
-        Wait(self.marionette).until(lambda _: favicon.get_attribute('hidden') == 'false')
-
-        # Check the identity popup box
-        self.assertEqual(self.identity_popup.box.get_attribute('className'),
-                         'verifiedIdentity')
-
-        self.identity_popup.box.click()
+        # Open the identity popup
+        self.locationbar.identity_box.click()
         Wait(self.marionette).until(lambda _: self.identity_popup.is_open)
 
         # Check the idenity popup doorhanger
         self.assertEqual(self.identity_popup.element.get_attribute('className'),
                          'verifiedIdentity')
 
-        # Check that the lock icon is visible
-        self.assertNotEqual(self.identity_popup.icon.value_of_css_property('list-style-image'),
-                            'none')
-
         # For EV certificates no hostname but the organization name is shown
         self.assertEqual(self.identity_popup.host.get_attribute('value'),
                          cert['organization'])
 
-        # Only the secure label is visible
-        secure_label = self.identity_popup.secure_connection_label
+        # Only the secure label is visible in the main view
+        secure_label = self.identity_popup.view.main.secure_connection_label
         self.assertNotEqual(secure_label.value_of_css_property('display'), 'none')
 
-        insecure_label = self.identity_popup.insecure_connection_label
+        insecure_label = self.identity_popup.view.main.insecure_connection_label
+        self.assertEqual(insecure_label.value_of_css_property('display'), 'none')
+
+        # TODO: Bug 1177417 - Needs to open and close the security view, but a second
+        # click on the expander doesn't hide the security view
+        # self.identity_popup.view.main.expander.click()
+        # Wait(self.marionette).until(lambda _: self.identity_popup.view.security.selected)
+
+        security_view = self.identity_popup.view.security
+
+        # Only the secure label is visible in the security view
+        secure_label = security_view.secure_connection_label
+        self.assertNotEqual(secure_label.value_of_css_property('display'), 'none')
+
+        insecure_label = security_view.insecure_connection_label
         self.assertEqual(insecure_label.value_of_css_property('display'), 'none')
 
         # Check the organization name
-        self.assertEqual(self.identity_popup.owner.get_attribute('textContent'),
+        self.assertEqual(security_view.owner.get_attribute('textContent'),
                          cert['organization'])
 
         # Check the owner location string
@@ -85,18 +92,18 @@ class TestEVCertificate(FirefoxTestCase):
         location = self.browser.get_property('identity.identified.state_and_country')
         location = location.replace('%S', address['state'], 1).replace('%S', address['country'])
         location = address['city'] + '\n' + location
-        self.assertEqual(self.identity_popup.owner_location.get_attribute('textContent'),
+        self.assertEqual(security_view.owner_location.get_attribute('textContent'),
                          location)
 
         # Check the verifier
         l10n_verifier = self.browser.get_property('identity.identified.verifier')
         l10n_verifier = l10n_verifier.replace('%S', cert['issuerOrganization'])
-        self.assertEqual(self.identity_popup.verifier.get_attribute('textContent'),
+        self.assertEqual(security_view.verifier.get_attribute('textContent'),
                          l10n_verifier)
 
         # Open the Page Info window by clicking the More Information button
         page_info = self.browser.open_page_info_window(
-            lambda _: self.identity_popup.more_info_button.click())
+            lambda _: self.identity_popup.view.main.more_info_button.click())
 
         try:
             # Verify that the current panel is the security panel
