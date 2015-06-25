@@ -56,6 +56,8 @@ class TestSSLStatusAfterRestart(FirefoxTestCase):
 
         self.restart()
 
+        self.identity_popup = self.browser.navbar.locationbar.identity_popup
+
         for index, item in enumerate(self.test_data):
             self.browser.tabbar.tabs[index].select()
             self.verify_certificate_status(item)
@@ -74,7 +76,7 @@ class TestSSLStatusAfterRestart(FirefoxTestCase):
         Wait(self.marionette).until(lambda _: self.identity_popup.is_open)
 
         # Check the type shown on the idenity popup doorhanger
-        self.assertEqual(self.identity_popup.popup.get_attribute('className'),
+        self.assertEqual(self.identity_popup.element.get_attribute('className'),
                          cert_type,
                          'Certificate type is verified for ' + url)
 

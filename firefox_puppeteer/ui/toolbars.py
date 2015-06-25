@@ -2,17 +2,19 @@
 # License, v. 2.0. If a copy of the MPL was not distributed with this file,
 # You can obtain one at http://mozilla.org/MPL/2.0/.
 
-from marionette_driver import Wait, By
+from marionette_driver import By, keys, Wait
 
-from ..api.keys import Keys
-from ..api.l10n import L10n
-from ..base import BaseLib
-from ..decorators import use_class_as_property
+from ..base import UIBaseLib
 
 
-class NavBar(BaseLib):
+class NavBar(UIBaseLib):
     """Provides access to the DOM elements contained in the
     navigation bar as well as the location bar."""
+
+    def __init__(self, *args, **kwargs):
+        UIBaseLib.__init__(self, *args, **kwargs)
+
+        self._locationbar = None
 
     @property
     def back_button(self):
@@ -38,13 +40,18 @@ class NavBar(BaseLib):
         """
         return self.marionette.find_element(By.ID, 'home-button')
 
-    @use_class_as_property('ui.toolbars.LocationBar')
+    @property
     def locationbar(self):
         """Provides access to the DOM elements contained in the
         locationbar.
 
         See the :class:`LocationBar` reference.
         """
+        if not self._locationbar:
+            urlbar = self.marionette.find_element(By.ID, 'urlbar')
+            self._locationbar = LocationBar(lambda: self.marionette, self.window, urlbar)
+
+        return self._locationbar
 
     @property
     def menu_button(self):
@@ -54,39 +61,48 @@ class NavBar(BaseLib):
         """
         return self.marionette.find_element(By.ID, 'PanelUI-menu-button')
 
+    @property
+    def toolbar(self):
+        """The DOM element which represents the navigation toolbar.
 
-class LocationBar(BaseLib):
+        :returns: Reference to the navigation toolbar.
+        """
+        return self.element
+
+
+class LocationBar(UIBaseLib):
     """Provides access to and methods for the DOM elements contained in the
     locationbar (the text area of the ui that typically displays the current url)."""
 
-    dtds = ["chrome://branding/locale/brand.dtd",
-            "chrome://browser/locale/browser.dtd"]
-
     def __init__(self, *args, **kwargs):
-        BaseLib.__init__(self, *args, **kwargs)
-        # TODO: A "utility" module that sets up the client directly would be
-        # useful here.
-        self.l10n = L10n(self.get_marionette)
-        self.keys = Keys(self.get_marionette)
+        UIBaseLib.__init__(self, *args, **kwargs)
 
-    @use_class_as_property('ui.toolbars.AutocompleteResults')
+        self._autocomplete_results = None
+        self._identity_popup = None
+
+    @property
     def autocomplete_results(self):
         """Provides access to and methods for the location bar
         autocomplete results.
 
         See the :class:`AutocompleteResults` reference."""
+        if not self._autocomplete_results:
+            popup = self.marionette.find_element(By.ID, 'PopupAutoCompleteRichResult')
+            self._autocomplete_results = AutocompleteResults(lambda: self.marionette,
+                                                             self.window, popup)
+
+        return self._autocomplete_results
 
     def clear(self):
         """Clears the contents of the url bar (via the DELETE shortcut)."""
         self.focus('shortcut')
-        self.urlbar.send_keys(Keys.DELETE)
-        Wait(self.marionette).until(
-            lambda _: self.urlbar.get_attribute('value') == '')
+        self.urlbar.send_keys(keys.Keys.DELETE)
+        Wait(self.marionette).until(lambda _: self.urlbar.get_attribute('value') == '')
 
     def close_context_menu(self):
         """Closes the Location Bar context menu by a key event."""
         # TODO: This method should be implemented via the menu API.
-        self.contextmenu.send_keys(Keys.ESCAPE)
+        self.contextmenu.send_keys(keys.Keys.ESCAPE)
 
     @property
     def contextmenu(self):
@@ -94,8 +110,17 @@ class LocationBar(BaseLib):
 
         :returns: Reference to the urlbar context menu.
         """
+        # TODO: This method should be implemented via the menu API.
         parent = self.urlbar.find_element(By.ANON_ATTRIBUTE, {'anonid': 'textbox-input-box'})
         return parent.find_element(By.ANON_ATTRIBUTE, {'anonid': 'input-box-contextmenu'})
+
+    @property
+    def focused(self):
+        """Checks the focus state of the location bar.
+
+        :returns: `True` if focused, otherwise `False`
+        """
+        return self.urlbar.get_attribute('focused') == 'true'
 
     @property
     def favicon(self):
@@ -105,23 +130,21 @@ class LocationBar(BaseLib):
         """
         return self.marionette.find_element(By.ID, 'page-proxy-favicon')
 
-    def focus(self, evt='click'):
+    def focus(self, event='click'):
         """Focus the location bar according to the provided event.
 
-        :param evt: The event to synthesize in order to focus the urlbar
-                    (one of `click` or `shortcut`).
+        :param eventt: The event to synthesize in order to focus the urlbar
+                       (one of `click` or `shortcut`).
         """
-        if evt == 'click':
+        if event == 'click':
             self.urlbar.click()
-        elif evt == 'shortcut':
-            cmd_key = self.l10n.get_entity(LocationBar.dtds, 'openCmd.commandkey')
-            (self.marionette.find_element(By.ID, 'main-window')
-                            .send_keys(self.keys.ACCEL, cmd_key))
+        elif event == 'shortcut':
+            cmd_key = self.window.get_entity('openCmd.commandkey')
+            self.window.send_shortcut(cmd_key, accel=True)
         else:
-            raise ValueError("An unknown event type was passed: %s" % evt)
+            raise ValueError("An unknown event type was passed: %s" % event)
 
-        Wait(self.marionette).until(
-            lambda _: self.urlbar.get_attribute('focused') == 'true')
+        Wait(self.marionette).until(lambda _: self.focused)
 
     def get_contextmenu_entry(self, action):
         """Retrieves the urlbar context menu entry corresponding
@@ -144,13 +167,19 @@ class LocationBar(BaseLib):
         """
         return self.urlbar.find_element(By.ANON_ATTRIBUTE, {'anonid': 'historydropmarker'})
 
-    @use_class_as_property('ui.toolbars.IdentityPopup')
+    @property
     def identity_popup(self):
         """Provides utility members for accessing and manipulating the
         locationbar.
 
         See the :class:`IdentityPopup` reference.
         """
+        if not self._identity_popup:
+            popup = self.marionette.find_element(By.ID, 'identity-popup')
+            self._identity_popup = IdentityPopup(lambda: self.marionette,
+                                                 self.window, popup)
+
+        return self._identity_popup
 
     def load_url(self, url):
         """Load the specified url in the location bar by synthesized
@@ -160,7 +189,7 @@ class LocationBar(BaseLib):
         """
         self.clear()
         self.focus('shortcut')
-        self.urlbar.send_keys(url + Keys.ENTER)
+        self.urlbar.send_keys(url + keys.Keys.ENTER)
 
     @property
     def notification_popup(self):
@@ -191,10 +220,10 @@ class LocationBar(BaseLib):
         if trigger == 'button':
             self.reload_button.click()
         elif trigger == 'shortcut':
-            cmd_key = self.l10n.get_entity(LocationBar.dtds, 'reloadCmd.commandkey')
-            self.urlbar.send_keys(cmd_key)
+            cmd_key = self.window.get_entity('reloadCmd.commandkey')
+            self.window.send_shortcut(cmd_key)
         elif trigger == 'shortcut2':
-            self.urlbar.send_keys(self.keys.F5)
+            self.window.send_shortcut(keys.Keys.F5)
 
     @property
     def stop_button(self):
@@ -229,15 +258,8 @@ class LocationBar(BaseLib):
         return self.urlbar.get_attribute('value')
 
 
-class AutocompleteResults(BaseLib):
+class AutocompleteResults(UIBaseLib):
     """Wraps DOM elements and methods for interacting with autocomplete results."""
-
-    def __init__(self, *args, **kwargs):
-        BaseLib.__init__(self, *args, **kwargs)
-        # TODO: A "utility" module that sets up the client directly would be
-        # useful here.
-        self.l10n = L10n(self.get_marionette)
-        self.keys = Keys(self.get_marionette)
 
     def close(self, force=False):
         """Closes the urlbar autocomplete popup.
@@ -251,12 +273,11 @@ class AutocompleteResults(BaseLib):
         if force:
             self.marionette.execute_script("""
               arguments[0].hidePopup();
-            """, script_args=[self.popup])
+            """, script_args=[self.element])
         else:
-            (self.marionette.find_element(By.ID, 'urlbar')
-                            .send_keys(Keys.ESCAPE))
-        Wait(self.marionette).until(
-            lambda _: not self.is_open)
+            self.element.send_keys(keys.Keys.ESCAPE)
+
+        Wait(self.marionette).until(lambda _: not self.is_open)
 
     def get_matching_text(self, result, match_type):
         """Returns an array of strings of the matching text within an autocomplete
@@ -312,7 +333,7 @@ class AutocompleteResults(BaseLib):
 
         :returns: True when the popup is open, otherwise false.
         """
-        return self.popup.get_attribute('state') == 'open'
+        return self.element.get_attribute('state') == 'open'
 
     @property
     def is_complete(self):
@@ -322,30 +343,23 @@ class AutocompleteResults(BaseLib):
         """
         return self.marionette.execute_script("""
           Components.utils.import("resource://gre/modules/Services.jsm");
+
           let win = Services.focus.activeWindow;
           if (win) {
             return win.gURLBar.controller.searchStatus >=
                    Ci.nsIAutoCompleteController.STATUS_COMPLETE_NO_MATCH;
           }
+
           return null;
         """)
-
-    @property
-    def popup(self):
-        """Provides access to the popup result element.
-
-        :returns: Reference to the popup result element.
-        """
-        return self.marionette.find_element(By.ID,
-                                            'PopupAutoCompleteRichResult')
 
     @property
     def results(self):
         """
         :returns: The autocomplete result container node.
         """
-        return self.popup.find_element(By.ANON_ATTRIBUTE,
-                                       {'anonid': 'richlistbox'})
+        return self.element.find_element(By.ANON_ATTRIBUTE,
+                                         {'anonid': 'richlistbox'})
 
     @property
     def selected_index(self):
@@ -356,7 +370,7 @@ class AutocompleteResults(BaseLib):
         return self.results.get_attribute('selectedIndex')
 
 
-class IdentityPopup(BaseLib):
+class IdentityPopup(UIBaseLib):
     """Wraps DOM elements and methods for interacting with the identity popup."""
 
     @property
@@ -413,7 +427,7 @@ class IdentityPopup(BaseLib):
 
         :returns: True when the popup is open, otherwise false.
         """
-        return self.popup.get_attribute('state') == 'open'
+        return self.element.get_attribute('state') == 'open'
 
     @property
     def more_info_button(self):
@@ -448,14 +462,6 @@ class IdentityPopup(BaseLib):
         return self.marionette.find_element(By.ID, 'identity-popup-content-supplemental')
 
     @property
-    def popup(self):
-        """The DOM element which represents the identity popup.
-
-        :returns: Reference to the identity popup.
-        """
-        return self.marionette.find_element(By.ID, 'identity-popup')
-
-    @property
     def permissions(self):
         """The DOM element which represents the identity-popup permissions.
 
@@ -483,8 +489,8 @@ class IdentityPopup(BaseLib):
         if force:
             self.marionette.execute_script("""
               arguments[0].hidePopup();
-            """, script_args=[self.popup])
+            """, script_args=[self.element])
         else:
-            self.popup.send_keys(Keys.ESCAPE)
+            self.element.send_keys(keys.Keys.ESCAPE)
 
         Wait(self.marionette).until(lambda _: not self.is_open)
