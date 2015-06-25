@@ -168,9 +168,33 @@ class LocationBar(UIBaseLib):
         return self.urlbar.find_element(By.ANON_ATTRIBUTE, {'anonid': 'historydropmarker'})
 
     @property
+    def identity_box(self):
+        """The DOM element which represents the identity box.
+
+        :returns: Reference to the identity box.
+        """
+        return self.marionette.find_element(By.ID, 'identity-box')
+
+    @property
+    def identity_country_label(self):
+        """The DOM element which represents the identity icon country label.
+
+        :returns: Reference to the identity icon country label.
+        """
+        return self.marionette.find_element(By.ID, 'identity-icon-country-label')
+
+    @property
+    def identity_organization_label(self):
+        """The DOM element which represents the identity icon label.
+
+        :returns: Reference to the identity icon label.
+        """
+        return self.marionette.find_element(By.ID, 'identity-icon-label')
+
+    @property
     def identity_popup(self):
         """Provides utility members for accessing and manipulating the
-        locationbar.
+        identity popup.
 
         See the :class:`IdentityPopup` reference.
         """
@@ -373,29 +397,10 @@ class AutocompleteResults(UIBaseLib):
 class IdentityPopup(UIBaseLib):
     """Wraps DOM elements and methods for interacting with the identity popup."""
 
-    @property
-    def box(self):
-        """The DOM element which represents the identity box.
+    def __init__(self, *args, **kwargs):
+        UIBaseLib.__init__(self, *args, **kwargs)
 
-        :returns: Reference to the identity box.
-        """
-        return self.marionette.find_element(By.ID, 'identity-box')
-
-    @property
-    def secure_connection_label(self):
-        """The DOM element which represents the identity popup secure connection label.
-
-        :returns: Reference to the identity-popup secure connection label.
-        """
-        return self.marionette.find_element(By.ID, 'identity-popup-connection-secure')
-
-    @property
-    def country_label(self):
-        """The DOM element which represents the identity icon country label.
-
-        :returns: Reference to the identity icon country label.
-        """
-        return self.marionette.find_element(By.ID, 'identity-icon-country-label')
+        self._view = None
 
     @property
     def host(self):
@@ -406,76 +411,12 @@ class IdentityPopup(UIBaseLib):
         return self.marionette.find_element(By.ID, 'identity-popup-content-host')
 
     @property
-    def icon(self):
-        """The DOM element which represents the icon shown in the identity popup.
-
-        :returns: Reference to the icon in the identity popup.
-        """
-        return self.marionette.find_element(By.ID, 'identity-popup-icon')
-
-    @property
-    def insecure_connection_label(self):
-        """The DOM element which represents the identity popup insecure connection label.
-
-        :returns: Reference to the identity-popup insecure connection label.
-        """
-        return self.marionette.find_element(By.ID, 'identity-popup-connection-not-secure')
-
-    @property
     def is_open(self):
         """Returns whether this popup is currently open.
 
         :returns: True when the popup is open, otherwise false.
         """
         return self.element.get_attribute('state') == 'open'
-
-    @property
-    def more_info_button(self):
-        """The DOM element which represents the identity-popup more info button.
-
-        :returns: Reference to the identity-popup more info button.
-        """
-        return self.marionette.find_element(By.ID, 'identity-popup-more-info-button')
-
-    @property
-    def organization_label(self):
-        """The DOM element which represents the identity icon label.
-
-        :returns: Reference to the identity icon label.
-        """
-        return self.marionette.find_element(By.ID, 'identity-icon-label')
-
-    @property
-    def owner(self):
-        """The DOM element which represents the identity-popup content owner.
-
-        :returns: Reference to the identity-popup content owner.
-        """
-        return self.marionette.find_element(By.ID, 'identity-popup-content-owner')
-
-    @property
-    def owner_location(self):
-        """The DOM element which represents the identity-popup content supplemental.
-
-        :returns: Reference to the identity-popup content supplemental.
-        """
-        return self.marionette.find_element(By.ID, 'identity-popup-content-supplemental')
-
-    @property
-    def permissions(self):
-        """The DOM element which represents the identity-popup permissions.
-
-        :returns: Reference to the identity-popup permissions.
-        """
-        return self.marionette.find_element(By.ID, 'identity-popup-permissions')
-
-    @property
-    def verifier(self):
-        """The DOM element which represents the identity-popup content verifier.
-
-        :returns: Reference to the identity-popup content verifier.
-        """
-        return self.marionette.find_element(By.ID, 'identity-popup-content-verifier')
 
     def close(self, force=False):
         """Closes the identity popup by hitting the escape key.
@@ -494,3 +435,172 @@ class IdentityPopup(UIBaseLib):
             self.element.send_keys(keys.Keys.ESCAPE)
 
         Wait(self.marionette).until(lambda _: not self.is_open)
+
+    @property
+    def view(self):
+        """Provides utility members for accessing and manipulating the
+        identity popup's multi view.
+
+        See the :class:`IdentityPopupMultiView` reference.
+        """
+        if not self._view:
+            view = self.marionette.find_element(By.ID, 'identity-popup-multiView')
+            self._view = IdentityPopupMultiView(lambda: self.marionette, self.window, view)
+
+        return self._view
+
+
+class IdentityPopupMultiView(UIBaseLib):
+
+    def _create_view_for_id(self, view_id):
+        """Creates an instance of :class:`IdentityPopupView` for the specified view id.
+
+        :param view_id: The ID of the view to create an instance of.
+
+        :returns: :class:`IdentityPopupView` instance
+        """
+        mapping = {'identity-popup-mainView': IdentityPopupMainView,
+                   'identity-popup-securityView': IdentityPopupSecurityView,
+                   }
+
+        view = self.marionette.find_element(By.ID, view_id)
+        return mapping.get(view_id, IdentityPopupView)(lambda: self.marionette, self.window, view)
+
+    @property
+    def main(self):
+        """The DOM element which represents the main view.
+
+        :returns: Reference to the main view.
+        """
+        return self._create_view_for_id('identity-popup-mainView')
+
+    @property
+    def security(self):
+        """The DOM element which represents the security view.
+
+        :returns: Reference to the security view.
+        """
+        return self._create_view_for_id('identity-popup-securityView')
+
+
+class IdentityPopupView(UIBaseLib):
+
+    @property
+    def selected(self):
+        """Checks if the view is selected.
+
+        :return: `True` if the view is selected.
+        """
+        return self.element.get_attribute('current') == 'true'
+
+
+class IdentityPopupMainView(IdentityPopupView):
+
+    @property
+    def selected(self):
+        """Checks if the view is selected.
+
+        :return: `True` if the view is selected.
+        """
+        return self.marionette.execute_script("""
+            return arguments[0].panelMultiView.getAttribute('viewtype') == 'main';
+        """, script_args=[self.element])
+
+    @property
+    def expander(self):
+        """The DOM element which represents the expander button for the security content.
+
+        :returns: Reference to the identity popup expander button.
+        """
+        return self.element.find_element(By.CLASS_NAME, 'identity-popup-expander')
+
+    @property
+    def insecure_connection_label(self):
+        """The DOM element which represents the identity popup insecure connection label.
+
+        :returns: Reference to the identity-popup insecure connection label.
+        """
+        return self.element.find_element(By.CLASS_NAME, 'identity-popup-connection-not-secure')
+
+    @property
+    def internal_connection_label(self):
+        """The DOM element which represents the identity popup internal connection label.
+
+        :returns: Reference to the identity-popup internal connection label.
+        """
+        return self.marionette.find_element(By.CLASS_NAME, 'identity-popup-connection-internal')
+
+    @property
+    def more_info_button(self):
+        """The DOM element which represents the identity-popup more info button.
+
+        :returns: Reference to the identity-popup more info button.
+        """
+        return self.element.find_element(By.ID, 'identity-popup-more-info-button')
+
+    @property
+    def permissions(self):
+        """The DOM element which represents the identity-popup permissions content.
+
+        :returns: Reference to the identity-popup permissions.
+        """
+        return self.element.find_element(By.ID, 'identity-popup-permissions-content')
+
+    @property
+    def secure_connection_label(self):
+        """The DOM element which represents the identity popup secure connection label.
+
+        :returns: Reference to the identity-popup secure connection label.
+        """
+        return self.element.find_element(By.CLASS_NAME, 'identity-popup-connection-secure')
+
+
+class IdentityPopupSecurityView(IdentityPopupView):
+
+    @property
+    def insecure_connection_label(self):
+        """The DOM element which represents the identity popup insecure connection label.
+
+        :returns: Reference to the identity-popup insecure connection label.
+        """
+        return self.element.find_element(By.CLASS_NAME, 'identity-popup-connection-not-secure')
+
+    @property
+    def internal_connection_label(self):
+        """The DOM element which represents the identity popup internal connection label.
+
+        :returns: Reference to the identity-popup internal connection label.
+        """
+        return self.element.find_element(By.CLASS_NAME, 'identity-popup-connection-internal')
+
+    @property
+    def owner(self):
+        """The DOM element which represents the identity-popup content owner.
+
+        :returns: Reference to the identity-popup content owner.
+        """
+        return self.element.find_element(By.ID, 'identity-popup-content-owner')
+
+    @property
+    def owner_location(self):
+        """The DOM element which represents the identity-popup content supplemental.
+
+        :returns: Reference to the identity-popup content supplemental.
+        """
+        return self.element.find_element(By.ID, 'identity-popup-content-supplemental')
+
+    @property
+    def secure_connection_label(self):
+        """The DOM element which represents the identity popup secure connection label.
+
+        :returns: Reference to the identity-popup secure connection label.
+        """
+        return self.element.find_element(By.CLASS_NAME, 'identity-popup-connection-secure')
+
+    @property
+    def verifier(self):
+        """The DOM element which represents the identity-popup content verifier.
+
+        :returns: Reference to the identity-popup content verifier.
+        """
+        return self.element.find_element(By.ID, 'identity-popup-content-verifier')

@@ -12,9 +12,11 @@ class TestDVCertificate(FirefoxTestCase):
 
     def setUp(self):
         FirefoxTestCase.setUp(self)
-        self.url = 'https://ssl-dv.mozqa.com'
+
         self.locationbar = self.browser.navbar.locationbar
         self.identity_popup = self.browser.navbar.locationbar.identity_popup
+
+        self.url = 'https://ssl-dv.mozqa.com'
 
     def tearDown(self):
         try:
@@ -26,38 +28,25 @@ class TestDVCertificate(FirefoxTestCase):
 
     @skip_under_xvfb
     def test_dv_cert(self):
-
         with self.marionette.using_context('content'):
             self.marionette.navigate(self.url)
 
-        cert = self.browser.tabbar.selected_tab.certificate
-
-        favicon_hidden = self.marionette.execute_script("""
-          return arguments[0].hasAttribute("hidden");
-        """, script_args=[self.locationbar.favicon])
-
-        self.assertFalse(favicon_hidden, 'The page proxy favicon should be visible')
-
+        # The lock icon should be shown
         self.assertIn('identity-icons-https',
-                      self.locationbar.favicon.value_of_css_property('list-style-image'),
-                      'There is a lock icon')
+                      self.locationbar.favicon.value_of_css_property('list-style-image'))
 
-        self.assertEqual(self.identity_popup.box.get_attribute('className'),
-                         'verifiedDomain',
-                         'Identity is verified')
+        self.assertEqual(self.locationbar.identity_box.get_attribute('className'),
+                         'verifiedDomain')
 
-        self.identity_popup.box.click()
-        Wait(self.marionette).until(
-            lambda _: self.identity_popup.is_open,
-            message='The popup should be open'
-        )
+        # Open the identity popup
+        self.locationbar.identity_box.click()
+        Wait(self.marionette).until(lambda _: self.identity_popup.is_open)
 
+        # Check the identity popup doorhanger
         self.assertEqual(self.identity_popup.element.get_attribute('className'),
-                         'verifiedDomain',
-                         'The Larry UI is domain verified (aka Blue)')
+                         'verifiedDomain')
 
-        self.assertNotEqual(self.identity_popup.icon.value_of_css_property('list-style-image'),
-                            'none')
+        cert = self.browser.tabbar.selected_tab.certificate
 
         # Bug 443116
         # Larry strips the 'www.' from the CName using the eTLDService
@@ -65,33 +54,42 @@ class TestDVCertificate(FirefoxTestCase):
         self.assertEqual(self.identity_popup.host.get_attribute('value'),
                          self.security.get_domain_from_common_name(cert['commonName']))
 
-        verifier_label = self.browser.get_property('identity.identified.verifier')
-        self.assertEqual(self.identity_popup.verifier.get_attribute('textContent'),
-                         verifier_label.replace("%S", cert['issuerOrganization']))
-
-        # Only the secure label is visible
-        secure_label = self.identity_popup.secure_connection_label
+        # Only the secure label is visible in the main view
+        secure_label = self.identity_popup.view.main.secure_connection_label
         self.assertNotEqual(secure_label.value_of_css_property('display'), 'none')
 
-        insecure_label = self.identity_popup.insecure_connection_label
+        insecure_label = self.identity_popup.view.main.insecure_connection_label
         self.assertEqual(insecure_label.value_of_css_property('display'), 'none')
 
+        # TODO: Bug 1177417 - Needs to open and close the security view, but a second
+        # click on the expander doesn't hide the security view
+        # self.identity_popup.view.main.expander.click()
+        # Wait(self.marionette).until(lambda _: self.identity_popup.view.security.selected)
+
+        # Only the secure label is visible in the security view
+        secure_label = self.identity_popup.view.security.secure_connection_label
+        self.assertNotEqual(secure_label.value_of_css_property('display'), 'none')
+
+        insecure_label = self.identity_popup.view.security.insecure_connection_label
+        self.assertEqual(insecure_label.value_of_css_property('display'), 'none')
+
+        verifier_label = self.browser.get_property('identity.identified.verifier')
+        self.assertEqual(self.identity_popup.view.security.verifier.get_attribute('textContent'),
+                         verifier_label.replace("%S", cert['issuerOrganization']))
+
         def opener(mn):
-            self.identity_popup.more_info_button.click()
+            self.identity_popup.view.main.more_info_button.click()
 
         page_info_window = self.browser.open_page_info_window(opener)
         deck = page_info_window.deck
 
-        self.assertEqual(deck.selected_panel, deck.security,
-                         "The security tab is selected by default")
+        self.assertEqual(deck.selected_panel, deck.security)
 
         self.assertEqual(deck.security.domain.get_attribute('value'),
-                         cert['commonName'],
-                         "Expected web site label found")
+                         cert['commonName'])
 
         self.assertEqual(deck.security.owner.get_attribute('value'),
-                         page_info_window.get_property('securityNoOwner'),
-                         "Expected owner label found")
+                         page_info_window.get_property('securityNoOwner'))
 
         self.assertEqual(deck.security.verifier.get_attribute('value'),
                          cert['issuerOrganization'])

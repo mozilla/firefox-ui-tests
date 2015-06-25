@@ -34,7 +34,8 @@ class TestSSLStatusAfterRestart(FirefoxTestCase):
         # Set browser to restore previous session
         self.prefs.set_pref('browser.startup.page', 3)
 
-        self.identity_popup = self.browser.navbar.locationbar.identity_popup
+        self.locationbar = self.browser.navbar.locationbar
+        self.identity_popup = self.locationbar.identity_popup
 
     def tearDown(self):
         try:
@@ -56,7 +57,9 @@ class TestSSLStatusAfterRestart(FirefoxTestCase):
 
         self.restart()
 
-        self.identity_popup = self.browser.navbar.locationbar.identity_popup
+        # Refresh references to elements
+        self.locationbar = self.browser.navbar.locationbar
+        self.identity_popup = self.locationbar.identity_popup
 
         for index, item in enumerate(self.test_data):
             self.browser.tabbar.tabs[index].select()
@@ -72,25 +75,28 @@ class TestSSLStatusAfterRestart(FirefoxTestCase):
         """, script_args=[self.browser.navbar.locationbar.favicon])
         self.assertFalse(favicon_hidden)
 
-        self.identity_popup.box.click()
+        self.locationbar.identity_box.click()
         Wait(self.marionette).until(lambda _: self.identity_popup.is_open)
 
         # Check the type shown on the idenity popup doorhanger
         self.assertEqual(self.identity_popup.element.get_attribute('className'),
-                         cert_type,
-                         'Certificate type is verified for ' + url)
+                         cert_type)
+
+        # TODO: Bug 1177417 - Needs to open and close the security view, but a second
+        # click on the expander doesn't hide the security view
+        # self.identity_popup.view.main.expander.click()
+        # Wait(self.marionette).until(lambda _: self.identity_popup.view.security.selected)
 
         # Check the identity label
-        self.assertEqual(self.identity_popup.organization_label.get_attribute('value'),
-                         identity,
-                         'Identity name is correct for ' + url)
+        self.assertEqual(self.locationbar.identity_organization_label.get_attribute('value'),
+                         identity)
 
         # Get the information from the certificate
         cert = self.browser.tabbar.selected_tab.certificate
 
         # Open the Page Info window by clicking the More Information button
         page_info = self.browser.open_page_info_window(
-            lambda _: self.identity_popup.more_info_button.click())
+            lambda _: self.identity_popup.view.main.more_info_button.click())
 
         # Verify that the current panel is the security panel
         self.assertEqual(page_info.deck.selected_panel, page_info.deck.security)
