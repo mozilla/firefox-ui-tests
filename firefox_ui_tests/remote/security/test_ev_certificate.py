@@ -57,7 +57,7 @@ class TestEVCertificate(FirefoxTestCase):
         Wait(self.marionette).until(lambda _: self.identity_popup.is_open)
 
         # Check the idenity popup doorhanger
-        self.assertEqual(self.identity_popup.popup.get_attribute('className'),
+        self.assertEqual(self.identity_popup.element.get_attribute('className'),
                          'verifiedIdentity')
 
         # Check that the lock icon is visible

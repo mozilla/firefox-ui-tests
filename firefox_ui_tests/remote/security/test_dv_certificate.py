@@ -52,7 +52,7 @@ class TestDVCertificate(FirefoxTestCase):
             message='The popup should be open'
         )
 
-        self.assertEqual(self.identity_popup.popup.get_attribute('className'),
+        self.assertEqual(self.identity_popup.element.get_attribute('className'),
                          'verifiedDomain',
                          'The Larry UI is domain verified (aka Blue)')
 
