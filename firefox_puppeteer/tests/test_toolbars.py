@@ -166,6 +166,7 @@ class TestIdentityPopup(FirefoxTestCase):
                          'label')
         self.assertEqual(self.identity_popup.popup.get_attribute('localName'), 'panel')
 
+    @unittest.skip('Bug 1177417 - Lots of failures due to UI changes of the identity popup')
     @skip_under_xvfb
     def test_popup_elements(self):
         with self.marionette.using_context('content'):
