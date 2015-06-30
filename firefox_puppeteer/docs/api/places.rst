@@ -3,11 +3,11 @@
 Places
 ======
 
-The Places class provides low-level access for seveal boomarks and history
+The Places class provides low-level access for several bookmark and history
 related methods.
 
-API reference
--------------
+Places
+------
 
 .. autoclass:: Places
    :members:

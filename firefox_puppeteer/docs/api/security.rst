@@ -6,8 +6,8 @@ Security
 The Security class gives access to various helper methods, which assist in working with
 certificates or accessing specific security related information.
 
-API reference
--------------
+Security
+--------
 
 .. autoclass:: Security
    :members:

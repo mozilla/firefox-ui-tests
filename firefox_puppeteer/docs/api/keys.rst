@@ -3,6 +3,9 @@
 Keys
 ====
 
+Keys
+----
+
 .. autoclass:: Keys
    :members:
    :inherited-members:

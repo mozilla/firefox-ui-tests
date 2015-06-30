@@ -11,8 +11,8 @@ preferences.
 
 .. _nsIPrefBranch: https://developer.mozilla.org/docs/Mozilla/Tech/XPCOM/Reference/Interface/nsIPrefBranch
 
-API reference
--------------
+Preferences
+-----------
 
 .. autoclass:: Preferences
    :members:
