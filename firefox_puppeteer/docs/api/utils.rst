@@ -5,8 +5,8 @@ Utils
 
 The Utils class gives access to various helper methods.
 
-API reference
--------------
+Utils
+-----
 
 .. autoclass:: Utils
    :members:

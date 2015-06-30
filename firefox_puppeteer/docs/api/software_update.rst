@@ -5,6 +5,9 @@ SoftwareUpdate
 
 The SoftwareUpdate class provides helpers for update tests.
 
+SoftwareUpdate
+--------------
+
 .. autoclass:: SoftwareUpdate
    :members:
 

@@ -8,8 +8,8 @@ Firefox and provides access to a subset of its members.
 
 .. _nsIXULAppInfo: https://developer.mozilla.org/docs/Mozilla/Tech/XPCOM/Reference/Interface/nsIXULAppInfo
 
-API reference
--------------
+AppInfo
+-------
 
 .. autoclass:: AppInfo
    :members:
