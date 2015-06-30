@@ -15,6 +15,12 @@ compiler:
     - gcc
 
 env:
+    # Test with our internal pypi mirror
+    - PIP_FIND_LINKS=http://pypi.pub.build.mozilla.org/pub
+      PIP_NO_INDEX=1
+      DISPLAY=$(if [[ $TRAVIS_OS_NAME = 'linux' ]]; then echo ':99'; fi)
+      MOZ_XVFB=$(if [[ $TRAVIS_OS_NAME = 'linux' ]]; then echo 1; fi)
+    # ... and with the official pypi website
     - DISPLAY=$(if [[ $TRAVIS_OS_NAME = 'linux' ]]; then echo ':99'; fi)
       MOZ_XVFB=$(if [[ $TRAVIS_OS_NAME = 'linux' ]]; then echo 1; fi)
 
