@@ -3,6 +3,9 @@
 Localization
 ============
 
+Localization
+------------
+
 .. autoclass:: L10n
    :members:
    :undoc-members:

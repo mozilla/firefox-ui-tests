@@ -1,7 +1,10 @@
-  .. py:currentmodule:: firefox_puppeteer.ui.tabbar
+.. py:currentmodule:: firefox_puppeteer.ui.tabbar
 
 Tabbar
 ======
+
+TabBar
+------
 
 .. autoclass:: TabBar
    :members:
@@ -12,7 +15,7 @@ Tab
 .. autoclass:: Tab
    :members:
 
-Menu Panel
+MenuPanel
 ----------
 
 .. autoclass:: MenuPanel
