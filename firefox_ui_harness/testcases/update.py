@@ -170,6 +170,7 @@ class UpdateTestCase(FirefoxTestCase):
 
         # In case of a broken complete update the about window has to be used
         if self.updates[self.current_update_index]['patch']['is_complete']:
+            about_window = None
             try:
                 self.assertEqual(dialog.wizard.selected_panel,
                                  dialog.wizard.error)
@@ -185,7 +186,8 @@ class UpdateTestCase(FirefoxTestCase):
                 about_window.wait_for_update_applied()
 
             finally:
-                self.updates[self.current_update_index]['patch'] = about_window.patch_info
+                if about_window:
+                    self.updates[self.current_update_index]['patch'] = about_window.patch_info
 
         else:
             try:
