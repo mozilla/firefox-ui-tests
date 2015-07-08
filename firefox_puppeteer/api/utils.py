@@ -23,7 +23,8 @@ class Utils(BaseLib):
         with self.marionette.using_context('chrome'):
             self.marionette.execute_script("""
               Components.utils.import("resource://gre/modules/Services.jsm");
-              Services.perms.remove(arguments[0], arguments[1]);
+              let uri = Services.io.newURI(arguments[0], null, null);
+              Services.perms.remove(uri, arguments[1]);
             """, script_args=[host, permission])
 
     def sanitize(self, data_type):
