@@ -223,8 +223,7 @@ class TestIdentityPopup(FirefoxTestCase):
 
     @skip_under_xvfb
     def test_elements(self):
-        self.locationbar.identity_box.click()
-        Wait(self.marionette).until(lambda _: self.identity_popup.is_open)
+        self.locationbar.open_identity_popup()
 
         self.assertEqual(self.identity_popup.host.get_attribute('localName'), 'broadcaster')
 
@@ -269,8 +268,7 @@ class TestIdentityPopup(FirefoxTestCase):
 
         self.assertFalse(self.identity_popup.is_open)
 
-        self.locationbar.identity_box.click()
-        Wait(self.marionette).until(lambda _: self.identity_popup.is_open)
+        self.locationbar.open_identity_popup()
 
         self.identity_popup.close()
         self.assertFalse(self.identity_popup.is_open)
@@ -282,8 +280,7 @@ class TestIdentityPopup(FirefoxTestCase):
 
         self.assertFalse(self.identity_popup.is_open)
 
-        self.locationbar.identity_box.click()
-        Wait(self.marionette).until(lambda _: self.identity_popup.is_open)
+        self.locationbar.open_identity_popup()
 
         self.identity_popup.close(force=True)
         self.assertFalse(self.identity_popup.is_open)
