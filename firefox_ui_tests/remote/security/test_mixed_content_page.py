@@ -29,7 +29,7 @@ class TestMixedContentPage(FirefoxTestCase):
             self.marionette.navigate(self.url)
 
         favicon = self.browser.navbar.locationbar.favicon
-        self.assertTrue("identity-icons-https-mixed-display" in
+        self.assertTrue('identity-mixed-passive-loaded' in
                         favicon.value_of_css_property('list-style-image'))
 
         # Open the identity popup
