@@ -223,6 +223,10 @@ class LocationBar(UIBaseLib):
         """
         return self.marionette.find_element(By.ID, "notification-popup")
 
+    def open_identity_popup(self):
+        self.identity_box.click()
+        Wait(self.marionette).until(lambda _: self.identity_popup.is_open)
+
     @property
     def reload_button(self):
         """Provides access to the DOM element reload button.

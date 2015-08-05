@@ -74,8 +74,7 @@ class TestMixedScriptContentBlocking(FirefoxTestCase):
         self.expect_protection_enabled()
 
         # Disable mixed content blocking via identity popup
-        self.locationbar.identity_box.click()
-        Wait(self.marionette).until(lambda _: self.identity_popup.is_open)
+        self.locationbar.open_identity_popup()
         self.identity_popup.view.main.expander.click()
         Wait(self.marionette).until(lambda _: self.identity_popup.view.security.selected)
 

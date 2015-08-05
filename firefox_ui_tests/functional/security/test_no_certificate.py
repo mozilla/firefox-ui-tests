@@ -45,8 +45,7 @@ class TestNoCertificate(FirefoxTestCase):
                          'The favicon has no label')
 
         # Open the identity popup
-        self.locationbar.identity_box.click()
-        Wait(self.marionette).until(lambda _: self.identity_popup.is_open)
+        self.locationbar.open_identity_popup()
 
         # Check the idenity popup doorhanger
         self.assertEqual(self.identity_popup.element.get_attribute('connection'), 'not-secure')

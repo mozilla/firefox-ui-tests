@@ -75,8 +75,7 @@ class TestSSLStatusAfterRestart(FirefoxTestCase):
         """, script_args=[self.browser.navbar.locationbar.favicon])
         self.assertFalse(favicon_hidden)
 
-        self.locationbar.identity_box.click()
-        Wait(self.marionette).until(lambda _: self.identity_popup.is_open)
+        self.locationbar.open_identity_popup()
 
         # Check the type shown on the idenity popup doorhanger
         self.assertEqual(self.identity_popup.element.get_attribute('connection'),
