@@ -31,15 +31,15 @@ class TestMixedScriptContentBlocking(FirefoxTestCase):
     def _expect_protection_status(self, enabled):
         if enabled:
             color, icon_filename, state = (
-                "rgb(0, 136, 0)",
-                "identity-icons-https.png",
-                "blocked"
+                'rgb(0, 136, 0)',
+                'identity-mixed-active-blocked',
+                'blocked'
             )
         else:
             color, icon_filename, state = (
-                "rgb(255, 0, 0)",
-                "identity-icons-https-mixed-active.png",
-                "unblocked"
+                'rgb(255, 0, 0)',
+                'identity-mixed-active-loaded',
+                'unblocked'
             )
 
         icon_id = "bad-content-%s-notification-icon" % state
@@ -50,7 +50,6 @@ class TestMixedScriptContentBlocking(FirefoxTestCase):
         )
 
         favicon = self.locationbar.favicon
-
         Wait(self.marionette).until(
             lambda _: icon_filename in favicon.value_of_css_property('list-style-image'),
             message="The correct icon is displayed"

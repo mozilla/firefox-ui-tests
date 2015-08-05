@@ -32,7 +32,7 @@ class TestEVCertificate(FirefoxTestCase):
             self.marionette.navigate(self.url)
 
         # The lock icon should be shown
-        self.assertIn('identity-icons-https',
+        self.assertIn('identity-secure',
                       self.locationbar.favicon.value_of_css_property('list-style-image'))
 
         # Check the identity box
