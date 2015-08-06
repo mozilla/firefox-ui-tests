@@ -7,12 +7,12 @@ from setuptools import setup, find_packages
 PACKAGE_VERSION = '0.2'
 
 deps = [
-    'marionette-client >= 0.16',
-    'marionette-driver >= 0.10',
-    'mozfile >= 1.1',
-    'mozinfo >= 0.8',
-    'mozinstall >= 1.12',
-    'mozlog >= 2.7',
+    'marionette-client == 0.18',
+    'marionette-driver == 0.12',
+    'mozfile == 1.2',
+    'mozinfo == 0.8',
+    'mozinstall == 1.12',
+    'mozlog == 3.0',
 ]
 
 setup(name='firefox-ui-tests',
