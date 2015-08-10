@@ -233,9 +233,12 @@ class TestIdentityPopup(FirefoxTestCase):
         self.assertEqual(main.element.get_attribute('localName'), 'panelview')
 
         self.assertEqual(main.expander.get_attribute('localName'), 'button')
-        self.assertEqual(main.insecure_connection_label.get_attribute('localName'), 'label')
-        self.assertEqual(main.internal_connection_label.get_attribute('localName'), 'label')
-        self.assertEqual(main.secure_connection_label.get_attribute('localName'), 'label')
+        self.assertEqual(main.insecure_connection_label.get_attribute('localName'),
+                         'description')
+        self.assertEqual(main.internal_connection_label.get_attribute('localName'),
+                         'description')
+        self.assertEqual(main.secure_connection_label.get_attribute('localName'),
+                         'description')
 
         self.assertEqual(main.more_info_button.get_attribute('localName'), 'button')
         self.assertEqual(main.permissions.get_attribute('localName'), 'vbox')
@@ -244,13 +247,19 @@ class TestIdentityPopup(FirefoxTestCase):
         security = self.identity_popup.view.security
         self.assertEqual(security.element.get_attribute('localName'), 'panelview')
 
-        self.assertEqual(security.insecure_connection_label.get_attribute('localName'), 'label')
-        self.assertEqual(security.internal_connection_label.get_attribute('localName'), 'label')
-        self.assertEqual(security.secure_connection_label.get_attribute('localName'), 'label')
+        self.assertEqual(security.insecure_connection_label.get_attribute('localName'),
+                         'description')
+        self.assertEqual(security.secure_connection_label.get_attribute('localName'),
+                         'description')
 
         self.assertEqual(security.owner.get_attribute('localName'), 'description')
         self.assertEqual(security.owner_location.get_attribute('localName'), 'description')
         self.assertEqual(security.verifier.get_attribute('localName'), 'description')
+
+        self.assertEqual(security.disable_mixed_content_blocking_button.get_attribute('localName'),
+                         'button')
+        self.assertEqual(security.enable_mixed_content_blocking_button.get_attribute('localName'),
+                         'button')
 
     @skip_under_xvfb
     def test_open_close(self):

@@ -55,6 +55,6 @@ class TestMixedContentPage(FirefoxTestCase):
         insecure_label = self.identity_popup.view.security.insecure_connection_label
         self.assertNotEqual(insecure_label.value_of_css_property('display'), 'none')
 
-        # Not fully secure message is visible
-        owner_location = self.identity_popup.view.security.owner_location
-        self.assertNotEqual(owner_location.value_of_css_property('display'), 'none')
+        # owner is not visible
+        owner = self.identity_popup.view.security.owner
+        self.assertEqual(owner.value_of_css_property('display'), 'none')

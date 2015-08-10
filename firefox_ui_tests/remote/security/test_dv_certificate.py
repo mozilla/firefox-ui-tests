@@ -43,8 +43,7 @@ class TestDVCertificate(FirefoxTestCase):
         Wait(self.marionette).until(lambda _: self.identity_popup.is_open)
 
         # Check the identity popup doorhanger
-        self.assertEqual(self.identity_popup.element.get_attribute('className'),
-                         'verifiedDomain')
+        self.assertEqual(self.identity_popup.element.get_attribute('connection'), 'secure')
 
         cert = self.browser.tabbar.selected_tab.certificate
 

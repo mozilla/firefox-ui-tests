@@ -49,8 +49,7 @@ class TestNoCertificate(FirefoxTestCase):
         Wait(self.marionette).until(lambda _: self.identity_popup.is_open)
 
         # Check the idenity popup doorhanger
-        self.assertEqual(self.identity_popup.element.get_attribute('className'),
-                         'unknownIdentity', 'The Larry UI is unknown (aka Grey)')
+        self.assertEqual(self.identity_popup.element.get_attribute('connection'), 'not-secure')
 
         # The expander for the security view does not exist
         expected.element_not_present(lambda m: self.identity_popup.main.expander)

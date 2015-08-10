@@ -54,8 +54,7 @@ class TestEVCertificate(FirefoxTestCase):
         Wait(self.marionette).until(lambda _: self.identity_popup.is_open)
 
         # Check the idenity popup doorhanger
-        self.assertEqual(self.identity_popup.element.get_attribute('className'),
-                         'verifiedIdentity')
+        self.assertEqual(self.identity_popup.element.get_attribute('connection'), 'secure-ev')
 
         # For EV certificates no hostname but the organization name is shown
         self.assertEqual(self.identity_popup.host.get_attribute('value'),

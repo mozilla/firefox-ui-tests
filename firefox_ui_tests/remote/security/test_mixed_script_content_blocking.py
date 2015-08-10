@@ -12,19 +12,22 @@ class TestMixedScriptContentBlocking(FirefoxTestCase):
 
     def setUp(self):
         FirefoxTestCase.setUp(self)
+
         self.url = 'https://mozqa.com/data/firefox/security/mixed_content_blocked/index.html'
+
         self.test_elements = [
             ('result1', 'Insecure script one'),
             ('result2', 'Insecure script from iFrame'),
             ('result3', 'Insecure plugin'),
             ('result4', 'Insecure stylesheet'),
         ]
+
         self.locationbar = self.browser.navbar.locationbar
+        self.identity_popup = self.locationbar.identity_popup
 
     def tearDown(self):
         try:
-            self.marionette.execute_script("arguments[0].hidePopup();",
-                                           script_args=[self.locationbar.notification_popup])
+            self.identity_popup.close(force=True)
         finally:
             FirefoxTestCase.tearDown(self)
 
@@ -41,13 +44,6 @@ class TestMixedScriptContentBlocking(FirefoxTestCase):
                 'identity-mixed-active-loaded',
                 'unblocked'
             )
-
-        icon_id = "bad-content-%s-notification-icon" % state
-        icon = self.marionette.find_element(By.ID, icon_id)
-        Wait(self.marionette).until(
-            lambda _: icon.get_attribute('showing') == 'true',
-            message="The icon should be showing"
-        )
 
         favicon = self.locationbar.favicon
         Wait(self.marionette).until(
@@ -76,39 +72,18 @@ class TestMixedScriptContentBlocking(FirefoxTestCase):
 
         self.expect_protection_enabled()
 
-        # TODO: This should consume the ui class for popups when implemented in
-        # bug 1144873.
-        popup = self.locationbar.notification_popup
-        self.assertEqual(popup.get_attribute('state'), 'closed')
+        # Disable mixed content blocking via identity popup
+        self.locationbar.identity_box.click()
+        Wait(self.marionette).until(lambda _: self.identity_popup.is_open)
+        self.identity_popup.view.main.expander.click()
+        Wait(self.marionette).until(lambda _: self.identity_popup.view.security.selected)
 
-        popupbox = self.marionette.find_element(By.ID,
-                                                'bad-content-blocked-notification-icon')
-        popupbox.click()
-
-        Wait(self.marionette).until(
-            lambda _: popup.get_attribute('state') == 'open',
-            message="The notification popup should be open"
-        )
-
-        notification_element = self.marionette.find_element(By.ID, 'bad-content-notification')
-
-        button_label = self.browser.get_entity('mixedContentBlocked2.options')
-        options_button = notification_element.find_element(By.ANON_ATTRIBUTE,
-                                                           {'label': button_label})
-        options_button.click()
-
-        item_label = self.browser.get_entity('mixedContentBlocked2.unblock.label')
-        menu_item = notification_element.find_element(By.ANON_ATTRIBUTE,
-                                                      {'label': item_label})
-        menu_item.click()
-
-        Wait(self.marionette).until(
-            lambda _: popup.get_attribute('state') == 'closed',
-            message="The notification popup should be closed"
-        )
+        disable_button = self.identity_popup.view.security.disable_mixed_content_blocking_button
+        disable_button.click()
 
         self.expect_protection_disabled()
 
+        # A reload keeps blocking disabled
         with self.marionette.using_context('content'):
             self.marionette.navigate(self.url)
 
