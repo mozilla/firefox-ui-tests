@@ -17,17 +17,17 @@ class TestSSLStatusAfterRestart(FirefoxTestCase):
             {
                 'url': 'https://ssl-dv.mozqa.com',
                 'identity': '',
-                'type': 'verifiedDomain'
+                'type': 'secure'
             },
             {
                 'url': 'https://ssl-ev.mozqa.com/',
                 'identity': 'Mozilla Corporation',
-                'type': 'verifiedIdentity'
+                'type': 'secure-ev'
             },
             {
                 'url': 'https://ssl-ov.mozqa.com/',
                 'identity': '',
-                'type': 'verifiedDomain'
+                'type': 'secure'
             }
         )
 
@@ -79,7 +79,7 @@ class TestSSLStatusAfterRestart(FirefoxTestCase):
         Wait(self.marionette).until(lambda _: self.identity_popup.is_open)
 
         # Check the type shown on the idenity popup doorhanger
-        self.assertEqual(self.identity_popup.element.get_attribute('className'),
+        self.assertEqual(self.identity_popup.element.get_attribute('connection'),
                          cert_type)
 
         # TODO: Bug 1177417 - Needs to open and close the security view, but a second

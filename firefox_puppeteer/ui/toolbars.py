@@ -528,7 +528,7 @@ class IdentityPopupMainView(IdentityPopupView):
 
         :returns: Reference to the identity-popup internal connection label.
         """
-        return self.marionette.find_element(By.CLASS_NAME, 'identity-popup-connection-internal')
+        return self.element.find_element(By.CSS_SELECTOR, 'description[when-connection=chrome]')
 
     @property
     def more_info_button(self):
@@ -558,20 +558,30 @@ class IdentityPopupMainView(IdentityPopupView):
 class IdentityPopupSecurityView(IdentityPopupView):
 
     @property
+    def disable_mixed_content_blocking_button(self):
+        """The DOM element which represents the disable mixed content blocking button.
+
+        :returns: Reference to the disable mixed content blocking button.
+        """
+        return self.element.find_element(By.CSS_SELECTOR,
+                                         'button[when-mixedcontent=active-blocked]')
+
+    @property
+    def enable_mixed_content_blocking_button(self):
+        """The DOM element which represents the enable mixed content blocking button.
+
+        :returns: Reference to the enable mixed content blocking button.
+        """
+        return self.element.find_element(By.CSS_SELECTOR,
+                                         'button[when-mixedcontent=active-loaded]')
+
+    @property
     def insecure_connection_label(self):
         """The DOM element which represents the identity popup insecure connection label.
 
         :returns: Reference to the identity-popup insecure connection label.
         """
         return self.element.find_element(By.CLASS_NAME, 'identity-popup-connection-not-secure')
-
-    @property
-    def internal_connection_label(self):
-        """The DOM element which represents the identity popup internal connection label.
-
-        :returns: Reference to the identity-popup internal connection label.
-        """
-        return self.element.find_element(By.CLASS_NAME, 'identity-popup-connection-internal')
 
     @property
     def owner(self):
