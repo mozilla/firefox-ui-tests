@@ -7,6 +7,7 @@ from marionette_driver.errors import NoSuchWindowException, TimeoutException
 
 import firefox_puppeteer.errors as errors
 
+from firefox_ui_harness.decorators import skip_under_xvfb
 from firefox_ui_harness import FirefoxTestCase
 from firefox_puppeteer.ui.windows import BaseWindow
 
@@ -92,6 +93,7 @@ class TestBaseWindow(FirefoxTestCase):
         self.assertRaises(KeyError,
                           win1.send_shortcut, 'l', acel=True)
 
+    @skip_under_xvfb
     def test_open_close(self):
         # force BaseWindow instance
         win1 = BaseWindow(lambda: self.marionette, self.browser.handle)
@@ -137,6 +139,7 @@ class TestBaseWindow(FirefoxTestCase):
                           win1.open_window, expected_window_class=BaseWindow)
         self.windows.close_all([win1])
 
+    @skip_under_xvfb
     def test_switch_to_and_focus(self):
         # force BaseWindow instance
         win1 = BaseWindow(lambda: self.marionette, self.browser.handle)
@@ -191,6 +194,7 @@ class TestBrowserWindow(FirefoxTestCase):
         self.assertIsNotNone(self.browser.navbar)
         self.assertIsNotNone(self.browser.tabbar)
 
+    @skip_under_xvfb
     def test_open_close(self):
         # open and close a new browser windows by menu
         win2 = self.browser.open_browser(trigger='menu')
