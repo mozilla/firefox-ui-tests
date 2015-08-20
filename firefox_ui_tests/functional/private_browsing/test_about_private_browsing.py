@@ -4,7 +4,7 @@
 
 from marionette_driver import By, Wait
 
-from firefox_ui_harness.decorators import skip_if_e10s
+from firefox_ui_harness.decorators import skip_if_e10s, skip_under_xvfb
 from firefox_ui_harness import FirefoxTestCase
 
 from firefox_puppeteer.ui.windows import BrowserWindow
@@ -21,6 +21,7 @@ class TestAboutPrivateBrowsing(FirefoxTestCase):
 
         self.pb_url = support_url + 'private-browsing'
 
+    @skip_under_xvfb
     @skip_if_e10s
     def testCheckAboutPrivateBrowsing(self):
         self.assertFalse(self.browser.is_private)
