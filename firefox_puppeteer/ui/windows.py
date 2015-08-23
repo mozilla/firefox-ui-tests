@@ -316,14 +316,14 @@ class BaseWindow(BaseLib):
         """
         return self._l10n.get_property(self.properties, property_id)
 
-    def open_window(self, callback=None, expected_window_class=None, expect_focus=True):
+    def open_window(self, callback=None, expected_window_class=None, focus=True):
         """Opens a new top-level chrome window.
 
         :param callback: Optional, function to trigger the window to open. It is
          triggered with the current :class:`BaseWindow` as parameter.
          Defaults to `window.open()`.
         :param expected_class: Optional, check for the correct window class.
-        :param expect_focus: Optional, waits until the new window has the expected focus state
+        :param focus: Optional, if true, focus the new window.
          Defaults to `True`.
         """
         # Bug 1121698
@@ -349,7 +349,8 @@ class BaseWindow(BaseLib):
 
         window = self._windows.create_window_instance(new_handle, expected_window_class)
 
-        Wait(self.marionette).until(lambda _: window.focused == expect_focus)
+        if focus:
+            window.focus()
 
         return window
 
