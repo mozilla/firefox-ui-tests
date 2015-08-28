@@ -61,9 +61,12 @@ class TestNoCertificate(FirefoxTestCase):
         insecure_label = self.identity_popup.view.main.insecure_connection_label
         self.assertNotEqual(insecure_label.value_of_css_property('display'), 'none')
 
+        self.identity_popup.view.main.expander.click()
+        Wait(self.marionette).until(lambda _: self.identity_popup.view.security.selected)
+
         # Open the Page Info window by clicking the "More Information" button
         page_info = self.browser.open_page_info_window(
-            lambda _: self.identity_popup.view.main.more_info_button.click())
+            lambda _: self.identity_popup.view.security.more_info_button.click())
 
         # Verify that the current panel is the security panel
         self.assertEqual(page_info.deck.selected_panel, page_info.deck.security)
