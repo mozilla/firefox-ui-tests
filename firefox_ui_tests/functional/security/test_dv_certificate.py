@@ -60,10 +60,8 @@ class TestDVCertificate(FirefoxTestCase):
         insecure_label = self.identity_popup.view.main.insecure_connection_label
         self.assertEqual(insecure_label.value_of_css_property('display'), 'none')
 
-        # TODO: Bug 1177417 - Needs to open and close the security view, but a second
-        # click on the expander doesn't hide the security view
-        # self.identity_popup.view.main.expander.click()
-        # Wait(self.marionette).until(lambda _: self.identity_popup.view.security.selected)
+        self.identity_popup.view.main.expander.click()
+        Wait(self.marionette).until(lambda _: self.identity_popup.view.security.selected)
 
         # Only the secure label is visible in the security view
         secure_label = self.identity_popup.view.security.secure_connection_label
@@ -77,7 +75,7 @@ class TestDVCertificate(FirefoxTestCase):
                          verifier_label.replace("%S", cert['issuerOrganization']))
 
         def opener(mn):
-            self.identity_popup.view.main.more_info_button.click()
+            self.identity_popup.view.security.more_info_button.click()
 
         page_info_window = self.browser.open_page_info_window(opener)
         deck = page_info_window.deck

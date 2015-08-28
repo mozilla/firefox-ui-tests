@@ -531,14 +531,6 @@ class IdentityPopupMainView(IdentityPopupView):
         return self.element.find_element(By.CSS_SELECTOR, 'description[when-connection=chrome]')
 
     @property
-    def more_info_button(self):
-        """The DOM element which represents the identity-popup more info button.
-
-        :returns: Reference to the identity-popup more info button.
-        """
-        return self.element.find_element(By.ID, 'identity-popup-more-info-button')
-
-    @property
     def permissions(self):
         """The DOM element which represents the identity-popup permissions content.
 
@@ -582,6 +574,14 @@ class IdentityPopupSecurityView(IdentityPopupView):
         :returns: Reference to the identity-popup insecure connection label.
         """
         return self.element.find_element(By.CLASS_NAME, 'identity-popup-connection-not-secure')
+
+    @property
+    def more_info_button(self):
+        """The DOM element which represents the identity-popup more info button.
+
+        :returns: Reference to the identity-popup more info button.
+        """
+        return self.element.find_element(By.CSS_SELECTOR, 'button')
 
     @property
     def owner(self):

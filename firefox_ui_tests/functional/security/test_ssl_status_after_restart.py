@@ -82,10 +82,8 @@ class TestSSLStatusAfterRestart(FirefoxTestCase):
         self.assertEqual(self.identity_popup.element.get_attribute('connection'),
                          cert_type)
 
-        # TODO: Bug 1177417 - Needs to open and close the security view, but a second
-        # click on the expander doesn't hide the security view
-        # self.identity_popup.view.main.expander.click()
-        # Wait(self.marionette).until(lambda _: self.identity_popup.view.security.selected)
+        self.identity_popup.view.main.expander.click()
+        Wait(self.marionette).until(lambda _: self.identity_popup.view.security.selected)
 
         # Check the identity label
         self.assertEqual(self.locationbar.identity_organization_label.get_attribute('value'),
@@ -96,7 +94,7 @@ class TestSSLStatusAfterRestart(FirefoxTestCase):
 
         # Open the Page Info window by clicking the More Information button
         page_info = self.browser.open_page_info_window(
-            lambda _: self.identity_popup.view.main.more_info_button.click())
+            lambda _: self.identity_popup.view.security.more_info_button.click())
 
         # Verify that the current panel is the security panel
         self.assertEqual(page_info.deck.selected_panel, page_info.deck.security)

@@ -240,7 +240,6 @@ class TestIdentityPopup(FirefoxTestCase):
         self.assertEqual(main.secure_connection_label.get_attribute('localName'),
                          'description')
 
-        self.assertEqual(main.more_info_button.get_attribute('localName'), 'button')
         self.assertEqual(main.permissions.get_attribute('localName'), 'vbox')
 
         # Test security view elements
@@ -260,6 +259,8 @@ class TestIdentityPopup(FirefoxTestCase):
                          'button')
         self.assertEqual(security.enable_mixed_content_blocking_button.get_attribute('localName'),
                          'button')
+
+        self.assertEqual(security.more_info_button.get_attribute('localName'), 'button')
 
     @skip_under_xvfb
     def test_open_close(self):
