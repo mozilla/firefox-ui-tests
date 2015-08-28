@@ -15,7 +15,10 @@ class FirefoxUIOptions(BaseMarionetteOptions):
         # Inheriting object must call this __init__ to set up option handling
         self.add_option('--installer',
                         dest='installer',
-                        help='installer of a Gecko application to use for running the tests')
+                        help='Installer of a Gecko application to use for running the tests')
+        self.add_option('--workspace',
+                        dest='workspace_path',
+                        help='Path to use for all temporary data. Defaults to TEMP.')
 
     def parse_args(self, *args, **kwargs):
         options, tests = BaseMarionetteOptions.parse_args(self, *args, **kwargs)
