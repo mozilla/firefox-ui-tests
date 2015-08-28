@@ -23,11 +23,23 @@ def startTestRunner(runner_class, options, tests):
     install_folder = None
 
     try:
+        # Prepare the workspace path so that all temporary data can be stored inside it.
+        if options.workspace_path:
+            path = os.path.expanduser(options.workspace_path)
+            options.workspace = os.path.abspath(path)
+
+            if not os.path.exists(options.workspace):
+                os.makedirs(options.workspace)
+        else:
+            options.workspace = tempfile.mkdtemp('.{}'.format(os.path.basename(sys.argv[0])))
+
+        options.logger.info('Using workspace for temporary data: "{}"'.format(options.workspace))
+
         # If the specified binary is an installer it needs to be installed
         if options.installer:
             installer = os.path.realpath(options.installer)
 
-            dest_folder = tempfile.mkdtemp()
+            dest_folder = os.path.join(options.workspace, 'binary')
             options.logger.info('Installing application "%s" to "%s"' % (installer,
                                                                          dest_folder))
             install_folder = mozinstall.install(installer, dest_folder)
