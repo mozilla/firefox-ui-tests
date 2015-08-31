@@ -73,6 +73,8 @@ class FirefoxUITestRunner(BaseMarionetteTestRunner):
         if not kwargs.get('e10s'):
             self.prefs.update({'browser.tabs.remote.autostart': False})
 
+        self.workspace = kwargs.get('workspace')
+
         self.test_handlers = [FirefoxTestCase]
 
     def get_application_folder(self, binary):

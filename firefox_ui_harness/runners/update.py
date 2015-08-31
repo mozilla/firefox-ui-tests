@@ -2,9 +2,9 @@
 # License, v. 2.0. If a copy of the MPL was not distributed with this
 # file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
+import os
 import shutil
 import sys
-import tempfile
 
 import mozfile
 import mozinstall
@@ -42,7 +42,7 @@ class UpdateTestRunner(FirefoxUITestRunner):
 
     def duplicate_application(self, application_folder):
         """Creates a copy of the specified binary."""
-        target_folder = tempfile.mkdtemp('.binary-update-tests')
+        target_folder = os.path.join(self.workspace, 'binary.backup')
 
         self.logger.info('Creating a copy of the application at "%s".' % target_folder)
         mozfile.remove(target_folder)
