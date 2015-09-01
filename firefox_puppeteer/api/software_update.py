@@ -419,6 +419,6 @@ class UpdateChannel(BaseLib):
         """
         assert channel, 'Update channel has been specified'
         new_content = re.sub(
-            self.REGEX_UPDATE_CHANNEL, r'\1' + channel, self.file_contents)
+            self.REGEX_UPDATE_CHANNEL, r'\g<1>' + channel, self.file_contents)
         with open(self.file_path, 'w') as f:
             f.write(new_content)
