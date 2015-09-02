@@ -7,8 +7,8 @@ from setuptools import setup, find_packages
 PACKAGE_VERSION = '0.2'
 
 deps = [
-    'marionette-client == 0.18',
-    'marionette-driver == 0.12',
+    'marionette-client == 0.19',
+    'marionette-driver == 0.13',
     'mozfile == 1.2',
     'mozinfo == 0.8',
     'mozinstall == 1.12',
