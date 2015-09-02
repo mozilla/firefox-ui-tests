@@ -11,7 +11,7 @@ and optional packages if specified.
 
 """
 
-import optparse
+import argparse
 import os
 import shutil
 import subprocess
@@ -80,38 +80,35 @@ def create_virtualenv(target, python_bin=None):
 
 
 def main():
-    parser = optparse.OptionParser('Usage: %prog [options] path_to_venv')
-    parser.add_option('-p', '--python',
-                      type='string',
-                      dest='python',
-                      metavar='BINARY',
-                      help='The Python interpreter to use.')
-    parser.add_option('--with-optional-packages',
-                      dest='with_optional',
-                      default=False,
-                      action='store_true',
-                      help='Installs optional packages for enhanced usability.')
-    (options, args) = parser.parse_args(args=None, values=None)
-
-    if len(args) != 1:
-        parser.error('Path to the environment has to be specified')
-    target = args[0]
-    assert target
+    parser = argparse.ArgumentParser()
+    parser.add_argument('-p', '--python',
+                        dest='python',
+                        metavar='BINARY',
+                        help='The Python interpreter to use.')
+    parser.add_argument('--with-optional-packages',
+                        dest='with_optional',
+                        default=False,
+                        action='store_true',
+                        help='Installs optional packages for enhanced usability.')
+    parser.add_argument('venv',
+                        metavar='PATH',
+                        help='Path to the environment to be created.')
+    args = parser.parse_args()
 
     # Remove an already existent virtual environment
-    if os.path.exists(target):
-        print 'Removing already existent virtual environment at: %s' % target
-        shutil.rmtree(target, True)
+    if os.path.exists(args.venv):
+        print 'Removing already existent virtual environment at: %s' % args.venv
+        shutil.rmtree(args.venv, True)
 
-    create_virtualenv(target, python_bin=options.python)
+    create_virtualenv(args.venv, python_bin=args.python)
 
     # Activate the environment
-    tps_env = os.path.join(target, venv_activate_this)
+    tps_env = os.path.join(args.venv, venv_activate_this)
     execfile(tps_env, dict(__file__=tps_env))
 
     # Install Firefox UI tests, dependencies and optional packages
     command = ['pip', 'install', os.getcwd()]
-    if options.with_optional:
+    if args.with_optional:
         command.extend(['-r', 'optional_packages.txt'])
 
     print 'Installing Firefox UI Tests and dependencies...'
@@ -120,7 +117,7 @@ def main():
 
     # Print the user instructions
     print usage_message.format('' if sys.platform == 'win32' else 'source ',
-                               os.path.join(target, venv_activate))
+                               os.path.join(args.venv, venv_activate))
 
 
 if __name__ == "__main__":
