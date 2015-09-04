@@ -61,7 +61,7 @@ class AboutWindow(BaseWindow):
         assert self.deck.selected_panel == self.deck.check_for_updates
 
         self.deck.check_for_updates.button.click()
-        Wait(self.marionette, self.TIMEOUT_UPDATE_CHECK).until(
+        Wait(self.marionette, timeout=self.TIMEOUT_UPDATE_CHECK).until(
             lambda _: self.deck.selected_panel not in
             (self.deck.check_for_updates, self.deck.checking_for_updates),
             message='Check for updates has been finished.')
@@ -108,7 +108,7 @@ class AboutWindow(BaseWindow):
         :param timeout: Optional, How long to wait for the download to finish,
         default to 360 seconds
         """
-        Wait(self.marionette, timeout).until(
+        Wait(self.marionette, timeout=timeout).until(
             lambda _: self.deck.selected_panel not in
             (self.deck.download_and_install, self.deck.downloading),
             message='Download has been completed.')
@@ -122,13 +122,13 @@ class AboutWindow(BaseWindow):
         :param timeout: Optional, How long to wait for the update to apply,
         default to 300 seconds
         """
-        Wait(self.marionette, timeout).until(
+        Wait(self.marionette, timeout=timeout).until(
             lambda _: self.deck.selected_panel == self.deck.apply,
             message='Final wizard page has been selected.')
 
         # Wait for update to be staged because for update tests we modify the update
         # status file to enforce the fallback update. If we modify the file before
         # Firefox does, Firefox will override our change and we will have no fallback update.
-        Wait(self.marionette, timeout).until(
+        Wait(self.marionette, timeout=timeout).until(
             lambda _: 'applied' in self._software_update.active_update.state,
             message='Update has been applied.')

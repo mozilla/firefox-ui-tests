@@ -39,13 +39,20 @@ class TestSubmitUnencryptedInfoWarning(FirefoxTestCase):
             # Wait for the warning, verify the expected text matches warning, accept the warning
             warning = Alert(self.marionette)
             try:
-                Wait(self.marionette, ignored_exceptions=NoAlertPresentException).until(
+                Wait(self.marionette,
+                     ignored_exceptions=NoAlertPresentException,
+                     timeout=self.browser.timeout_page_load).until(
                     lambda _: warning.text == message)
             finally:
                 warning.accept()
 
-            # Wait while the page updates
+            # Wait for the search box to become stale, then wait for the page to be reloaded.
             Wait(self.marionette).until(expected.element_stale(searchbox))
+
+            # TODO: Bug 1140470: use replacement for mozmill's waitforPageLoad
+            Wait(self.marionette, timeout=self.browser.timeout_page_load).until(
+                lambda mn: mn.execute_script('return document.readyState == "complete";')
+            )
 
             # Check that search_term contains the test string.
             search_term = self.marionette.find_element(By.ID, 'search-term')
