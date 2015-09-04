@@ -126,7 +126,7 @@ class UpdateWizardDialog(BaseWindow):
         :param timeout: Optional, How long to wait for the download to finish,
         default to 360 seconds.
         """
-        Wait(self.marionette, timeout).until(
+        Wait(self.marionette, timeout=timeout).until(
             lambda _: self.wizard.selected_panel != self.wizard.downloading,
             message='Download has been completed.')
 

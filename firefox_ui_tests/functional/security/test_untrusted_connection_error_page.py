@@ -29,4 +29,6 @@ class TestUntrustedConnectionErrorPage(FirefoxTestCase):
 
         button = self.marionette.find_element(By.ID, "getMeOutOfHereButton")
         button.click()
-        Wait(self.marionette).until(lambda mn: target_url == self.marionette.get_url())
+
+        Wait(self.marionette, timeout=self.browser.timeout_page_load).until(
+            lambda mn: target_url == self.marionette.get_url())
