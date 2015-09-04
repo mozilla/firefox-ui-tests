@@ -65,7 +65,8 @@ class TestSafeBrowsingWarningPages(FirefoxTestCase):
         button = self.marionette.find_element(By.ID, "getMeOutButton")
         button.click()
 
-        Wait(self.marionette).until(lambda mn: self.browser.default_homepage in mn.get_url())
+        Wait(self.marionette, timeout=self.browser.timeout_page_load).until(
+            lambda mn: self.browser.default_homepage in mn.get_url())
 
     def check_report_button(self, unsafe_page):
         button = self.marionette.find_element(By.ID, "reportButton")
@@ -74,8 +75,8 @@ class TestSafeBrowsingWarningPages(FirefoxTestCase):
         # Wait for the button to become stale, then wait for page load
         # so we can verify the url even if a redirect happens
         # TODO: Bug 1140470: use replacement for mozmill's waitforPageLoad
-        Wait(self.marionette).until(lambda mn: (
-            mn.execute_script('return document.readyState == "complete";'))
+        Wait(self.marionette, timeout=self.browser.timeout_page_load).until(
+            lambda mn: mn.execute_script('return document.readyState == "complete";')
         )
 
         # Get the base URL to check; this will result in a redirect.
@@ -100,8 +101,8 @@ class TestSafeBrowsingWarningPages(FirefoxTestCase):
         button = self.marionette.find_element(By.ID, 'ignoreWarningButton')
         button.click()
 
-        Wait(self.marionette).until(expected.element_stale(button))
-        Wait(self.marionette).until(expected.element_present(By.ID, 'main-feature'))
+        Wait(self.marionette, timeout=self.browser.timeout_page_load).until(
+            expected.element_present(By.ID, 'main-feature'))
         self.assertEquals(self.marionette.get_url(), self.browser.get_final_url(unsafe_page))
 
         # Clean up by removing safe browsing permission for unsafe page

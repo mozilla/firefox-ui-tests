@@ -83,8 +83,8 @@ class TestSafeBrowsingNotificationBar(FirefoxTestCase):
         button = self.marionette.find_element(By.ID, 'ignoreWarningButton')
         button.click()
 
-        Wait(self.marionette).until(expected.element_stale(button))
-        Wait(self.marionette).until(expected.element_present(By.ID, 'main-feature'))
+        Wait(self.marionette, timeout=self.browser.timeout_page_load).until(
+            expected.element_present(By.ID, 'main-feature'))
         self.assertEquals(self.marionette.get_url(), self.browser.get_final_url(unsafe_page))
 
         # Clean up here since the permission gets set in this function
@@ -100,7 +100,8 @@ class TestSafeBrowsingNotificationBar(FirefoxTestCase):
 
             self.browser.tabbar.open_tab(lambda _: button.click())
 
-        Wait(self.marionette).until(lambda mn: report_page in mn.get_url())
+        Wait(self.marionette, timeout=self.browser.timeout_page_load).until(
+            lambda mn: report_page in mn.get_url())
         with self.marionette.using_context('chrome'):
             self.browser.tabbar.close_tab()
 
@@ -112,7 +113,8 @@ class TestSafeBrowsingNotificationBar(FirefoxTestCase):
                       .find_element('anon attribute', {'label': label}))
             button.click()
 
-        Wait(self.marionette).until(lambda mn: self.browser.default_homepage in mn.get_url())
+        Wait(self.marionette, timeout=self.browser.timeout_page_load).until(
+            lambda mn: self.browser.default_homepage in mn.get_url())
 
     def check_x_button(self):
         with self.marionette.using_context('chrome'):
@@ -122,4 +124,6 @@ class TestSafeBrowsingNotificationBar(FirefoxTestCase):
                       .find_element('anon attribute',
                                     {'class': 'messageCloseButton close-icon tabbable'}))
             button.click()
-            Wait(self.marionette).until(expected.element_stale(button))
+
+            Wait(self.marionette, timeout=self.browser.timeout_page_load).until(
+                expected.element_stale(button))
