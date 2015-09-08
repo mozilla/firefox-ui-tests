@@ -10,13 +10,8 @@ import mozinstall
 
 from mozlog import structured
 
-from firefox_ui_harness.options import (FirefoxUIOptions,
-                                        UpdateOptions,
-                                        )
-
-from firefox_ui_harness.runners import (FirefoxUITestRunner,
-                                        UpdateTestRunner,
-                                        )
+from firefox_ui_harness.options import FirefoxUIOptions
+from firefox_ui_harness.runners import FirefoxUITestRunner
 
 
 def startTestRunner(runner_class, options, tests):
@@ -78,10 +73,6 @@ def cli(runner_class=FirefoxUITestRunner, parser_class=FirefoxUIOptions):
         logger.error('Failure during execution of the update test.',
                      exc_info=True)
         sys.exit(1)
-
-
-def cli_update():
-    cli(runner_class=UpdateTestRunner, parser_class=UpdateOptions)
 
 
 if __name__ == '__main__':
