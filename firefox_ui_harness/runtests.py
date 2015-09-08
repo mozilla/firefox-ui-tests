@@ -10,7 +10,7 @@ import mozinstall
 
 from mozlog import structured
 
-from firefox_ui_harness.options import FirefoxUIOptions
+from firefox_ui_harness.arguments import FirefoxUIArguments
 from firefox_ui_harness.runners import FirefoxUITestRunner
 
 
@@ -52,20 +52,18 @@ def startTestRunner(runner_class, options, tests):
     return runner
 
 
-def cli(runner_class=FirefoxUITestRunner, parser_class=FirefoxUIOptions):
-    parser = parser_class(usage='%prog [options] test_file_or_dir <test_file_or_dir> ...')
+def cli(runner_class=FirefoxUITestRunner, parser_class=FirefoxUIArguments):
+    parser = parser_class(usage='%(prog)s [options] test_file_or_dir <test_file_or_dir> ...')
     structured.commandline.add_logging_group(parser)
-    options, tests = parser.parse_args()
-
-    parser.verify_usage(options, tests)
+    args = parser.parse_args()
+    parser.verify_usage(args)
 
     logger = structured.commandline.setup_logging(
-        options.logger_name, options, {'mach': sys.stdout})
-
-    options.logger = logger
+        args.logger_name, args, {'mach': sys.stdout})
+    args.logger = logger
 
     try:
-        runner = startTestRunner(runner_class, options, tests)
+        runner = startTestRunner(runner_class, args, args.tests)
         if runner.failed > 0:
             sys.exit(10)
 

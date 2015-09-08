@@ -33,8 +33,7 @@ class TestMixedContentPage(FirefoxTestCase):
                         favicon.value_of_css_property('list-style-image'))
 
         # Open the identity popup
-        self.locationbar.identity_box.click()
-        Wait(self.marionette).until(lambda _: self.identity_popup.is_open)
+        self.locationbar.open_identity_popup()
 
         # Only the insecure label is visible in the main view
         secure_label = self.identity_popup.view.main.secure_connection_label

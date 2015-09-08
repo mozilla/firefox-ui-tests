@@ -45,8 +45,9 @@ class TestMixedScriptContentBlocking(FirefoxTestCase):
                 'unblocked'
             )
 
+        # First call to Wait() needs a longer timeout due to the reload of the web page.
         favicon = self.locationbar.favicon
-        Wait(self.marionette).until(
+        Wait(self.marionette, timeout=self.browser.timeout_page_load).until(
             lambda _: icon_filename in favicon.value_of_css_property('list-style-image'),
             message="The correct icon is displayed"
         )
@@ -73,8 +74,7 @@ class TestMixedScriptContentBlocking(FirefoxTestCase):
         self.expect_protection_enabled()
 
         # Disable mixed content blocking via identity popup
-        self.locationbar.identity_box.click()
-        Wait(self.marionette).until(lambda _: self.identity_popup.is_open)
+        self.locationbar.open_identity_popup()
         self.identity_popup.view.main.expander.click()
         Wait(self.marionette).until(lambda _: self.identity_popup.view.security.selected)
 
