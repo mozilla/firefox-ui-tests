@@ -85,6 +85,12 @@ def main():
                         dest='python',
                         metavar='BINARY',
                         help='The Python interpreter to use.')
+    parser.add_argument('--strict',
+                        dest='strict',
+                        default=False,
+                        action='store_true',
+                        help='Installs exact versions of mozbase packages as'
+                             ' listed in requirements.txt ')
     parser.add_argument('--with-optional-packages',
                         dest='with_optional',
                         default=False,
@@ -108,8 +114,10 @@ def main():
 
     # Install Firefox UI tests, dependencies and optional packages
     command = ['pip', 'install', os.getcwd()]
+    if args.strict:
+        command.extend(['-r', 'requirements.txt'])
     if args.with_optional:
-        command.extend(['-r', 'optional_packages.txt'])
+        command.extend(['-r', 'requirements_optional.txt'])
 
     print 'Installing Firefox UI Tests and dependencies...'
     print 'Command: %s' % command
