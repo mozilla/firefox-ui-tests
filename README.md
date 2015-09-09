@@ -21,6 +21,9 @@ If you do not have installed virtualenv and virtualenvwrapper you can also use t
     ./create_venv.py venv
     source venv/bin/activate
 
+The environment creation script allows you to install specific versions of mozbase packages which are known to work by specifying the '--strict' command line option. By using '--with-optional' some
+additional packages are getting installed as listed in requirements_optional.txt.
+
 Usage
 -----
 

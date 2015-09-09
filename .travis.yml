@@ -22,9 +22,11 @@ env:
       PIP_NO_INDEX=1
       DISPLAY=$(if [[ $TRAVIS_OS_NAME = 'linux' ]]; then echo ':99'; fi)
       MOZ_XVFB=$(if [[ $TRAVIS_OS_NAME = 'linux' ]]; then echo 1; fi)
+      PIP_STRICT_VERSIONS=--strict
     # ... and with the official pypi website
     - DISPLAY=$(if [[ $TRAVIS_OS_NAME = 'linux' ]]; then echo ':99'; fi)
       MOZ_XVFB=$(if [[ $TRAVIS_OS_NAME = 'linux' ]]; then echo 1; fi)
+      PIP_STRICT_VERSIONS=
 
 before_install:
     - if [ "$TRAVIS_OS_NAME" == "linux" ]; then /sbin/start-stop-daemon --start --quiet --make-pidfile --pidfile /tmp/custom_xvfb_99.pid --background --exec /usr/bin/Xvfb -- :99 -ac -screen 0 1280x768x24 ; fi
@@ -36,7 +38,7 @@ install:
     # - svn checkout https://github.com/mozilla/gecko-dev/trunk/testing/marionette/client
     # - "cd client && python setup.py develop && cd .."
 
-    - python create_venv.py --with-optional-packages ~/.venv
+    - python create_venv.py $PIP_STRICT_VERSIONS --with-optional-packages ~/.venv
     - source ~/.venv/bin/activate
 
 before_script:
