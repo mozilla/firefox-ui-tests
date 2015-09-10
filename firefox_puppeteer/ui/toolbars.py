@@ -581,7 +581,9 @@ class IdentityPopupSecurityView(IdentityPopupView):
 
         :returns: Reference to the identity-popup more info button.
         """
-        return self.element.find_element(By.CSS_SELECTOR, 'button')
+        label = self.window.get_entity('identity.moreInfoLinkText2')
+
+        return self.element.find_element(By.CSS_SELECTOR, 'button[label="{}"]'.format(label))
 
     @property
     def owner(self):
