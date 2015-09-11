@@ -583,7 +583,7 @@ class IdentityPopupSecurityView(IdentityPopupView):
         """
         label = self.window.get_entity('identity.moreInfoLinkText2')
 
-        return self.element.find_element(By.CSS_SELECTOR, 'button[label="{}"]'.format(label))
+        return self.element.find_element(By.CSS_SELECTOR, u'button[label="{}"]'.format(label))
 
     @property
     def owner(self):
