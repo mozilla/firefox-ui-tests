@@ -45,7 +45,7 @@ class TestSubmitUnencryptedInfoWarning(FirefoxTestCase):
                 warning.accept()
 
             # Wait while the page updates
-            self.wait_for_condition(expected.element_stale(searchbox))
+            Wait(self.marionette).until(expected.element_stale(searchbox))
 
             # Check that search_term contains the test string.
             search_term = self.marionette.find_element(By.ID, 'search-term')
