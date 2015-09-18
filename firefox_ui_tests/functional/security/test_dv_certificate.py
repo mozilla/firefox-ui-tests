@@ -46,11 +46,8 @@ class TestDVCertificate(FirefoxTestCase):
 
         cert = self.browser.tabbar.selected_tab.certificate
 
-        # Bug 443116
-        # Larry strips the 'www.' from the CName using the eTLDService
-        # This is expected behaviour for the time being
-        self.assertEqual(self.identity_popup.host.get_attribute('value'),
-                         self.security.get_domain_from_common_name(cert['commonName']))
+        # The shown host equals to the certificate
+        self.assertEqual(self.identity_popup.host.get_attribute('value'), cert['commonName'])
 
         # Only the secure label is visible in the main view
         secure_label = self.identity_popup.view.main.secure_connection_label
