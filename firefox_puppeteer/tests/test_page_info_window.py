@@ -3,7 +3,9 @@
 # file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
 from marionette_driver import By
+
 from firefox_ui_harness import FirefoxTestCase
+from firefox_ui_harness.decorators import skip_under_xvfb
 
 
 class TestPageInfoWindow(FirefoxTestCase):
@@ -14,6 +16,7 @@ class TestPageInfoWindow(FirefoxTestCase):
         finally:
             FirefoxTestCase.tearDown(self)
 
+    @skip_under_xvfb
     def test_elements(self):
         """Test correct retrieval of elements."""
         page_info = self.browser.open_page_info_window()
@@ -48,6 +51,7 @@ class TestPageInfoWindow(FirefoxTestCase):
         self.assertEqual(panel.view_cookies.get_attribute('localName'), 'button')
         self.assertEqual(panel.view_passwords.get_attribute('localName'), 'button')
 
+    @skip_under_xvfb
     def test_select(self):
         """Test properties and methods for switching between panels."""
         page_info = self.browser.open_page_info_window()
@@ -58,6 +62,7 @@ class TestPageInfoWindow(FirefoxTestCase):
         self.assertEqual(deck.select(deck.security), deck.security)
         self.assertEqual(deck.selected_panel, deck.security)
 
+    @skip_under_xvfb
     def test_open_window(self):
         """Test various opening strategies."""
         def opener(win):
@@ -79,6 +84,7 @@ class TestPageInfoWindow(FirefoxTestCase):
             self.assertEquals(page_info, self.windows.current)
             page_info.close()
 
+    @skip_under_xvfb
     def test_close_window(self):
         """Test various closing strategies."""
         def closer(win):
