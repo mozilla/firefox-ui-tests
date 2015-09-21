@@ -5,15 +5,10 @@
 from marionette_driver import By
 
 from firefox_ui_harness import FirefoxTestCase
+from firefox_ui_harness.decorators import skip_under_xvfb
 
 
 class TestAboutWindow(FirefoxTestCase):
-
-    def setUp(self):
-        FirefoxTestCase.setUp(self)
-
-        self.about_window = self.browser.open_about_window()
-        self.deck = self.about_window.deck
 
     def tearDown(self):
         try:
@@ -21,11 +16,17 @@ class TestAboutWindow(FirefoxTestCase):
         finally:
             FirefoxTestCase.tearDown(self)
 
+    @skip_under_xvfb
     def test_basic(self):
+        self.about_window = self.browser.open_about_window()
         self.assertEqual(self.about_window.window_type, 'Browser:About')
 
+    @skip_under_xvfb
     def test_elements(self):
         """Test correct retrieval of elements."""
+        self.about_window = self.browser.open_about_window()
+        self.deck = self.about_window.deck
+
         self.assertNotEqual(self.about_window.dtds, [])
 
         self.assertEqual(self.deck.element.get_attribute('localName'), 'deck')
@@ -59,8 +60,11 @@ class TestAboutWindow(FirefoxTestCase):
         # downloading panel
         self.assertEqual(self.deck.downloading.element.get_attribute('localName'), 'hbox')
 
+    @skip_under_xvfb
     def test_open_window(self):
         """Test various opening strategies."""
+        self.about_window = self.browser.open_about_window()
+
         def opener(win):
             menu = win.marionette.find_element(By.ID, 'aboutName')
             menu.click()
@@ -75,6 +79,9 @@ class TestAboutWindow(FirefoxTestCase):
             self.assertEquals(about_window, self.windows.current)
             about_window.close()
 
+    @skip_under_xvfb
     def test_patch_info(self):
+        self.about_window = self.browser.open_about_window()
+
         self.assertEqual(self.about_window.patch_info['download_duration'], None)
         self.assertIsNotNone(self.about_window.patch_info['channel'])
