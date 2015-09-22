@@ -58,7 +58,8 @@ class AboutWindow(BaseWindow):
 
         :returns: True, if an update is available.
         """
-        assert self.deck.selected_panel == self.deck.check_for_updates
+        assert self.deck.selected_panel == self.deck.check_for_updates,\
+            'Panel "Check for updates" is selected'
 
         self.deck.check_for_updates.button.click()
         Wait(self.marionette, timeout=self.TIMEOUT_UPDATE_CHECK).until(
