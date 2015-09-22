@@ -74,10 +74,14 @@ class UpdateTestCase(FirefoxTestCase):
                          self.software_update.update_channel.channel)
 
         self.assertTrue(self.update_mar_channels.issubset(
-                        self.software_update.mar_channels.channels))
+                        self.software_update.mar_channels.channels),
+                        'Allowed MAR channels have been set: expected "{}" in "{}"'.format(
+                            ', '.join(self.update_mar_channels),
+                            ', '.join(self.software_update.mar_channels.channels)))
 
         # Check if the user has permissions to run the update
-        self.assertTrue(self.software_update.allowed)
+        self.assertTrue(self.software_update.allowed,
+                        'Current user has permissions to update the application.')
 
     def assert_update_applied(self, update_status):
         """Checks if an update has been applied correctly.
@@ -148,7 +152,8 @@ class UpdateTestCase(FirefoxTestCase):
 
         try:
             update_available = about_window.check_for_updates()
-            self.assertTrue(update_available)
+            self.assertTrue(update_available,
+                            "Available update has been found")
 
             # Download update and wait until it has been applied
             about_window.download()
@@ -179,7 +184,8 @@ class UpdateTestCase(FirefoxTestCase):
                 # Open the about window and check for updates
                 about_window = self.browser.open_about_window()
                 update_available = about_window.check_for_updates()
-                self.assertTrue(update_available)
+                self.assertTrue(update_available,
+                                'Available update has been found')
 
                 # Download update and wait until it has been applied
                 about_window.download()
