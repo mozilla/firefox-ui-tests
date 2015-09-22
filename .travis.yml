@@ -2,11 +2,6 @@ sudo: false
 
 language: c
 
-branches:
-  exclude:
-    # Do not run tests for ESR releases, because there are no latest builds available
-    - /^mozilla-esr.*$/
-
 os:
     - osx
     - linux
