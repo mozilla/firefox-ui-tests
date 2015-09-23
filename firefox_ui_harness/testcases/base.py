@@ -17,6 +17,30 @@ class FirefoxTestCase(MarionetteTestCase, Puppeteer):
     def __init__(self, *args, **kwargs):
         MarionetteTestCase.__init__(self, *args, **kwargs)
 
+    def _check_and_fix_leaked_handles(self):
+        handle_count = len(self.marionette.window_handles)
+
+        try:
+            self.assertEqual(handle_count, self._start_handle_count,
+                             'A test must not leak window handles. This test started with '
+                             '%s open top level browsing contexts, but ended with %s.' %
+                             (self._start_handle_count, handle_count))
+        finally:
+            # For clean-up make sure we work on a proper browser window
+            if not self.browser or self.browser.closed:
+                # Find a proper replacement browser window
+                # TODO: We have to make this less error prone in case no browser is open.
+                self.browser = self.windows.switch_to(lambda win: type(win) is BrowserWindow)
+
+            # Ensure to close all the remaining chrome windows to give following
+            # tests a proper start condition and make them not fail.
+            self.windows.close_all([self.browser])
+            self.browser.focus()
+
+            # Also close all remaining tabs
+            self.browser.tabbar.close_all_tabs([self.browser.tabbar.tabs[0]])
+            self.browser.tabbar.tabs[0].switch_to()
+
     def restart(self, flags=None):
         """Restart Firefox and re-initialize data.
 
@@ -55,23 +79,11 @@ class FirefoxTestCase(MarionetteTestCase, Puppeteer):
         self.marionette.set_context('chrome')
 
         try:
-            # Marionette needs an existent window to be selected. Take the first
-            # browser window which has at least one open tab
-            # TODO: We might have to make this more error prone in case the
-            # original window has been closed.
-            self.browser.focus()
-            self.browser.tabbar.tabs[0].switch_to()
-
             self.prefs.restore_all_prefs()
 
-            # This assertion should be run after all other tearDown code
+            # This code should be run after all other tearDown code
             # so that in case of a failure, further tests will not run
             # in a state that is more inconsistent than necessary.
-            win_count = len(self.marionette.window_handles)
-            self.assertEqual(win_count, self._start_handle_count,
-                             "A test must not leak window handles. "
-                             "This test started the browser with %s open "
-                             "top level browsing contexts, but ended with %s." %
-                             (self._start_handle_count, win_count))
+            self._check_and_fix_leaked_handles()
         finally:
             MarionetteTestCase.tearDown(self, *args, **kwargs)
