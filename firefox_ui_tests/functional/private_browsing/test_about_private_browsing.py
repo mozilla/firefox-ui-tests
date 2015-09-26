@@ -7,7 +7,7 @@ from marionette.marionette_test import skip_if_e10s
 
 from firefox_ui_harness import FirefoxTestCase
 
-from firefox_puppeteer.ui.windows import BrowserWindow
+from firefox_puppeteer.ui.browser.window import BrowserWindow
 
 
 class TestAboutPrivateBrowsing(FirefoxTestCase):

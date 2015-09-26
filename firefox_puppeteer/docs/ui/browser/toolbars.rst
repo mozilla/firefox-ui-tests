@@ -1,4 +1,4 @@
-.. py:currentmodule:: firefox_puppeteer.ui.toolbars
+.. py:currentmodule:: firefox_puppeteer.ui.browser.toolbars
 
 Toolbars
 ========
