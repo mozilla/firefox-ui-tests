@@ -1,4 +1,4 @@
-.. py:currentmodule:: firefox_puppeteer.ui.tabbar
+.. py:currentmodule:: firefox_puppeteer.ui.browser.tabbar
 
 Tabbar
 ======
