@@ -4,7 +4,7 @@
 
 from marionette_driver import By, keys, Wait
 
-from ..base import UIBaseLib
+from firefox_puppeteer.base import UIBaseLib
 
 
 class NavBar(UIBaseLib):

@@ -14,10 +14,3 @@ BaseWindow
 
 .. autoclass:: BaseWindow
    :members:
-
-BrowserWindow
--------------
-
-.. autoclass:: BrowserWindow
-   :members:
-   :inherited-members:
