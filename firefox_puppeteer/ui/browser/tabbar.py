@@ -10,9 +10,9 @@ from marionette_driver.errors import NoSuchElementException
 
 import firefox_puppeteer.errors as errors
 
-from .. import DOMElement
-from ..api.security import Security
-from ..base import UIBaseLib
+from firefox_puppeteer import DOMElement
+from firefox_puppeteer.api.security import Security
+from firefox_puppeteer.base import UIBaseLib
 
 
 class TabBar(UIBaseLib):
