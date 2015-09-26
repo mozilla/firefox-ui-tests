@@ -108,29 +108,30 @@ class Places(BaseLib):
 
     def remove_all_history(self):
         """Removes all history items."""
-        try:
-            self.marionette.execute_async_script("""
-                Components.utils.import("resource://gre/modules/Services.jsm");
+        with self.marionette.using_context('chrome'):
+            try:
+                self.marionette.execute_async_script("""
+                    Components.utils.import("resource://gre/modules/Services.jsm");
 
-                let hs = Components.classes["@mozilla.org/browser/nav-history-service;1"]
-                         .getService(Components.interfaces.nsIBrowserHistory);
+                    let hs = Components.classes["@mozilla.org/browser/nav-history-service;1"]
+                             .getService(Components.interfaces.nsIBrowserHistory);
 
-                let observer = {
-                  observe: function (aSubject, aTopic, aData) {
-                    Services.obs.removeObserver(observer, 'places-expiration-finished');
+                    let observer = {
+                      observe: function (aSubject, aTopic, aData) {
+                        Services.obs.removeObserver(observer, 'places-expiration-finished');
 
-                    marionetteScriptFinished(true);
-                  }
-                };
+                        marionetteScriptFinished(true);
+                      }
+                    };
 
-                // Remove the pages, then block until we're done or until timeout is reached
-                Services.obs.addObserver(observer, 'places-expiration-finished', false);
+                    // Remove the pages, then block until we're done or until timeout is reached
+                    Services.obs.addObserver(observer, 'places-expiration-finished', false);
 
-                hs.removeAllPages();
-            """, script_timeout=10000)
-        except TimeoutException:
-            # TODO: In case of a timeout clean-up the registered topic
-            pass
+                    hs.removeAllPages();
+                """, script_timeout=10000)
+            except TimeoutException:
+                # TODO: In case of a timeout clean-up the registered topic
+                pass
 
     def wait_for_visited(self, urls, callback):
         """Waits until all passed-in urls have been visited.
