@@ -8,14 +8,6 @@ import os
 from firefox_puppeteer.api import appinfo
 
 
-def skip_if_e10s(target):
-    def wrapper(self, *args, **kwargs):
-        if self.appinfo.browserTabsRemoteAutostart:
-            raise SkipTest("Skipping due to e10s")
-        return target(self, *args, **kwargs)
-    return wrapper
-
-
 def skip_under_xvfb(target):
     def wrapper(self, *args, **kwargs):
         if os.environ.get('MOZ_XVFB'):
