@@ -113,7 +113,7 @@ def main():
     execfile(tps_env, dict(__file__=tps_env))
 
     # Install Firefox UI tests, dependencies and optional packages
-    command = ['pip', 'install', os.getcwd()]
+    command = ['pip', 'install', here]
     if args.strict:
         command.extend(['-r', 'requirements.txt'])
     if args.with_optional:
