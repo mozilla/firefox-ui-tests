@@ -115,9 +115,9 @@ def main():
     # Install Firefox UI tests, dependencies and optional packages
     command = ['pip', 'install', here]
     if args.strict:
-        command.extend(['-r', 'requirements.txt'])
+        command.extend(['-r', os.path.join(here, 'requirements.txt')])
     if args.with_optional:
-        command.extend(['-r', 'requirements_optional.txt'])
+        command.extend(['-r', os.path.join(here, 'requirements_optional.txt')])
 
     print 'Installing Firefox UI Tests and dependencies...'
     print 'Command: %s' % command
