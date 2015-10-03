@@ -40,7 +40,7 @@ class Security(BaseLib):
         """
         cert = self.marionette.execute_script("""
           var securityUI = arguments[0].linkedBrowser.securityUI;
-          var status = securityUI.QueryInterface(Ci.nsISSLStatusProvider)
+          var status = securityUI.QueryInterface(Components.interfaces.nsISSLStatusProvider)
                                  .SSLStatus;
 
           return status ? status.serverCert : null;

@@ -42,7 +42,7 @@ class Utils(BaseLib):
 
         with self.marionette.using_context('chrome'):
             result = self.marionette.execute_async_script("""
-              Cu.import("resource://gre/modules/Services.jsm");
+              Components.utils.import("resource://gre/modules/Services.jsm");
 
               var data_type = arguments[0];
 
@@ -60,8 +60,8 @@ class Utils(BaseLib):
 
               // Load the sanitize script
               var tempScope = {};
-              Cc["@mozilla.org/moz/jssubscript-loader;1"]
-              .getService(Ci.mozIJSSubScriptLoader)
+              Components.classes["@mozilla.org/moz/jssubscript-loader;1"]
+              .getService(Components.interfaces.mozIJSSubScriptLoader)
               .loadSubScript("chrome://browser/content/sanitize.js", tempScope);
 
               // Instantiate the Sanitizer
