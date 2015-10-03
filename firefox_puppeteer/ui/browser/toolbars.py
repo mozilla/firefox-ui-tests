@@ -375,7 +375,7 @@ class AutocompleteResults(UIBaseLib):
           let win = Services.focus.activeWindow;
           if (win) {
             return win.gURLBar.controller.searchStatus >=
-                   Ci.nsIAutoCompleteController.STATUS_COMPLETE_NO_MATCH;
+                   Components.interfaces.nsIAutoCompleteController.STATUS_COMPLETE_NO_MATCH;
           }
 
           return null;

@@ -29,10 +29,10 @@ class Places(BaseLib):
         return self.marionette.execute_script("""
           let url = arguments[0];
 
-          let bs = Cc["@mozilla.org/browser/nav-bookmarks-service;1"]
-                   .getService(Ci.nsINavBookmarksService);
-          let ios = Cc["@mozilla.org/network/io-service;1"]
-                    .getService(Ci.nsIIOService);
+          let bs = Components.classes["@mozilla.org/browser/nav-bookmarks-service;1"]
+                   .getService(Components.interfaces.nsINavBookmarksService);
+          let ios = Components.classes["@mozilla.org/network/io-service;1"]
+                    .getService(Components.interfaces.nsIIOService);
 
           let uri = ios.newURI(url, null, null);
           let results = bs.getBookmarkIdsForURI(uri, {});
@@ -50,10 +50,10 @@ class Places(BaseLib):
         return self.marionette.execute_script("""
           let url = arguments[0];
 
-          let bs = Cc["@mozilla.org/browser/nav-bookmarks-service;1"]
-                   .getService(Ci.nsINavBookmarksService);
-          let ios = Cc["@mozilla.org/network/io-service;1"]
-                    .getService(Ci.nsIIOService);
+          let bs = Components.classes["@mozilla.org/browser/nav-bookmarks-service;1"]
+                   .getService(Components.interfaces.nsINavBookmarksService);
+          let ios = Components.classes["@mozilla.org/network/io-service;1"]
+                    .getService(Components.interfaces.nsIIOService);
 
           let bookmarkIds = bs.getBookmarkIdsForURI(ios.newURI(url, null, null), {});
           let folderIds = [];
@@ -79,8 +79,8 @@ class Places(BaseLib):
     def restore_default_bookmarks(self):
         """Restores the default bookmarks for the current profile."""
         retVal = self.marionette.execute_async_script("""
-          Cu.import("resource://gre/modules/BookmarkHTMLUtils.jsm");
-          Cu.import("resource://gre/modules/Services.jsm");
+          Components.utils.import("resource://gre/modules/BookmarkHTMLUtils.jsm");
+          Components.utils.import("resource://gre/modules/Services.jsm");
 
           // Default bookmarks.html file is stored inside omni.jar,
           // so get it via a resource URI
@@ -110,10 +110,10 @@ class Places(BaseLib):
         """Removes all history items."""
         try:
             self.marionette.execute_async_script("""
-                Cu.import("resource://gre/modules/Services.jsm");
+                Components.utils.import("resource://gre/modules/Services.jsm");
 
-                let hs = Cc["@mozilla.org/browser/nav-history-service;1"]
-                         .getService(Ci.nsIBrowserHistory);
+                let hs = Components.classes["@mozilla.org/browser/nav-history-service;1"]
+                         .getService(Components.interfaces.nsIBrowserHistory);
 
                 let observer = {
                   observe: function (aSubject, aTopic, aData) {
@@ -149,12 +149,14 @@ class Places(BaseLib):
     def clear_plugin_data(self):
         """Clears any kind of locally stored data from plugins."""
         self.marionette.execute_script("""
-          let host = Cc["@mozilla.org/plugin/host;1"].getService(Ci.nsIPluginHost);
+          let host = Components.classes["@mozilla.org/plugin/host;1"]
+                     .getService(Components.interfaces.nsIPluginHost);
           let tags = host.getPluginTags();
 
           tags.forEach(aTag => {
             try {
-              host.clearSiteData(aTag, null, Ci.nsIPluginHost.FLAG_CLEAR_ALL, -1);
+              host.clearSiteData(aTag, null, Components.interfaces.nsIPluginHost
+                  .FLAG_CLEAR_ALL, -1);
             } catch (ex) {
             }
           });

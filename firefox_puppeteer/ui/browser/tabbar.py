@@ -198,8 +198,8 @@ class TabBar(UIBaseLib):
           if (!win) {
             return null;
           }
-          return win.QueryInterface(Ci.nsIInterfaceRequestor)
-                    .getInterface(Ci.nsIDOMWindowUtils)
+          return win.QueryInterface(Components.interfaces.nsIInterfaceRequestor)
+                    .getInterface(Components.interfaces.nsIDOMWindowUtils)
                     .outerWindowID.toString();
         """, script_args=[tab_element])
 

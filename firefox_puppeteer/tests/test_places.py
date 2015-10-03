@@ -25,8 +25,8 @@ class TestPlaces(FirefoxTestCase):
 
     def get_all_urls_in_history(self):
         return self.marionette.execute_script("""
-          let hs = Cc["@mozilla.org/browser/nav-history-service;1"]
-                   .getService(Ci.nsINavHistoryService);
+          let hs = Components.classes["@mozilla.org/browser/nav-history-service;1"]
+                   .getService(Components.interfaces.nsINavHistoryService);
           let urls = [];
 
           let options = hs.getNewQueryOptions();
