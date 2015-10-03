@@ -60,7 +60,7 @@ class BrowserWindow(BaseWindow):
 
         with self.marionette.using_context('chrome'):
             return self.marionette.execute_script("""
-                Cu.import("resource://gre/modules/PrivateBrowsingUtils.jsm");
+                Components.utils.import("resource://gre/modules/PrivateBrowsingUtils.jsm");
 
                 let chromeWindow = arguments[0].ownerDocument.defaultView;
                 return PrivateBrowsingUtils.isWindowPrivate(chromeWindow);
