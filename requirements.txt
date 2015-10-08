@@ -14,3 +14,6 @@ mozprofile==0.27
 mozrunner==6.9
 moztest==0.7
 mozversion==1.4
+
+# Also pin external packages to minimize the risk of version conflicts
+requests==2.7.0
