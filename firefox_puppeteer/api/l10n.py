@@ -6,7 +6,7 @@ import copy
 
 from marionette_driver.errors import MarionetteException
 
-from ..base import BaseLib
+from firefox_puppeteer.base import BaseLib
 
 
 class L10n(BaseLib):

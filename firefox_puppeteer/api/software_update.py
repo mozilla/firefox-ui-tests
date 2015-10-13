@@ -7,9 +7,9 @@ import re
 
 import mozinfo
 
-from ..base import BaseLib
-from .appinfo import AppInfo
-from .prefs import Preferences
+from firefox_puppeteer.api.appinfo import AppInfo
+from firefox_puppeteer.api.prefs import Preferences
+from firefox_puppeteer.base import BaseLib
 
 
 class ActiveUpdate(BaseLib):
