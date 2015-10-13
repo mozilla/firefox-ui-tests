@@ -6,10 +6,10 @@ from datetime import datetime
 
 from marionette_driver import By, Wait
 
-from ..windows import BaseWindow
-from ...api.prefs import Preferences
-from ...api.software_update import SoftwareUpdate
-from .wizard import Wizard
+from firefox_puppeteer.api.prefs import Preferences
+from firefox_puppeteer.api.software_update import SoftwareUpdate
+from firefox_puppeteer.ui.update_wizard.wizard import Wizard
+from firefox_puppeteer.ui.windows import BaseWindow, Windows
 
 
 # Bug 1143020 - Subclass from BaseDialog ui class with possible wizard mixin
@@ -134,3 +134,5 @@ class UpdateWizardDialog(BaseWindow):
                                                   self.wizard.error_extra,
                                                   ), \
             'Update has been successfully downloaded.'
+
+Windows.register_window(UpdateWizardDialog.window_type, UpdateWizardDialog)

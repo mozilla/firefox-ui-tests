@@ -6,7 +6,7 @@ import os
 
 from marionette_driver.marionette import HTMLElement
 
-from .decorators import use_class_as_property
+from firefox_puppeteer.decorators import use_class_as_property
 
 
 root = os.path.abspath(os.path.dirname(__file__))

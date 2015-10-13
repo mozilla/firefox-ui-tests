@@ -4,8 +4,8 @@
 
 import re
 
-from ..base import BaseLib
-from ..errors import NoCertificateError
+from firefox_puppeteer.base import BaseLib
+from firefox_puppeteer.errors import NoCertificateError
 
 
 class Security(BaseLib):

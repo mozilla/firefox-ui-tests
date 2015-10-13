@@ -16,6 +16,10 @@ from firefox_puppeteer.api.prefs import Preferences
 
 class Windows(BaseLib):
 
+    # Used for registering the different windows with this class to avoid
+    # circular dependencies with BaseWindow
+    windows_map = {}
+
     @property
     def all(self):
         """Retrieves a list of all open chrome windows.
@@ -114,18 +118,9 @@ class Windows(BaseLib):
             if handle != current_handle:
                 self.marionette.switch_to_window(current_handle)
 
-        if window_type == 'Browser:About':
-            from .about_window.window import AboutWindow
-            window = AboutWindow(lambda: self.marionette, handle)
-        elif window_type == 'navigator:browser':
-            from browser.window import BrowserWindow
-            window = BrowserWindow(lambda: self.marionette, handle)
-        elif window_type == 'Browser:page-info':
-            from .pageinfo.window import PageInfoWindow
-            window = PageInfoWindow(lambda: self.marionette, handle)
-        elif window_type == 'Update:Wizard':
-            from update_wizard import UpdateWizardDialog
-            window = UpdateWizardDialog(lambda: self.marionette, handle)
+        if window_type in self.windows_map:
+            window = self.windows_map[window_type](
+                    lambda: self.marionette, handle)
         else:
             raise errors.UnknownWindowError('Unknown window type "%s" for handle: "%s"' %
                                             (window_type, handle))
@@ -185,6 +180,16 @@ class Windows(BaseLib):
             self.marionette.switch_to_window(target_handle)
 
         return self.create_window_instance(target_handle)
+
+    @classmethod
+    def register_window(cls, window_type, window_class):
+        """Registers a chrome window with this class so that this class may in
+        turn create the appropriate window instance later on.
+
+        :param window_type: The type of window.
+        :param window_class: The constructor of the window
+        """
+        cls.windows_map[window_type] = window_class
 
 
 class BaseWindow(BaseLib):
