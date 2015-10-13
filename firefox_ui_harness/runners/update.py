@@ -10,7 +10,7 @@ import mozfile
 import mozinstall
 
 from base import FirefoxUITestRunner
-from ..testcases import UpdateTestCase
+from firefox_ui_harness.testcases import UpdateTestCase
 
 import firefox_ui_tests
 

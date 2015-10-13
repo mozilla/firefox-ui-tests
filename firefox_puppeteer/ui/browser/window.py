@@ -8,12 +8,15 @@ from marionette_driver import By, Wait
 from marionette_driver.errors import NoSuchWindowException
 from marionette_driver.keys import Keys
 
-from firefox_puppeteer.ui.windows import BaseWindow
-import firefox_puppeteer.errors as errors
-
 from firefox_puppeteer.api.l10n import L10n
-from firefox_puppeteer.decorators import use_class_as_property
 from firefox_puppeteer.api.prefs import Preferences
+from firefox_puppeteer.decorators import use_class_as_property
+from firefox_puppeteer.ui.about_window.window import AboutWindow
+from firefox_puppeteer.ui.browser.tabbar import TabBar
+from firefox_puppeteer.ui.browser.toolbars import NavBar
+from firefox_puppeteer.ui.pageinfo.window import PageInfoWindow
+from firefox_puppeteer.ui.windows import BaseWindow, Windows
+import firefox_puppeteer.errors as errors
 
 
 class BrowserWindow(BaseWindow):
@@ -76,8 +79,6 @@ class BrowserWindow(BaseWindow):
         self.switch_to()
 
         if not self._navbar:
-            from .toolbars import NavBar
-
             navbar = self.window_element.find_element(By.ID, 'nav-bar')
             self._navbar = NavBar(lambda: self.marionette, self, navbar)
 
@@ -92,8 +93,6 @@ class BrowserWindow(BaseWindow):
         self.switch_to()
 
         if not self._tabbar:
-            from .tabbar import TabBar
-
             tabbrowser = self.window_element.find_element(By.ID, 'tabbrowser-tabs')
             self._tabbar = TabBar(lambda: self.marionette, self, tabbrowser)
 
@@ -186,7 +185,6 @@ class BrowserWindow(BaseWindow):
             else:
                 raise ValueError('Unknown opening method: "%s"' % trigger)
 
-        from ..about_window.window import AboutWindow
         return BaseWindow.open_window(self, callback, AboutWindow)
 
     def open_page_info_window(self, trigger='menu'):
@@ -198,8 +196,6 @@ class BrowserWindow(BaseWindow):
 
         :returns: :class:`PageInfoWindow` instance of the opened window.
         """
-        from ..pageinfo.window import PageInfoWindow
-
         def callback(win):
             # Prepare action which triggers the opening of the browser window
             if callable(trigger):
@@ -220,3 +216,5 @@ class BrowserWindow(BaseWindow):
                 raise ValueError('Unknown opening method: "%s"' % trigger)
 
         return BaseWindow.open_window(self, callback, PageInfoWindow)
+
+Windows.register_window(BrowserWindow.window_type, BrowserWindow)

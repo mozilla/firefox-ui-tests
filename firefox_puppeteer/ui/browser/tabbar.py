@@ -12,7 +12,7 @@ import firefox_puppeteer.errors as errors
 
 from firefox_puppeteer import DOMElement
 from firefox_puppeteer.api.security import Security
-from firefox_puppeteer.base import UIBaseLib
+from firefox_puppeteer.ui_base_lib import UIBaseLib
 
 
 class TabBar(UIBaseLib):
