@@ -6,10 +6,10 @@ from datetime import datetime
 
 from marionette_driver import By, Wait
 
-from ..windows import BaseWindow
-from ..update_wizard import UpdateWizardDialog
-from ...api.software_update import SoftwareUpdate
-from .deck import Deck
+from firefox_puppeteer.api.software_update import SoftwareUpdate
+from firefox_puppeteer.ui.about_window.deck import Deck
+from firefox_puppeteer.ui.update_wizard import UpdateWizardDialog
+from firefox_puppeteer.ui.windows import BaseWindow, Windows
 
 
 class AboutWindow(BaseWindow):
@@ -133,3 +133,5 @@ class AboutWindow(BaseWindow):
         Wait(self.marionette, timeout=timeout).until(
             lambda _: 'applied' in self._software_update.active_update.state,
             message='Update has been applied.')
+
+Windows.register_window(AboutWindow.window_type, AboutWindow)

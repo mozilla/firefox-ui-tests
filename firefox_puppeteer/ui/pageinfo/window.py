@@ -4,8 +4,8 @@
 
 from marionette_driver import By
 
-from ..windows import BaseWindow
-from deck import Deck
+from firefox_puppeteer.ui.pageinfo.deck import Deck
+from firefox_puppeteer.ui.windows import BaseWindow, Windows
 
 
 class PageInfoWindow(BaseWindow):
@@ -61,3 +61,5 @@ class PageInfoWindow(BaseWindow):
                 raise ValueError('Unknown closing method: "%s"' % trigger)
 
         BaseWindow.close(self, callback, force)
+
+Windows.register_window(PageInfoWindow.window_type, PageInfoWindow)

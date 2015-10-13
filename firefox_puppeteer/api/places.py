@@ -3,10 +3,11 @@
 # You can obtain one at http://mozilla.org/MPL/2.0/.
 
 from collections import namedtuple
+from time import sleep
 
 from marionette_driver.errors import MarionetteException, TimeoutException
 
-from ..base import BaseLib
+from firefox_puppeteer.base import BaseLib
 
 
 class Places(BaseLib):
@@ -141,7 +142,6 @@ class Places(BaseLib):
         # Bug 1121691: Needs observer handling support with callback first
         # Until then we have to wait about 4s to ensure the page has been indexed
         callback()
-        from time import sleep
         sleep(4)
 
     # Plugin related helpers #
