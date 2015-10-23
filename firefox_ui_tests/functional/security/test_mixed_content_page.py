@@ -5,7 +5,7 @@
 from marionette_driver import Wait
 
 from firefox_ui_harness.decorators import skip_under_xvfb
-from firefox_ui_harness import FirefoxTestCase
+from firefox_puppeteer.testcases import FirefoxTestCase
 
 
 class TestMixedContentPage(FirefoxTestCase):
