@@ -5,8 +5,8 @@
 import pprint
 
 from firefox_puppeteer.api.software_update import SoftwareUpdate
+from firefox_puppeteer.testcases import FirefoxTestCase
 from firefox_puppeteer.ui.update_wizard import UpdateWizardDialog
-from firefox_ui_harness.testcases import FirefoxTestCase
 
 
 class UpdateTestCase(FirefoxTestCase):

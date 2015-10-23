@@ -6,7 +6,7 @@ from marionette_driver import expected, By, Wait
 from marionette_driver.errors import NoSuchElementException
 
 from firefox_ui_harness.decorators import skip_under_xvfb
-from firefox_ui_harness import FirefoxTestCase
+from firefox_puppeteer.testcases import FirefoxTestCase
 
 
 class TestNavBar(FirefoxTestCase):

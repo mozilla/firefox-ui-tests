@@ -4,7 +4,7 @@
 
 from firefox_puppeteer.ui.update_wizard import UpdateWizardDialog
 
-from firefox_ui_harness import FirefoxTestCase
+from firefox_puppeteer.testcases import FirefoxTestCase
 
 
 class TestUpdateWizard(FirefoxTestCase):

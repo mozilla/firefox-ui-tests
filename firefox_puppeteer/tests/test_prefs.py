@@ -4,7 +4,7 @@
 
 from marionette_driver.errors import MarionetteException
 
-from firefox_ui_harness import FirefoxTestCase
+from firefox_puppeteer.testcases import FirefoxTestCase
 
 
 class testPreferences(FirefoxTestCase):
