@@ -6,7 +6,7 @@ import unittest
 
 from marionette_driver.errors import NoSuchElementException
 
-from firefox_ui_harness import FirefoxTestCase
+from firefox_puppeteer.testcases import FirefoxTestCase
 
 
 @unittest.skip('Bug 1121710 - Fix MenuBar class for correct handling of menus')
