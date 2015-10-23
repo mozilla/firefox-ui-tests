@@ -2,14 +2,11 @@
 # License, v. 2.0. If a copy of the MPL was not distributed with this
 # file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
-import unittest
-
 from marionette_driver.errors import NoSuchElementException
 
 from firefox_puppeteer.testcases import FirefoxTestCase
 
 
-@unittest.skip('Bug 1121710 - Fix MenuBar class for correct handling of menus')
 class TestMenuBar(FirefoxTestCase):
 
     def setUp(self):
@@ -19,8 +16,8 @@ class TestMenuBar(FirefoxTestCase):
         num_tabs = len(self.browser.tabbar.tabs)
 
         def opener(_):
-            # Hard-coded labels will not work in localized builds
-            self.browser.menubar.select('File', 'New Tab')
+            self.browser.menubar.select_by_id('file-menu',
+                                              'menu_newNavigatorTab')
 
         self.browser.tabbar.open_tab(trigger=opener)
 
@@ -28,9 +25,8 @@ class TestMenuBar(FirefoxTestCase):
 
     def test_click_non_existent_menu_and_item(self):
         with self.assertRaises(NoSuchElementException):
-            # Hard-coded labels will not work in localized builds
-            self.browser.menubar.select('Foobar', 'New Tab')
+            self.browser.menubar.select_by_id('foobar-menu',
+                                              'menu_newNavigatorTab')
 
         with self.assertRaises(NoSuchElementException):
-            # Hard-coded labels will not work in localized builds
-            self.browser.menubar.select('File', 'Foobar')
+            self.browser.menubar.select_by_id('file-menu', 'menu_foobar')

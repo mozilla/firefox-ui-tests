@@ -113,9 +113,7 @@ class BrowserWindow(BaseWindow):
             if callable(trigger):
                 trigger(win)
             elif trigger == 'menu':
-                # TODO: Make use of menubar class once it supports ids
-                menu = win.marionette.find_element(By.ID, 'menu_closeWindow')
-                menu.click()
+                self.menubar.select_by_id('file-menu', 'menu_closeWindow')
             elif trigger == 'shortcut':
                 win.send_shortcut(win.get_entity('closeCmd.key'),
                                   accel=True, shift=True)
@@ -152,10 +150,8 @@ class BrowserWindow(BaseWindow):
             if callable(trigger):
                 trigger(win)
             elif trigger == 'menu':
-                # TODO: Make use of menubar class once it supports ids
                 menu_id = 'menu_newPrivateWindow' if is_private else 'menu_newNavigator'
-                menu = win.marionette.find_element(By.ID, menu_id)
-                menu.click()
+                self.menubar.select_by_id('file-menu', menu_id)
             elif trigger == 'shortcut':
                 cmd_key = 'privateBrowsingCmd.commandkey' if is_private else 'newNavigatorCmd.key'
                 win.send_shortcut(win.get_entity(cmd_key),
@@ -179,9 +175,7 @@ class BrowserWindow(BaseWindow):
             if callable(trigger):
                 trigger(win)
             elif trigger == 'menu':
-                # TODO: Make use of menubar class once it supports ids
-                menu = win.marionette.find_element(By.ID, 'aboutName')
-                menu.click()
+                self.menubar.select_by_id('helpMenu', 'aboutName')
             else:
                 raise ValueError('Unknown opening method: "%s"' % trigger)
 
@@ -201,9 +195,7 @@ class BrowserWindow(BaseWindow):
             if callable(trigger):
                 trigger(win)
             elif trigger == 'menu':
-                # TODO: Make use of menubar class once it supports ids
-                menu = win.marionette.find_element(By.ID, 'menu_pageInfo')
-                menu.click()
+                self.menubar.select_by_id('tools-menu', 'menu_pageInfo')
             elif trigger == 'shortcut':
                 if win.marionette.session_capabilities['platform'] == 'WINNT':
                     raise ValueError('Page info shortcut not available on Windows.')

@@ -61,7 +61,7 @@ class TestPageInfoWindow(FirefoxTestCase):
     def test_open_window(self):
         """Test various opening strategies."""
         def opener(win):
-            win.marionette.find_element(By.ID, 'menu_pageInfo').click()
+            self.browser.menubar.select_by_id('tools-menu', 'menu_pageInfo')
 
         open_strategies = ('menu',
                            'shortcut',
