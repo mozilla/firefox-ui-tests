@@ -14,10 +14,6 @@ class FirefoxUIBaseArguments(object):
         [['--installer'], {
             'help': 'Installer of a Gecko application to use for running the tests'
         }],
-        [['--workspace'], {
-            'dest': 'workspace_path',
-            'help': 'Path to use for all temporary data. Defaults to TEMP.'
-        }]
     ]
 
     def parse_args_handler(self, args):
