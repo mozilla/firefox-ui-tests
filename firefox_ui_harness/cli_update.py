@@ -4,12 +4,14 @@
 
 from firefox_ui_harness.arguments import UpdateArguments
 from firefox_ui_harness.runners import UpdateTestRunner
-from firefox_ui_harness.runtests import cli
+from firefox_ui_harness.runtests import FirefoxUIHarness
+from marionette.runtests import cli
 
 
 def cli_update():
-    cli(runner_class=UpdateTestRunner, parser_class=UpdateArguments)
-
+    cli(runner_class=UpdateTestRunner,
+        parser_class=UpdateArguments,
+        harness_class=FirefoxUIHarness)
 
 if __name__ == '__main__':
     cli_update()

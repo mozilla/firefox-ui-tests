@@ -6,72 +6,68 @@ import os
 import sys
 import tempfile
 
+import mozfile
 import mozinstall
-
-from mozlog import structured
+from marionette.runtests import MarionetteHarness, cli as mn_cli
 
 from firefox_ui_harness.arguments import FirefoxUIArguments
 from firefox_ui_harness.runners import FirefoxUITestRunner
 
 
-def startTestRunner(runner_class, options, tests):
-    install_folder = None
+class FirefoxUIHarness(MarionetteHarness):
+    def __init__(self,
+                 runner_class=FirefoxUITestRunner,
+                 parser_class=FirefoxUIArguments):
+        MarionetteHarness.__init__(self, runner_class, parser_class)
+        self.install_folder = None
 
-    try:
-        # Prepare the workspace path so that all temporary data can be stored inside it.
-        if options.workspace_path:
-            path = os.path.expanduser(options.workspace_path)
-            options.workspace = os.path.abspath(path)
-
-            if not os.path.exists(options.workspace):
-                os.makedirs(options.workspace)
-        else:
-            options.workspace = tempfile.mkdtemp('.{}'.format(os.path.basename(sys.argv[0])))
-
-        options.logger.info('Using workspace for temporary data: "{}"'.format(options.workspace))
-
+    def process_args(self):
+        # TODO move installer to mozharness script.
         # If the specified binary is an installer it needs to be installed
-        if options.installer:
-            installer = os.path.realpath(options.installer)
+        if self.args.installer:
+            installer = os.path.realpath(self.args.installer)
 
-            dest_folder = os.path.join(options.workspace, 'binary')
-            options.logger.info('Installing application "%s" to "%s"' % (installer,
-                                                                         dest_folder))
-            install_folder = mozinstall.install(installer, dest_folder)
-            options.binary = mozinstall.get_binary(install_folder, 'firefox')
+            if not self.args.workspace:
+                self.args.installer_workspace = tempfile.mkdtemp(
+                    '.{}'.format(os.path.basename(sys.argv[0]))
+                )
+            else:
+                self.args.installer_workspace = self.args.workspace
+            dest_folder = os.path.join(self.args.installer_workspace, 'binary')
+            self.args.logger.info(
+                'Installing application "%s" to "%s"' % (installer, dest_folder)
+            )
+            self.install_folder = mozinstall.install(installer, dest_folder)
+            self.args.binary = mozinstall.get_binary(self.install_folder,
+                                                     'firefox')
 
-        runner = runner_class(**vars(options))
-        runner.run_tests(tests)
+    def parse_args(self, *args, **kwargs):
+        return MarionetteHarness.parse_args(self, {'mach': sys.stdout})
 
-    finally:
-        # Ensure to uninstall the binary if it has been installed before
-        if install_folder and os.path.exists(install_folder):
-            options.logger.info('Uninstalling application at "%s"' % install_folder)
-            mozinstall.uninstall(install_folder)
+    def run(self):
+        try:
+            return MarionetteHarness.run(self)
+        finally:
+            # Ensure to uninstall the binary if it has been installed before
+            if self.install_folder and os.path.exists(self.install_folder):
+                self.args.logger.info('Uninstalling application at '
+                                      '"%s"' % self.install_folder)
+                mozinstall.uninstall(self.install_folder)
+            if not self.args.workspace:
+                self.args.logger.info(
+                    'Removing temporary installer workspace '
+                    'at "%s"' % self.args.installer_workspace
+                )
+                try:
+                    mozfile.remove(self.args.installer_workspace)
+                except IOError as e:
+                    self.logger.error('Cannot remove "%s"' % str(e))
 
-    return runner
 
-
-def cli(runner_class=FirefoxUITestRunner, parser_class=FirefoxUIArguments):
-    parser = parser_class(usage='%(prog)s [options] test_file_or_dir <test_file_or_dir> ...')
-    structured.commandline.add_logging_group(parser)
-    args = parser.parse_args()
-    parser.verify_usage(args)
-
-    logger = structured.commandline.setup_logging(
-        args.logger_name, args, {'mach': sys.stdout})
-    args.logger = logger
-
-    try:
-        runner = startTestRunner(runner_class, args, args.tests)
-        if runner.failed > 0:
-            sys.exit(10)
-
-    except Exception:
-        logger.error('Failure during execution of the update test.',
-                     exc_info=True)
-        sys.exit(1)
-
+def cli():
+    mn_cli(runner_class=FirefoxUITestRunner,
+           parser_class=FirefoxUIArguments,
+           harness_class=FirefoxUIHarness)
 
 if __name__ == '__main__':
-    sys.exit(cli())
+    cli()
