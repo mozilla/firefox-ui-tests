@@ -131,9 +131,8 @@ class TabBar(UIBaseLib):
         elif trigger == 'button':
             self.window.tabbar.newtab_button.click()
         elif trigger == 'menu':
-            # TODO: Make use of menubar class once it supports ids
-            menu = self.window.marionette.find_element(By.ID, 'menu_newNavigatorTab')
-            menu.click()
+            self.window.menubar.select_by_id('file-menu',
+                                             'menu_newNavigatorTab')
         elif trigger == 'shortcut':
             self.window.send_shortcut(self.window.get_entity('tabCmd.commandkey'), accel=True)
         # elif - need to add other cases
@@ -313,9 +312,7 @@ class Tab(UIBaseLib):
         elif trigger == 'button':
             self.close_button.click()
         elif trigger == 'menu':
-            # TODO: Make use of menubar class once it supports ids
-            menu = self.window.marionette.find_element(By.ID, 'menu_close')
-            menu.click()
+            self.window.menubar.select_by_id('file-menu', 'menu_close')
         elif trigger == 'shortcut':
             self.window.send_shortcut(self.window.get_entity('closeCmd.key'), accel=True)
         else:

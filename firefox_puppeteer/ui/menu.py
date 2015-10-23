@@ -37,6 +37,22 @@ class MenuBar(BaseLib):
 
         return menu[0]
 
+    def get_menu_by_id(self, menu_id):
+        """Get a :class:`MenuElement` instance corresponding to the specified
+        ID.
+
+        :param menu_id: The ID of the menu, e.g., **file-menu** or
+        **view-menu**.
+        :returns: A :class:`MenuElement` instance.
+        """
+        menu = [m for m in self.menus if m.get_attribute('id') == menu_id]
+
+        if not menu:
+            raise NoSuchElementException('Could not find a menu with '
+                                         'id "{}"'.format(menu_id))
+
+        return menu[0]
+
     def select(self, label, item):
         """Select an item in a menu.
 
@@ -44,6 +60,15 @@ class MenuBar(BaseLib):
         :param item: The label of the item in the menu, e.g., **New Tab**.
         """
         return self.get_menu(label).select(item)
+
+    def select_by_id(self, menu_id, item_id):
+        """Select an item in a menu.
+
+        :param menu_id: The ID of the menu, e.g., **file-menu** or **view-menu**.
+        :param item_id: The ID of the item in the menu, e.g.,
+        **menu_newNavigatorTab**.
+        """
+        return self.get_menu_by_id(menu_id).select_by_id(item_id)
 
     class MenuElement(DOMElement):
         """Wraps a menu element DOM element."""
@@ -67,6 +92,22 @@ class MenuBar(BaseLib):
             if not item:
                 message = ("Item labeled '{}' not found in the '{}' menu"
                            .format(label, self.get_attribute('label')))
+                raise NoSuchElementException(message)
+
+            return item[0].click()
+
+        def select_by_id(self, menu_item_id):
+            """Click on a menu item within this menu.
+
+            :param menu_item_id: The ID of the menu item, e.g.,
+            **menu_newNavigatorTab**.
+            """
+            item = [l for l in self.items if l.get_attribute('id') ==
+                    menu_item_id]
+
+            if not item:
+                message = ("Item with ID '{}' not found in the '{}' menu"
+                           .format(menu_item_id, self.get_attribute('id')))
                 raise NoSuchElementException(message)
 
             return item[0].click()
