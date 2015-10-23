@@ -62,8 +62,7 @@ class TestAboutWindow(FirefoxTestCase):
     def test_open_window(self):
         """Test various opening strategies."""
         def opener(win):
-            menu = win.marionette.find_element(By.ID, 'aboutName')
-            menu.click()
+            self.browser.menubar.select_by_id('helpMenu', 'aboutName')
 
         open_strategies = ('menu',
                            opener,

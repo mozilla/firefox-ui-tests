@@ -51,9 +51,8 @@ class TestStarInAutocomplete(FirefoxTestCase):
         self.places.wait_for_visited(self.test_urls, visit_urls)
 
         # Bookmark the current page using the bookmark menu
-        # Bug 1121710: Needs fixed Menu class. Until then click the menuentry directly.
-        bookmark_menuitem = self.marionette.find_element(By.ID, 'menu_bookmarkThisPage')
-        bookmark_menuitem.click()
+        self.browser.menubar.select_by_id('bookmarksMenu',
+                                          'menu_bookmarkThisPage')
 
         # TODO: Replace hard-coded selector with library method when one is available
         done_button = self.marionette.find_element(By.ID, 'editBookmarkPanelDoneButton')

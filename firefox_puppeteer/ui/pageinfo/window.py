@@ -51,9 +51,7 @@ class PageInfoWindow(BaseWindow):
             if callable(trigger):
                 trigger(win)
             elif trigger == 'menu':
-                # TODO: Make use of menubar class once it supports ids
-                menu = win.marionette.find_element(By.ID, 'menu_closeWindow')
-                menu.click()
+                self.menubar.select_by_id('file-menu', 'menu_closeWindow')
             elif trigger == 'shortcut':
                 win.send_shortcut(win.get_entity('closeWindow.key'),
                                   accel=True)
