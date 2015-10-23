@@ -38,11 +38,16 @@ class UpdateTestRunner(FirefoxUITestRunner):
         self.run_direct_update = not kwargs.pop('update_fallback_only', False)
         self.run_fallback_update = not kwargs.pop('update_direct_only', False)
 
+        # Used in case no workspace is set
+        self.installer_workspace = kwargs.pop('installer_workspace',
+                                              self.workspace_path)
+
         self.test_handlers = [UpdateTestCase]
 
     def duplicate_application(self, application_folder):
         """Creates a copy of the specified binary."""
-        target_folder = os.path.join(self.workspace, 'binary.backup')
+
+        target_folder = os.path.join(self.installer_workspace, 'binary.backup')
 
         self.logger.info('Creating a copy of the application at "%s".' % target_folder)
         mozfile.remove(target_folder)
