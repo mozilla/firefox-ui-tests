@@ -45,10 +45,16 @@ before_script:
 
 script:
     # Run in non-e10s mode
-    - firefox-ui-tests --installer *firefox-* --gecko-log -
+    - firefox-ui-tests --installer *firefox-*en-US* --gecko-log -
 
     # Run in e10s mode
-    - firefox-ui-tests --installer *firefox-* --gecko-log - --e10s
+    - firefox-ui-tests --installer *firefox-*en-US* --gecko-log - --e10s
+
+    # Run in non-e10s mode, locale ru
+    - firefox-ui-tests --installer *firefox-*.ru.* --gecko-log -
+
+    # Run in e10s mode
+    - firefox-ui-tests --installer *firefox-*.ru.* --gecko-log - --e10s
 
 notifications:
     irc:
