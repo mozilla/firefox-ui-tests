@@ -1,2 +1,2 @@
-mozdownload==1.18.1
+mozdownload==1.19
 pep8==1.6.2
