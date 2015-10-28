@@ -1,4 +1,9 @@
 #!/bin/bash
 set -ev
 
-mozdownload --type daily --branch mozilla-central
+if [[ $LOCALE = 'en-US' ]]
+then
+    mozdownload --type daily --branch mozilla-central
+else
+    mozdownload --type daily --branch mozilla-central --locale ru
+fi
