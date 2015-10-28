@@ -1,4 +1,9 @@
 #!/bin/bash
 set -ev
 
-mozdownload --type tinderbox --branch mozilla-beta
+if [[ $LOCALE = 'en-US' ]]
+then
+    mozdownload --type candidate --branch mozilla-beta
+else
+    mozdownload --type candidate --branch mozilla-beta --locale ru
+fi
