@@ -82,10 +82,12 @@ class TestSafeBrowsingWarningPages(FirefoxTestCase):
         button = self.marionette.find_element(By.ID, "reportButton")
         button.click()
 
-        # Wait for the button to become stale, then wait for page load
-        # so we can verify the url even if a redirect happens
-        Wait(self.marionette).until(expected.element_stale(button))
+        # Wait for the button to become stale, whereby a longer timeout is needed
+        # here to not fail in case of slow connections.
+        Wait(self.marionette, timeout=self.browser.timeout_page_load).until(
+            expected.element_stale(button))
 
+        # Wait for page load to be completed, so we can verify the URL even if a redirect happens.
         # TODO: Bug 1140470: use replacement for mozmill's waitforPageLoad
         Wait(self.marionette, timeout=self.browser.timeout_page_load).until(
             lambda mn: mn.execute_script('return document.readyState == "complete";')
