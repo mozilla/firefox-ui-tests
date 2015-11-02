@@ -80,14 +80,13 @@ class TestSafeBrowsingNotificationBar(FirefoxTestCase):
                 self.check_ignore_warning_button(unsafe_page)
                 self.check_get_me_out_of_here_button()
 
-                # Disabled until bug 1084289 can be resolved
                 # Return to the unsafe page
                 # Check "ignore warning" link then notification bar's "X" button
-                # self.marionette.navigate(unsafe_page)
+                self.marionette.navigate(unsafe_page)
                 # Wait for the DOM to receive events for about:blocked
-                # time.sleep(1)
-                # self.check_ignore_warning_button(unsafe_page)
-                # self.check_x_button()
+                time.sleep(1)
+                self.check_ignore_warning_button(unsafe_page)
+                self.check_x_button()
 
     def check_ignore_warning_button(self, unsafe_page):
         button = self.marionette.find_element(By.ID, 'ignoreWarningButton')
