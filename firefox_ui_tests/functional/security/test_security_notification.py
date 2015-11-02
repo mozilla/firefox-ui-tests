@@ -38,9 +38,9 @@ class TestSecurityNotification(FirefoxTestCase):
             text = self.marionette.find_element(By.ID, 'technicalContentText')
             self.assertIn(self.urls[0][8:], text.get_attribute('textContent'))
 
-            # Verify the "Get Me Out Of Here!" and "Add Exception" buttons appear
-            self.assertIsNotNone(self.marionette.find_element(By.ID, 'getMeOutOfHereButton'))
-            self.assertIsNotNone(self.marionette.find_element(By.ID, 'exceptionDialogButton'))
+            # Verify the "Go Back" and "Advanced" buttons appear
+            self.assertIsNotNone(self.marionette.find_element(By.ID, 'returnButton'))
+            self.assertIsNotNone(self.marionette.find_element(By.ID, 'advancedButton'))
 
             # Verify the error code is correct
             self.assertIn('sec_error_expired_certificate', text.get_attribute('textContent'))
