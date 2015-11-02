@@ -30,9 +30,9 @@ class TestUnknownIssuer(FirefoxTestCase):
             self.assertEquals(link.get_attribute('textContent'),
                               'ssl-selfsigned-unknownissuer.mozqa.com')
 
-            # Verify the "Get Me Out Of Here!" and "Add Exception" buttons appear
-            self.assertIsNotNone(self.marionette.find_element(By.ID, 'getMeOutOfHereButton'))
-            self.assertIsNotNone(self.marionette.find_element(By.ID, 'exceptionDialogButton'))
+            # Verify the "Go Back" and "Advanced" buttons appear
+            self.assertIsNotNone(self.marionette.find_element(By.ID, 'returnButton'))
+            self.assertIsNotNone(self.marionette.find_element(By.ID, 'advancedButton'))
 
             # Verify the error code is correct
             text = self.marionette.find_element(By.ID, 'technicalContentText')
