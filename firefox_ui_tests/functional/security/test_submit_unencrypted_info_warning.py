@@ -51,7 +51,8 @@ class TestSubmitUnencryptedInfoWarning(FirefoxTestCase):
 
             # TODO: Bug 1140470: use replacement for mozmill's waitforPageLoad
             Wait(self.marionette, timeout=self.browser.timeout_page_load).until(
-                lambda mn: mn.execute_script('return document.readyState == "complete";')
+                lambda mn: mn.execute_script('return document.readyState == "DOMContentLoaded" ||'
+                                             '       document.readyState == "complete";')
             )
 
             # Check that search_term contains the test string.
