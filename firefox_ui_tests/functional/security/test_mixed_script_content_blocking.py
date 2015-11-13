@@ -46,9 +46,9 @@ class TestMixedScriptContentBlocking(FirefoxTestCase):
             )
 
         # First call to Wait() needs a longer timeout due to the reload of the web page.
-        favicon = self.locationbar.favicon
+        connection_icon = self.locationbar.connection_icon
         Wait(self.marionette, timeout=self.browser.timeout_page_load).until(
-            lambda _: icon_filename in favicon.value_of_css_property('list-style-image'),
+            lambda _: icon_filename in connection_icon.value_of_css_property('list-style-image'),
             message="The correct icon is displayed"
         )
 

@@ -33,7 +33,7 @@ class TestEVCertificate(FirefoxTestCase):
 
         # The lock icon should be shown
         self.assertIn('identity-secure',
-                      self.locationbar.favicon.value_of_css_property('list-style-image'))
+                      self.locationbar.connection_icon.value_of_css_property('list-style-image'))
 
         # Check the identity box
         self.assertEqual(self.locationbar.identity_box.get_attribute('className'),
