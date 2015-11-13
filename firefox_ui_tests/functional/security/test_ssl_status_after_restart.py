@@ -73,7 +73,7 @@ class TestSSLStatusAfterRestart(FirefoxTestCase):
         # TODO: find a better way to check, e.g., mozmill's isDisplayed
         favicon_hidden = self.marionette.execute_script("""
           return arguments[0].hasAttribute("hidden");
-        """, script_args=[self.browser.navbar.locationbar.favicon])
+        """, script_args=[self.browser.navbar.locationbar.identity_icon])
         self.assertFalse(favicon_hidden)
 
         self.locationbar.open_identity_popup()

@@ -37,12 +37,12 @@ class TestNoCertificate(FirefoxTestCase):
         # TODO: find a better way to check, e.g., mozmill's isDisplayed
         favicon_hidden = self.marionette.execute_script("""
           return arguments[0].hasAttribute("hidden");
-        """, script_args=[self.browser.navbar.locationbar.favicon])
-        self.assertFalse(favicon_hidden, 'The globe favicon is visible')
+        """, script_args=[self.browser.navbar.locationbar.identity_icon])
+        self.assertFalse(favicon_hidden, 'The identity icon is visible')
 
         # Check that the identity box organization label is blank
         self.assertEqual(self.locationbar.identity_organization_label.get_attribute('value'), '',
-                         'The favicon has no label')
+                         'The organization has no label')
 
         # Open the identity popup
         self.locationbar.open_identity_popup()

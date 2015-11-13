@@ -28,9 +28,8 @@ class TestMixedContentPage(FirefoxTestCase):
         with self.marionette.using_context('content'):
             self.marionette.navigate(self.url)
 
-        favicon = self.browser.navbar.locationbar.favicon
-        self.assertTrue('identity-mixed-passive-loaded' in
-                        favicon.value_of_css_property('list-style-image'))
+        self.assertIn('identity-mixed-passive-loaded',
+                      self.locationbar.connection_icon.value_of_css_property('list-style-image'))
 
         # Open the identity popup
         self.locationbar.open_identity_popup()
