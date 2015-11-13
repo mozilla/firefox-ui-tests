@@ -89,12 +89,13 @@ class TestLocationBar(FirefoxTestCase):
         self.assertEqual(self.locationbar.urlbar.get_attribute('localName'), 'textbox')
         self.assertIn('urlbar-input', self.locationbar.urlbar_input.get_attribute('className'))
 
+        self.assertEqual(self.locationbar.connection_icon.get_attribute('localName'), 'image')
         self.assertEqual(self.locationbar.identity_box.get_attribute('localName'), 'box')
         self.assertEqual(self.locationbar.identity_country_label.get_attribute('localName'),
                          'label')
         self.assertEqual(self.locationbar.identity_organization_label.get_attribute('localName'),
                          'label')
-        self.assertEqual(self.locationbar.favicon.get_attribute('localName'), 'image')
+        self.assertEqual(self.locationbar.identity_icon.get_attribute('localName'), 'image')
         self.assertEqual(self.locationbar.history_drop_marker.get_attribute('localName'),
                          'dropmarker')
         self.assertEqual(self.locationbar.reload_button.get_attribute('localName'),

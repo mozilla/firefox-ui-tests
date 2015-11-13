@@ -105,6 +105,14 @@ class LocationBar(UIBaseLib):
         self.contextmenu.send_keys(keys.Keys.ESCAPE)
 
     @property
+    def connection_icon(self):
+        """ Provides access to the urlbar connection icon.
+
+        :returns: Reference to the connection icon element.
+        """
+        return self.marionette.find_element(By.ID, 'connection-icon')
+
+    @property
     def contextmenu(self):
         """Provides access to the urlbar context menu.
 
@@ -123,12 +131,12 @@ class LocationBar(UIBaseLib):
         return self.urlbar.get_attribute('focused') == 'true'
 
     @property
-    def favicon(self):
-        """ Provides access to the urlbar favicon.
+    def identity_icon(self):
+        """ Provides access to the urlbar identity icon.
 
-        :returns: Reference to the favicon element.
+        :returns: Reference to the identity icon element.
         """
-        return self.marionette.find_element(By.ID, 'page-proxy-favicon')
+        return self.marionette.find_element(By.ID, 'identity-icon')
 
     def focus(self, event='click'):
         """Focus the location bar according to the provided event.
