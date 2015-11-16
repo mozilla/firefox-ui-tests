@@ -69,7 +69,8 @@ class TestPageInfoWindow(FirefoxTestCase):
                            )
 
         for trigger in open_strategies:
-            if self.platform == 'winnt' and trigger == 'shortcut':
+            if trigger == 'shortcut' and \
+                    self.marionette.session_capabilities['platform'] == 'WINDOWS_NT':
                 # The shortcut for page info window does not exist on windows.
                 self.assertRaises(ValueError, self.browser.open_page_info_window,
                                   trigger=trigger)
