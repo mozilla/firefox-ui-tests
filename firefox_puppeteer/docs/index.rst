@@ -23,16 +23,17 @@ along with instructions for installation and usage.
 There are plans to move it alongside the `Marionette python client`_.
 
 .. _Marionette python client: http://marionette-client.readthedocs.org/en/latest/
-.. _firefox-ui-tests: https://github.com/mozilla/firefox-ui-tests/tree/master/firefox_puppeteer
+.. _firefox-ui-tests: https://github.com/mozilla/firefox-ui-tests/tree/mozilla-central/firefox_puppeteer
+
 
 Libraries
 ---------
-
 
 The following libraries are currently implemented. More will be added in the
 future. Each library is available from an instance of the FirefoxTestCase class.
 
 .. toctree::
+
    ui/about_window/window
    ui/menu
    ui/pageinfo/window
