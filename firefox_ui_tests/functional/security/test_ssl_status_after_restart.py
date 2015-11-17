@@ -3,9 +3,8 @@
 # file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
 from marionette_driver import Wait
-from marionette.marionette_test import skip_if_e10s
 
-from firefox_ui_harness.decorators import skip_under_xvfb
+from firefox_ui_harness.decorators import skip_if_e10s, skip_under_xvfb
 from firefox_ui_harness import FirefoxTestCase
 
 
