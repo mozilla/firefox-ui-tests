@@ -3,7 +3,10 @@
 # file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
 import os
+import shutil
+import tempfile
 
+import mozfile
 import mozinfo
 from marionette import BaseMarionetteTestRunner
 
@@ -20,6 +23,20 @@ class FirefoxUITestRunner(BaseMarionetteTestRunner):
             self.server_root = firefox_ui_tests.resources
 
         self.test_handlers = [FirefoxTestCase]
+
+    def duplicate_application(self, application_folder):
+        """Creates a copy of the specified binary."""
+
+        if self.workspace:
+            target_folder = os.path.join(self.workspace_path, 'application.copy')
+        else:
+            target_folder = tempfile.mkdtemp('.application.copy')
+
+        self.logger.info('Creating a copy of the application at "%s".' % target_folder)
+        mozfile.remove(target_folder)
+        shutil.copytree(application_folder, target_folder)
+
+        return target_folder
 
     def get_application_folder(self, binary):
         """Returns the directory of the application."""
