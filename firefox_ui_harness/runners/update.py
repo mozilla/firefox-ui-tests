@@ -2,8 +2,6 @@
 # License, v. 2.0. If a copy of the MPL was not distributed with this
 # file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
-import os
-import shutil
 import sys
 
 import mozfile
@@ -38,22 +36,7 @@ class UpdateTestRunner(FirefoxUITestRunner):
         self.run_direct_update = not kwargs.pop('update_fallback_only', False)
         self.run_fallback_update = not kwargs.pop('update_direct_only', False)
 
-        # Used in case no workspace is set
-        self.installer_workspace = kwargs.pop('installer_workspace',
-                                              self.workspace_path)
-
         self.test_handlers = [UpdateTestCase]
-
-    def duplicate_application(self, application_folder):
-        """Creates a copy of the specified binary."""
-
-        target_folder = os.path.join(self.installer_workspace, 'binary.backup')
-
-        self.logger.info('Creating a copy of the application at "%s".' % target_folder)
-        mozfile.remove(target_folder)
-        shutil.copytree(application_folder, target_folder)
-
-        return target_folder
 
     def run_tests(self, tests):
         # Used to store the last occurred exception because we execute
@@ -66,11 +49,11 @@ class UpdateTestRunner(FirefoxUITestRunner):
         results = {}
 
         def _run_tests(manifest):
-            target_folder = None
+            application_folder = None
 
             try:
-                target_folder = self.duplicate_application(source_folder)
-                self.bin = mozinstall.get_binary(target_folder, 'Firefox')
+                application_folder = self.duplicate_application(source_folder)
+                self.bin = mozinstall.get_binary(application_folder, 'Firefox')
 
                 FirefoxUITestRunner.run_tests(self, [manifest])
 
@@ -80,9 +63,9 @@ class UpdateTestRunner(FirefoxUITestRunner):
                                   exc_info=self.exc_info)
 
             finally:
-                self.logger.info('Removing copy of the application at "%s"' % target_folder)
+                self.logger.info('Removing copy of the application at "%s"' % application_folder)
                 try:
-                    mozfile.remove(target_folder)
+                    mozfile.remove(application_folder)
                 except IOError as e:
                     self.logger.error('Cannot remove copy of application: "%s"' % str(e))
 
