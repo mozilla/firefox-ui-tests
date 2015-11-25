@@ -51,14 +51,14 @@ class UpdateBaseArguments(object):
         }],
     ]
 
+    def verify_usage_handler(self, args):
+        if args.update_direct_only and args.update_fallback_only:
+            raise ValueError('Arguments --update-direct-only and --update-fallback-only '
+                             'are mutually exclusive.')
+
 
 class UpdateArguments(FirefoxUIArguments):
     def __init__(self, **kwargs):
         FirefoxUIArguments.__init__(self, **kwargs)
 
         self.register_argument_container(UpdateBaseArguments())
-
-    def verify_usage(self, args):
-        if args.update_direct_only and args.update_fallback_only:
-            raise ValueError('Arguments --update-direct-only and --update-fallback-only '
-                             'are mutually exclusive.')

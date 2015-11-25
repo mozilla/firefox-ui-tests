@@ -16,29 +16,21 @@ env:
     - MOZ_BRANCH='mozilla-aurora'
     - DISPLAY=$(if [[ $TRAVIS_OS_NAME = 'linux' ]]; then echo ':99'; fi)
     - MOZ_XVFB=$(if [[ $TRAVIS_OS_NAME = 'linux' ]]; then echo 1; fi)
+
   matrix:
-    # Test with our internal pypi mirror / locale en-US
+    # Test with our internal pypi mirror / en-US only
     - LOCALE='en-US'
       PIP_FIND_LINKS=http://pypi.pub.build.mozilla.org/pub
       PIP_NO_INDEX=1
-      PIP_STRICT_VERSIONS=--strict
 
-    # ... and with the official pypi website / locale en-US
+    # ... and with the official pypi website
     - LOCALE='en-US'
-
-    # ... and again with the official pypi website / locale ru
     - LOCALE='ru'
 
 before_install:
     - if [ "$TRAVIS_OS_NAME" == "linux" ]; then /sbin/start-stop-daemon --start --quiet --make-pidfile --pidfile /tmp/custom_xvfb_99.pid --background --exec /usr/bin/Xvfb -- :99 -ac -screen 0 1280x768x24 ; fi
 
 install:
-    # We need to either pin our marionette version or get every dependent package from
-    # tree to avoid bustage. Pinning marionette means we're more likely to work out of the
-    # the box for those working locally without a clone of m-c.
-    # - svn checkout https://github.com/mozilla/gecko-dev/trunk/testing/marionette/client
-    # - "cd client && python setup.py develop && cd .."
-
     - python create_venv.py $PIP_STRICT_VERSIONS --with-optional-packages ~/.venv
     - source ~/.venv/bin/activate
 
@@ -46,15 +38,15 @@ before_script:
     # Run pep8 on all except the checked out marionette-client folder
     - pep8 --config ./.pep8.rc --exclude=client .
 
-    # Prepare the build and everything else
-    - mozdownload --type daily --branch $MOZ_BRANCH --locale $LOCALE
+    # Get the latest build and install it. Store the binary path in binary.txt
+    - python .travis/download-and-install.py
 
 script:
-    # Run in non-e10s mode
-    - firefox-ui-tests --installer *firefox-* --gecko-log -
+    # Run the tests with e10s disabled
+    - cat binary.txt | xargs -I binary_path firefox-ui-tests --binary binary_path --gecko-log -
 
     # Run in e10s mode
-    - firefox-ui-tests --installer *firefox-* --gecko-log - --e10s
+    - cat binary.txt | xargs -I binary_path firefox-ui-tests --binary binary_path --gecko-log - --e10s
 
 notifications:
     irc:

@@ -10,23 +10,9 @@ from marionette import BaseMarionetteArguments
 
 class FirefoxUIBaseArguments(object):
     name = 'Firefox UI Tests'
-    args = [
-        [['--installer'], {
-            'help': 'Installer of a Gecko application to use for running the tests'
-        }],
-    ]
+    args = []
 
     def parse_args_handler(self, args):
-        # Bug 1142064 - We cannot easily extent options because registered handlers
-        # are called at the end in BaseMarionetteArguments.verify_usage(). As result it
-        # will abort due to no binary specified. Once the bug is fixed we can move
-        # the whole block to verify_usage_handler().
-        if args.installer:
-            if args.binary:
-                raise ValueError('Options --binary and --installer are mutually exclusive.')
-
-            args.binary = 'FAKED_VALUE'
-
         # If no tests are specified fall back to puppeteer unit and all firefox ui tests
         args.tests = args.tests or [firefox_puppeteer.manifest, firefox_ui_tests.manifest_all]
 
