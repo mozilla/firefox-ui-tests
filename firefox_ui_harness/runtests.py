@@ -8,6 +8,7 @@ import tempfile
 
 import mozfile
 import mozinstall
+import mozlog
 from marionette.runtests import MarionetteHarness, cli as mn_cli
 
 from firefox_ui_harness.arguments import FirefoxUIArguments
@@ -18,7 +19,14 @@ class FirefoxUIHarness(MarionetteHarness):
     def __init__(self,
                  runner_class=FirefoxUITestRunner,
                  parser_class=FirefoxUIArguments):
-        MarionetteHarness.__init__(self, runner_class, parser_class)
+        # workaround until next marionette-client release - Bug 1227918
+        try:
+            MarionetteHarness.__init__(self, runner_class, parser_class)
+        except Exception:
+            logger = mozlog.commandline.setup_logging('Firefox UI harness', {})
+            logger.error('Failure setting up harness', exc_info=True)
+            raise
+
         self.install_folder = None
 
     def process_args(self):
