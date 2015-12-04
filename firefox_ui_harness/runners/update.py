@@ -8,7 +8,7 @@ import mozfile
 import mozinstall
 
 from base import FirefoxUITestRunner
-from firefox_ui_tests.testcases import UpdateTestCase
+from firefox_puppeteer.testcases import UpdateTestCase
 
 import firefox_ui_tests
 
