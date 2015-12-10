@@ -44,6 +44,6 @@ class TestSSLDisabledErrorPage(FirefoxTestCase):
 
             # Verify the error message is correct
             short_description = self.marionette.find_element(By.ID, 'errorShortDescText')
-            self.assertIn('ssl_error_unsupported_version',
+            self.assertIn('SSL_ERROR_UNSUPPORTED_VERSION',
                           short_description.get_attribute('textContent'))
             self.assertIn('mozqa.com', short_description.get_attribute('textContent'))
