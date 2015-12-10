@@ -36,4 +36,4 @@ class TestUnknownIssuer(FirefoxTestCase):
 
             # Verify the error code is correct
             text = self.marionette.find_element(By.ID, 'technicalContentText')
-            self.assertIn('sec_error_unknown_issuer', text.get_attribute('textContent'))
+            self.assertIn('SEC_ERROR_UNKNOWN_ISSUER', text.get_attribute('textContent'))
