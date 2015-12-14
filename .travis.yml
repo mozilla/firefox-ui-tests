@@ -12,23 +12,14 @@ compiler:
     - gcc
 
 env:
-    # Test with our internal pypi mirror / locale en-US
-    - LOCALE='en-US'
-      PIP_FIND_LINKS=http://pypi.pub.build.mozilla.org/pub
+    # Test with our internal pypi mirror
+    - PIP_FIND_LINKS=http://pypi.pub.build.mozilla.org/pub
       PIP_NO_INDEX=1
       DISPLAY=$(if [[ $TRAVIS_OS_NAME = 'linux' ]]; then echo ':99'; fi)
       MOZ_XVFB=$(if [[ $TRAVIS_OS_NAME = 'linux' ]]; then echo 1; fi)
       PIP_STRICT_VERSIONS=--strict
-
-    # ... and with the official pypi website / locale en-US
-    - LOCALE='en-US'
-      DISPLAY=$(if [[ $TRAVIS_OS_NAME = 'linux' ]]; then echo ':99'; fi)
-      MOZ_XVFB=$(if [[ $TRAVIS_OS_NAME = 'linux' ]]; then echo 1; fi)
-      PIP_STRICT_VERSIONS=
-
-    # ... and again with the official pypi website / locale ru
-    - LOCALE='ru'
-      DISPLAY=$(if [[ $TRAVIS_OS_NAME = 'linux' ]]; then echo ':99'; fi)
+    # ... and with the official pypi website
+    - DISPLAY=$(if [[ $TRAVIS_OS_NAME = 'linux' ]]; then echo ':99'; fi)
       MOZ_XVFB=$(if [[ $TRAVIS_OS_NAME = 'linux' ]]; then echo 1; fi)
       PIP_STRICT_VERSIONS=
 
