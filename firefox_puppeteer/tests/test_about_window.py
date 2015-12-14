@@ -2,8 +2,6 @@
 # License, v. 2.0. If a copy of the MPL was not distributed with this
 # file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
-from marionette_driver import By
-
 from firefox_puppeteer.testcases import FirefoxTestCase
 
 
@@ -73,7 +71,3 @@ class TestAboutWindow(FirefoxTestCase):
             about_window = self.browser.open_about_window(trigger=trigger)
             self.assertEquals(about_window, self.windows.current)
             about_window.close()
-
-    def test_patch_info(self):
-        self.assertEqual(self.about_window.patch_info['download_duration'], None)
-        self.assertIsNotNone(self.about_window.patch_info['channel'])

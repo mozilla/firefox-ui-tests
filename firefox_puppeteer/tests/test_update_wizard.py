@@ -2,9 +2,8 @@
 # License, v. 2.0. If a copy of the MPL was not distributed with this
 # file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
-from firefox_puppeteer.ui.update_wizard import UpdateWizardDialog
-
 from firefox_puppeteer.testcases import FirefoxTestCase
+from firefox_puppeteer.ui.update_wizard import UpdateWizardDialog
 
 
 class TestUpdateWizard(FirefoxTestCase):
@@ -66,7 +65,3 @@ class TestUpdateWizard(FirefoxTestCase):
         # elements of the incompatible check panel
         self.assertEqual(self.wizard.incompatible_check.progress.get_attribute('localName'),
                          'progressmeter')
-
-    def test_patch_info(self):
-        self.assertEqual(self.dialog.patch_info['download_duration'], None)
-        self.assertIsNotNone(self.dialog.patch_info['channel'])
