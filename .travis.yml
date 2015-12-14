@@ -12,22 +12,25 @@ compiler:
     - gcc
 
 env:
-  global:
-    - MOZ_BRANCH='mozilla-aurora'
-    - DISPLAY=$(if [[ $TRAVIS_OS_NAME = 'linux' ]]; then echo ':99'; fi)
-    - MOZ_XVFB=$(if [[ $TRAVIS_OS_NAME = 'linux' ]]; then echo 1; fi)
-  matrix:
     # Test with our internal pypi mirror / locale en-US
     - LOCALE='en-US'
       PIP_FIND_LINKS=http://pypi.pub.build.mozilla.org/pub
       PIP_NO_INDEX=1
+      DISPLAY=$(if [[ $TRAVIS_OS_NAME = 'linux' ]]; then echo ':99'; fi)
+      MOZ_XVFB=$(if [[ $TRAVIS_OS_NAME = 'linux' ]]; then echo 1; fi)
       PIP_STRICT_VERSIONS=--strict
 
     # ... and with the official pypi website / locale en-US
     - LOCALE='en-US'
+      DISPLAY=$(if [[ $TRAVIS_OS_NAME = 'linux' ]]; then echo ':99'; fi)
+      MOZ_XVFB=$(if [[ $TRAVIS_OS_NAME = 'linux' ]]; then echo 1; fi)
+      PIP_STRICT_VERSIONS=
 
     # ... and again with the official pypi website / locale ru
     - LOCALE='ru'
+      DISPLAY=$(if [[ $TRAVIS_OS_NAME = 'linux' ]]; then echo ':99'; fi)
+      MOZ_XVFB=$(if [[ $TRAVIS_OS_NAME = 'linux' ]]; then echo 1; fi)
+      PIP_STRICT_VERSIONS=
 
 before_install:
     - if [ "$TRAVIS_OS_NAME" == "linux" ]; then /sbin/start-stop-daemon --start --quiet --make-pidfile --pidfile /tmp/custom_xvfb_99.pid --background --exec /usr/bin/Xvfb -- :99 -ac -screen 0 1280x768x24 ; fi
@@ -47,7 +50,7 @@ before_script:
     - pep8 --config ./.pep8.rc --exclude=client .
 
     # Prepare the build and everything else
-    - mozdownload --type daily --branch $MOZ_BRANCH --locale $LOCALE
+    - ./.travis/before_script.sh
 
 script:
     # Run in non-e10s mode
