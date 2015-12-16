@@ -120,7 +120,7 @@ class Windows(BaseLib):
 
         if window_type in self.windows_map:
             window = self.windows_map[window_type](
-                    lambda: self.marionette, handle)
+                lambda: self.marionette, handle)
         else:
             raise errors.UnknownWindowError('Unknown window type "%s" for handle: "%s"' %
                                             (window_type, handle))

@@ -2,5 +2,5 @@
 # License, v. 2.0. If a copy of the MPL was not distributed with this
 # file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
-from base import FirefoxUITestRunner
-from update import UpdateTestRunner
+from firefox_ui_harness.arguments.base import FirefoxUIArguments
+from firefox_ui_harness.arguments.update import UpdateArguments

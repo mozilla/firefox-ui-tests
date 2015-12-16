@@ -1,2 +1,0 @@
-recursive-include firefox_puppeteer/tests *
-recursive-include firefox_ui_tests *
