@@ -5,8 +5,6 @@
 from marionette import SkipTest
 import os
 
-from firefox_puppeteer.api import appinfo
-
 
 def skip_under_xvfb(target):
     def wrapper(self, *args, **kwargs):
