@@ -22,4 +22,6 @@ marionette-driver == 1.1.1
 requests==2.7.0
 
 # Install the firefox ui tests package
-./
+./firefox_ui_harness/
+./firefox_puppeteer/
+./firefox_ui_tests/

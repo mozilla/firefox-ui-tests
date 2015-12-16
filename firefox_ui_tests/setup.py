@@ -4,15 +4,11 @@
 
 from setuptools import setup, find_packages
 
-PACKAGE_VERSION = '0.3'
+PACKAGE_VERSION = '0.3.1'
 
 deps = [
-    'marionette-client == 2.0.0',
-    'marionette-driver == 1.1.1',
-    'mozfile == 1.2',
-    'mozinfo == 0.8',
-    'mozinstall == 1.12',
-    'mozlog == 3.0',
+    'firefox-puppeteer >= 2.0.0, <3.0.0',
+    'firefox-ui-harness == 1.1.2',
 ]
 
 setup(name='firefox-ui-tests',
@@ -34,11 +30,15 @@ setup(name='firefox-ui-tests',
       license='MPL 2.0',
       packages=find_packages(),
       include_package_data=True,
+      package_data={
+          '': [
+              '*.html',
+              '*.ico',
+              '*.ini',
+              '*.jpg',
+              '*.js',
+          ]
+      },
       zip_safe=False,
       install_requires=deps,
-      entry_points="""
-        [console_scripts]
-        firefox-ui-tests = firefox_ui_harness:cli
-        firefox-ui-functional = firefox_ui_harness.cli_functional:cli_functional
-        firefox-ui-update = firefox_ui_harness.cli_update:cli_update
-      """)
+      )

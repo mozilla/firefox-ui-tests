@@ -78,7 +78,7 @@ class Places(BaseLib):
 
     def restore_default_bookmarks(self):
         """Restores the default bookmarks for the current profile."""
-        retVal = self.marionette.execute_async_script("""
+        retval = self.marionette.execute_async_script("""
           Components.utils.import("resource://gre/modules/BookmarkHTMLUtils.jsm");
           Components.utils.import("resource://gre/modules/Services.jsm");
 
@@ -101,7 +101,7 @@ class Places(BaseLib):
           BookmarkHTMLUtils.importFromURL(defaultBookmarks, true);
         """, script_timeout=10000)
 
-        if not retVal:
+        if not retval:
             raise MarionetteException("Restore Default Bookmarks failed")
 
     # Browser history related helpers #
