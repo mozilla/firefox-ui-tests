@@ -2,9 +2,8 @@
 # License, v. 2.0. If a copy of the MPL was not distributed with this
 # file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
-import cli_functional
-import cli_update
+from firefox_ui_harness.runtests import cli as cli_functional
 
-from testcases import (FirefoxTestCase,
-                       UpdateTestCase,
-                       )
+
+if __name__ == '__main__':
+    cli_functional()

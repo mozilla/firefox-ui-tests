@@ -39,5 +39,6 @@ setup(name='firefox-ui-tests',
       entry_points="""
         [console_scripts]
         firefox-ui-tests = firefox_ui_harness:cli
+        firefox-ui-functional = firefox_ui_harness.cli_functional:cli_functional
         firefox-ui-update = firefox_ui_harness.cli_update:cli_update
       """)
