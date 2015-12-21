@@ -19,13 +19,11 @@ Alternatively you may want to clone the repo for development:
     git clone https://github.com/mozilla/firefox-ui-tests.git
     python setup.py develop
 
-If you do not have installed virtualenv and virtualenvwrapper you can also use the create_venv.py script to let it automatically create a virtual environmnet with all the packages installed:
+If you want to install everything including fixed versions of dependencies (e.g. for mozbase and marionette packages) as we do in our CI system run the following command:
 
-    ./create_venv.py venv
-    source venv/bin/activate
+    pip install -r requirements.txt
 
-The environment creation script allows you to install specific versions of mozbase packages which are known to work by specifying the '--strict' command line option. By using '--with-optional' some
-additional packages are getting installed as listed in requirements_optional.txt.
+There is also a `requirements_optional.txt` file, which will install some optional packages like pep8 and mozdownload.
 
 Usage
 -----
