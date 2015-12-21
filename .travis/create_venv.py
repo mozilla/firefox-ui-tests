@@ -85,17 +85,6 @@ def main():
                         dest='python',
                         metavar='BINARY',
                         help='The Python interpreter to use.')
-    parser.add_argument('--strict',
-                        dest='strict',
-                        default=False,
-                        action='store_true',
-                        help='Installs exact versions of mozbase packages as'
-                             ' listed in requirements.txt ')
-    parser.add_argument('--with-optional-packages',
-                        dest='with_optional',
-                        default=False,
-                        action='store_true',
-                        help='Installs optional packages for enhanced usability.')
     parser.add_argument('venv',
                         metavar='PATH',
                         help='Path to the environment to be created.')
@@ -109,19 +98,18 @@ def main():
     create_virtualenv(args.venv, python_bin=args.python)
 
     # Activate the environment
-    tps_env = os.path.join(args.venv, venv_activate_this)
-    execfile(tps_env, dict(__file__=tps_env))
+    venv = os.path.join(args.venv, venv_activate_this)
+    execfile(venv, dict(__file__=venv))
 
     # Install Firefox UI tests, dependencies and optional packages
-    command = ['pip', 'install', here]
-    if args.strict:
-        command.extend(['-r', os.path.join(here, 'requirements.txt')])
-    if args.with_optional:
-        command.extend(['-r', os.path.join(here, 'requirements_optional.txt')])
+    command = ['pip', 'install',
+               '-r', 'requirements.txt',
+               '-r', 'requirements_optional.txt',
+               ]
 
     print 'Installing Firefox UI Tests and dependencies...'
     print 'Command: %s' % command
-    subprocess.check_call(command)
+    subprocess.check_call(command, cwd=os.path.dirname(here))
 
     # Print the user instructions
     print usage_message.format('' if sys.platform == 'win32' else 'source ',

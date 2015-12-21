@@ -31,7 +31,7 @@ before_install:
     - if [ "$TRAVIS_OS_NAME" == "linux" ]; then /sbin/start-stop-daemon --start --quiet --make-pidfile --pidfile /tmp/custom_xvfb_99.pid --background --exec /usr/bin/Xvfb -- :99 -ac -screen 0 1280x768x24 ; fi
 
 install:
-    - python create_venv.py $PIP_STRICT_VERSIONS --with-optional-packages ~/.venv
+    - python .travis/create_venv.py ~/.venv
     - source ~/.venv/bin/activate
 
 before_script:
