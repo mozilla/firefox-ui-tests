@@ -43,10 +43,10 @@ before_script:
 
 script:
     # Run the tests with e10s disabled
-    - cat binary.txt | xargs -I binary_path firefox-ui-tests --binary binary_path --gecko-log -
+    - cat binary.txt | xargs -I binary_path firefox-ui-functional --binary binary_path --gecko-log -
 
     # Run in e10s mode
-    - cat binary.txt | xargs -I binary_path firefox-ui-tests --binary binary_path --gecko-log - --e10s
+    - cat binary.txt | xargs -I binary_path firefox-ui-functional --binary binary_path --gecko-log - --e10s
 
 notifications:
     irc:
