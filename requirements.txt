@@ -1,4 +1,4 @@
-# Pin mozbase packages to specific versions which are known to work
+# Pin mozbase and marionette packages to specific versions which are known to work
 browsermob-proxy==0.6.0
 manifestparser==1.1
 mozInstall==1.12
@@ -15,5 +15,11 @@ mozrunner==6.9
 moztest==0.7
 mozversion==1.4
 
+marionette-client == 2.0.0
+marionette-driver == 1.1.1
+
 # Also pin external packages to minimize the risk of version conflicts
 requests==2.7.0
+
+# Install the firefox ui tests package
+./
