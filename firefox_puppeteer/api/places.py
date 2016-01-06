@@ -102,7 +102,7 @@ class Places(BaseLib):
         """, script_timeout=10000)
 
         if not retVal:
-            raise errors.MarionetteException("Restore Default Bookmarks failed")
+            raise MarionetteException("Restore Default Bookmarks failed")
 
     # Browser history related helpers #
 
