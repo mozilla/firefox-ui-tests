@@ -2,6 +2,7 @@ firefox-ui-tests
 ================
 
 [![Build Status](https://travis-ci.org/mozilla/firefox-ui-tests.svg?branch=mozilla-central)](https://travis-ci.org/mozilla/firefox-ui-tests)
+[![Requirements Status](https://requires.io/github/mozilla/firefox-ui-tests/requirements.svg?branch=mozilla-central)](https://requires.io/github/mozilla/firefox-ui-tests/requirements/?branch=mozilla-central)
 
 Installation
 ------------
