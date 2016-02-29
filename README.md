@@ -1,48 +1,18 @@
-firefox-ui-tests
-================
+# Repo Closed
 
-[![Build Status](https://travis-ci.org/mozilla/firefox-ui-tests.svg?branch=mozilla-central)](https://travis-ci.org/mozilla/firefox-ui-tests)
-[![Requirements Status](https://requires.io/github/mozilla/firefox-ui-tests/requirements.svg?branch=mozilla-central)](https://requires.io/github/mozilla/firefox-ui-tests/requirements/?branch=mozilla-central)
+Firefox-ui-tests has been moved and the Github repository is closed. Please use
+the version located in the following locations:
 
-Installation
-------------
+    http://mxr.mozilla.org/mozilla-central/source/testing/firefox-ui/harness/
+    http://mxr.mozilla.org/mozilla-central/source/testing/firefox-ui/tests/
+    http://mxr.mozilla.org/mozilla-central/source/testing/puppeteer/firefox/
 
-First make sure you have [pip](http://pip.readthedocs.org/en/latest/installing.html) installed.
+If you don't have a mozilla-central clone, or anything setup then follow those steps:
 
-It is recommended that [virtualenv](http://virtualenv.readthedocs.org/en/latest/installation.html) and [virtualenvwrapper](http://virtualenvwrapper.readthedocs.org/en/latest/) be used in conjunction with firefox-ui-tests. Start by installing these.
+    https://developer.mozilla.org/en-US/docs/Mozilla/Developer_guide/Build_Instructions/Simple_Firefox_build
 
-Then:
+Or, if you prefer to use Git then check the git-cinnabar documentation:
 
-    git clone https://github.com/mozilla/firefox-ui-tests.git
-    cd firefox-ui-tests
-    python setup.py develop
+    https://github.com/glandium/git-cinnabar/wiki/Mozilla:-A-git-workflow-for-Gecko-development
 
-If you want to install everything including fixed versions of dependencies (e.g. for mozbase and marionette packages) as we do in our CI system run the following command:
-
-    pip install -r requirements.txt
-
-There is also a `requirements_optional.txt` file, which will install some optional packages like pep8 and mozdownload.
-
-Usage
------
-
-To run all tests:
-
-    firefox-ui-tests --binary <path to firefox binary>
-
-To run the update tests:
-
-    firefox-ui-update --binary <path to firefox binary>
-
-To run a specific test or directory of tests:
-
-    firefox-ui-tests --binary <path to firefox binary> <path to test or directory>
-
-For more options run:
-
-    firefox-ui-tests --help
-
-Documentation
--------------
-
-Documentation for the puppeteer libraries are hosted on [readthedocs](http://firefox-puppeteer.readthedocs.org/en/latest/).
+To see history, switch to the 'mozilla-central-deprecated' branch.

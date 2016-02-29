@@ -1,3 +1,0 @@
-[pep8]
-max-line-length = 99
-exclude = firefox_puppeteer/docs
