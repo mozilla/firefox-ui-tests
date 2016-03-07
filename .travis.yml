@@ -13,7 +13,7 @@ compiler:
 
 env:
   global:
-    - MOZ_BRANCH='mozilla-central'
+    - MOZ_BRANCH='mozilla-aurora'
     - DISPLAY=$(if [[ $TRAVIS_OS_NAME = 'linux' ]]; then echo ':99'; fi)
     - MOZ_XVFB=$(if [[ $TRAVIS_OS_NAME = 'linux' ]]; then echo 1; fi)
 
