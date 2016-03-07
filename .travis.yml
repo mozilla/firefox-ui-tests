@@ -13,7 +13,7 @@ compiler:
 
 env:
   global:
-    - MOZ_BRANCH='mozilla-aurora'
+    - MOZ_BRANCH='mozilla-beta'
     - DISPLAY=$(if [[ $TRAVIS_OS_NAME = 'linux' ]]; then echo ':99'; fi)
     - MOZ_XVFB=$(if [[ $TRAVIS_OS_NAME = 'linux' ]]; then echo 1; fi)
 
@@ -25,7 +25,6 @@ env:
 
     # ... and with the official pypi website
     - LOCALE='en-US'
-    - LOCALE='ru'
 
 before_install:
     - if [ "$TRAVIS_OS_NAME" == "linux" ]; then /sbin/start-stop-daemon --start --quiet --make-pidfile --pidfile /tmp/custom_xvfb_99.pid --background --exec /usr/bin/Xvfb -- :99 -ac -screen 0 1280x768x24 ; fi

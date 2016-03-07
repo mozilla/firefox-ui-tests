@@ -9,7 +9,7 @@ from mozdownload import FactoryScraper
 import mozinstall
 
 
-scraper = FactoryScraper('daily',
+scraper = FactoryScraper('tinderbox',
                          branch=os.environ['MOZ_BRANCH'],
                          locale=os.environ['LOCALE'])
 installer_path = scraper.download()
